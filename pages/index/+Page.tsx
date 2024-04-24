@@ -1,5 +1,4 @@
-import React from "react";
-import { Counter } from "./Counter.js";
+import { Counter } from './Counter.js'
 
 export default function Page() {
   return (
@@ -13,5 +12,5 @@ export default function Page() {
         </li>
       </ul>
     </>
-  );
+  )
 }
