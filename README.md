@@ -1,30 +1,29 @@
-# React + TypeScript + Vite
+This app has been created with [Bati](https://batijs.dev) using the following flags: `--react --tailwindcss --vercel --eslint --prettier`
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# About this app
+This app is ready to start. It's powered by [Vike](https://vike.dev) and [React](https://react.dev/learn).
 
-Currently, two official plugins are available:
+### `/pages/+config.ts`
+Such  files are [the interface](https://vike.dev/config) between Vike and your code. It defines:
+- A default [`<Layout>` component](https://vike.dev/Layout) (that wraps your [`<Page>` components](https://vike.dev/Page)).
+- A default [`title`](https://vike.dev/head).
+- Default [`<head>` tags](https://vike.dev/head).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Routing
+[Vike's built-in router](https://vike.dev/routing) lets you choose between:
+ - [Filesystem Routing](https://vike.dev/filesystem-routing) (the URL of a page is determined based on where its `+Page.jsx` file is located on the filesystem)
+ - [Route Strings](https://vike.dev/route-string)
+ - [Route Functions](https://vike.dev/route-function)
 
-## Expanding the ESLint configuration
+### `/pages/_error/+Page.jsx`
+The [error page](https://vike.dev/error-page) which is rendered when errors occur.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### `/pages/+onPageTransitionStart.ts` and `/pages/+onPageTransitionEnd.ts`
+The [`onPageTransitionStart()` hook](https://vike.dev/onPageTransitionStart), together with [`onPageTransitionEnd()`](https://vike.dev/onPageTransitionEnd), enables you to implement page transition animations.
 
-- Configure the top-level `parserOptions` property like this:
+### SSR
+SSR is enabled by default. You can [disable it](https://vike.dev/ssr) for all your pages or only for some pages.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+### HTML Streaming
+You can enable/disable [HTML streaming](https://vike.dev/streaming) for all your pages, or only for some pages while still using it for others.
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
