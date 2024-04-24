@@ -1,7 +1,7 @@
-import './style.css'
-
-import './tailwind.css'
 import type React from 'react'
+
+import './style.css'
+import './tailwind.css'
 
 export default function LayoutDefault({
   children,

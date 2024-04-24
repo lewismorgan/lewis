@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button.jsx'
+
 import { Counter } from './Counter'
 
 export default function Page() {

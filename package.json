@@ -11,6 +11,7 @@
     "clean:node": "rm -rf node_modules && rm -rf pnpm-lock.yaml",
     "dev": "vite",
     "lint": "eslint -c .eslintrc.cjs .",
+    "lint:fix": "eslint -c .eslintrc.cjs --fix .",
     "preview": "vite preview"
   },
   "dependencies": {
