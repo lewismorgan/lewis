@@ -1,6 +1,4 @@
-import { Button } from '@/components/ui/button.jsx'
-
-import { Counter } from './Counter'
+import Link from "next/link";
 
 // TODO: Show my avatar
 // TODO: Ensure page looks good at all display sizes
@@ -15,14 +13,14 @@ import { Counter } from './Counter'
 const ImageProfile = () => {
   return (
     <>
-      <div className="block rounded-full overflow-clip w-fit h-fit shadow-2xl border-foreground border-2 hover:animate-pulse ease-linear">
+      <div className="border-foreground block h-fit w-fit overflow-clip rounded-full border-2 shadow-2xl ease-linear hover:animate-pulse">
         <img
           src="https://avatars.githubusercontent.com/u/1057112?v=4"
-          className="w-[260px] h-[260px] object-contain"
+          className="h-[260px] w-[260px] object-contain"
         />
       </div>
       <div className="flex flex-row gap-1">
-        <span className="text-sm text-muted-foreground font-mono">fg.1</span>
+        <span className="text-muted-foreground font-mono text-sm">fg.1</span>
         <a href="https://github.com/lewismorgan">
           <span className="text-2xl tracking-wide hover:underline">
             Software Engineer
@@ -30,19 +28,19 @@ const ImageProfile = () => {
         </a>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default function Page() {
+export default function HomePage() {
   return (
-    <main className="flex flex-col w-full h-full gap-1">
-      <div className="flex flex-row h-fit place-self-center py-5 text-7xl tracking-tight font-mono hover:cursor-default">
+    <main className="flex h-full w-full flex-col gap-1">
+      <div className="flex h-fit flex-row place-self-center py-5 font-mono text-7xl tracking-tight hover:cursor-default">
         <h1 className="">Hello World</h1>
         <span className="animate-pulse delay-1000">.</span>
       </div>
-      <div className="flex flex-col w-full items-center align-middle pt-10">
+      <div className="flex w-full flex-col items-center pt-10 align-middle">
         <ImageProfile />
       </div>
     </main>
-  )
+  );
 }
