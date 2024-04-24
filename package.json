@@ -12,6 +12,7 @@
   "keywords": [],
   "author": "lewis",
   "devDependencies": {
+    "@types/node": "^20.12.7",
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
     "@typescript-eslint/eslint-plugin": "^7.7.0",
@@ -28,11 +29,18 @@
     "vite": "^5.2.10"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
     "@vite-plugin-vercel/vike": "^5.0.3",
     "@vitejs/plugin-react": "^4.2.1",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "cross-fetch": "^4.0.0",
+    "lucide-react": "^0.372.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "shadcn-ui": "^0.8.0",
+    "tailwind-merge": "^2.3.0",
+    "tailwindcss-animate": "^1.0.7",
     "vike": "^0.4.171",
     "vike-react": "^0.4.8",
     "vite-plugin-vercel": "^5.0.5"

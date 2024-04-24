@@ -12,19 +12,13 @@
     "noEmit": true,
     "moduleResolution": "Bundler",
     "target": "ES2021",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ],
-    "types": [
-      "vite/client",
-      "vike-react"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client", "vike-react"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "jsx": "preserve",
     "jsxImportSource": "react"
   },
-  "exclude": [
-    "dist"
-  ]
+  "exclude": ["dist"]
 }

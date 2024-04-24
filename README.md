@@ -8,7 +8,7 @@ This is my main site. It's a work in progress.
 ### Landing page
 
 - [ ] Show my avatar
-- [ ] Setup shadcn
+- [X] Setup shadcn
 - [ ] Background vector image thing
 - [ ] Display 3 github projects
 - [ ] Feed with my 5 most recent commits
