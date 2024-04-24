@@ -2,7 +2,6 @@
 
 This is my main site. It's a work in progress.
 
-
 ## TODO
 
 ### Landing page
