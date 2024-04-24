@@ -2,31 +2,16 @@
   "name": "lewis",
   "version": "0.0.1",
   "description": "",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
-  },
   "keywords": [],
   "author": "lewis",
-  "devDependencies": {
-    "@types/node": "^20.12.7",
-    "@types/react": "^18.2.79",
-    "@types/react-dom": "^18.2.25",
-    "@typescript-eslint/eslint-plugin": "^7.7.0",
-    "@typescript-eslint/parser": "^7.7.0",
-    "autoprefixer": "^10.4.19",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-react": "^7.34.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "postcss": "^8.4.38",
-    "prettier": "^3.2.5",
-    "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.10"
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "clean:build": "rm -rf dist && rm -rf .vercel",
+    "clean:node": "rm -rf node_modules && rm -rf pnpm-lock.yaml",
+    "dev": "vite",
+    "lint": "eslint -c .eslintrc.cjs .",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
@@ -44,5 +29,25 @@
     "vike": "^0.4.171",
     "vike-react": "^0.4.8",
     "vite-plugin-vercel": "^5.0.5"
+  },
+  "devDependencies": {
+    "@types/eslint": "^8.56.10",
+    "@types/node": "^20.12.7",
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
+    "@typescript-eslint/eslint-plugin": "^7.7.0",
+    "@typescript-eslint/parser": "^7.7.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-simple-import-sort": "^12.1.0",
+    "postcss": "^8.4.38",
+    "prettier": "^3.2.5",
+    "prettier-plugin-packagejson": "^2.5.0",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10"
   }
 }
