@@ -6,6 +6,15 @@ await import('./src/env.js')
 
 /** @type {import("next").NextConfig} */
 const config = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+        pathname: '/u/1057112',
+      },
+    ],
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

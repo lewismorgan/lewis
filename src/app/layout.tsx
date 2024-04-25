@@ -1,11 +1,18 @@
-import { Inter } from 'next/font/google'
+import { Exo_2, Source_Code_Pro } from 'next/font/google'
 
 import '~/styles/globals.css'
 import { ThemeProvider } from '~/components/theme-provider'
 
-const inter = Inter({
+const exo_2 = Exo_2({
   subsets: ['latin'],
-  variable: '--font-sans',
+  display: 'swap',
+  variable: '--font-exo-2',
+})
+
+const source_code_pro = Source_Code_Pro({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-source-code-pro',
 })
 
 export const metadata = {
@@ -22,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+    <html lang="en" className={`${source_code_pro.variable} ${exo_2.variable}`}>
+      <body className={`font-sans`}>
         <ThemeProvider attribute="class" defaultTheme="dark">
           {children}
         </ThemeProvider>
