@@ -33,24 +33,19 @@ const RocketLaunch = () => {
 
 const Spiel = () => {
   return (
-    <>
-      <span className="text-center">
-        The self-proclaimed digital space, domain, and realm of Lewis Morgan.
+    <span className="hover:cursor-default">
+      The digital space, domain, and realm of Lewis Morgan. There may be a lot
+      of{' '}
+      <span className="relative">
+        <span className="absolute -inset-0 block -skew-y-6 rounded-full bg-gradient-to-r from-transparent to-red-800"></span>
+        <span className="relative font-medium">glowsticks</span>
       </span>
-      <span className="text-center hover:cursor-default">
-        There may be a lot of{' '}
-        <span className="relative">
-          <span className="absolute -inset-0 block -skew-y-6 rounded-full bg-gradient-to-r from-transparent to-red-800"></span>
-          <span className="relative font-medium">glowsticks</span>
-        </span>
-        ,{' '}
-        <span className="tracking-wide text-green-800 underline decoration-wavy decoration-1 underline-offset-2">
-          space lizards
-        </span>
-        , and <span className="font-mono tracking-wider">code</span> lying
-        around.
+      ,{' '}
+      <span className="tracking-wide text-green-800 underline decoration-wavy decoration-1 underline-offset-2">
+        space lizards
       </span>
-    </>
+      , and <span className="font-mono tracking-wider">code</span> lying around.
+    </span>
   )
 }
 
@@ -65,7 +60,7 @@ export default function HomePage() {
         <h1 className="">Hello Internet</h1>
         <span className="animate-pulse delay-1000">.</span>
       </div>
-      <div className="flex w-full flex-col justify-center justify-items-center p-2 align-middle">
+      <div className="px-5 text-center">
         <Spiel />
       </div>
       <div className="flex w-full flex-col items-center pt-10 align-middle">
