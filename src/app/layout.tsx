@@ -30,7 +30,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${source_code_pro.variable} ${exo_2.variable}`}>
-      <body className={`font-sans`}>
+      <body className={`h-screen w-screen font-sans`}>
         <ThemeProvider attribute="class" defaultTheme="dark">
           {children}
         </ThemeProvider>
