@@ -1,62 +1,59 @@
 /** @type {import("eslint").Linter.Config} */
 const config = {
   root: true,
-  parser: "@typescript-eslint/parser",
+  parser: '@typescript-eslint/parser',
   extends: [
-    "prettier",
-    "plugin:react/recommended",
-    "plugin:react/jsx-runtime",
-    "plugin:react-hooks/recommended",
-    "plugin:@typescript-eslint/recommended-type-checked",
-    "plugin:@typescript-eslint/stylistic-type-checked",
+    'next/core-web-vitals',
+    'plugin:@typescript-eslint/recommended-type-checked',
+    'plugin:@typescript-eslint/stylistic-type-checked',
   ],
-  plugins: ["react", "simple-import-sort"],
+  plugins: ['@typescript-eslint', 'simple-import-sort'],
   parserOptions: {
-    sourceType: "module",
-    ecmaVersion: "latest",
+    sourceType: 'module',
+    ecmaVersion: 'latest',
     ecmaFeatures: {
       jsx: true,
     },
-    project: "./tsconfig.json",
+    project: './tsconfig.json',
   },
   settings: {
     react: {
-      version: "detect",
+      version: 'detect',
     },
   },
   rules: {
-    "@typescript-eslint/array-type": "off",
-    "@typescript-eslint/consistent-type-definitions": "off",
-    "@typescript-eslint/consistent-type-imports": [
-      "warn",
+    '@typescript-eslint/array-type': 'off',
+    '@typescript-eslint/consistent-type-definitions': 'off',
+    '@typescript-eslint/consistent-type-imports': [
+      'warn',
       {
-        prefer: "type-imports",
-        fixStyle: "inline-type-imports",
+        prefer: 'type-imports',
+        fixStyle: 'inline-type-imports',
       },
     ],
-    "@typescript-eslint/no-unused-vars": [
-      "warn",
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
       {
-        argsIgnorePattern: "^_",
+        argsIgnorePattern: '^_',
       },
     ],
-    "@typescript-eslint/require-await": "off",
-    "@typescript-eslint/no-misused-promises": [
-      "error",
+    '@typescript-eslint/require-await': 'off',
+    '@typescript-eslint/no-misused-promises': [
+      'error',
       {
         checksVoidReturn: {
           attributes: false,
         },
       },
     ],
-    "simple-import-sort/imports": [
-      "warn",
+    'simple-import-sort/imports': [
+      'warn',
       {
-        groups: [["^react"], ["^antd"], ["^@?\\w"], ["@/(.*)"], ["^[./]"]],
+        groups: [['^react'], ['^antd'], ['^@?\\w'], ['@/(.*)'], ['^[./]']],
       },
     ],
   },
-  ignorePatterns: ["dist/**", "*.js", "*.cjs", "*.mjs", "src/components/ui/**"],
-};
+  ignorePatterns: ['dist/**', '*.js', '*.cjs', '*.mjs', 'src/components/ui/**'],
+}
 
-module.exports = config;
+module.exports = config
