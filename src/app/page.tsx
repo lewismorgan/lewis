@@ -1,7 +1,4 @@
-import Link from "next/link";
-
 // TODO: Show my avatar
-// TODO: Ensure page looks good at all display sizes
 // TODO: Background vector image thing
 // TODO: Display 3 github projects
 // TODO: Scrolling-type feed with my 5 most recent commits
@@ -28,8 +25,8 @@ const ImageProfile = () => {
         </a>
       </div>
     </>
-  );
-};
+  )
+}
 
 export default function HomePage() {
   return (
@@ -42,5 +39,5 @@ export default function HomePage() {
         <ImageProfile />
       </div>
     </main>
-  );
+  )
 }
