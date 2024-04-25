@@ -38,7 +38,7 @@ const Spiel = () => {
       of{' '}
       <span className="relative">
         <span className="absolute -inset-0 block -skew-y-6 rounded-full bg-gradient-to-r from-transparent to-red-800"></span>
-        <span className="relative font-medium">glowsticks</span>
+        <span className="relative font-semibold">glowsticks</span>
       </span>
       ,{' '}
       <span className="tracking-wide text-green-800 underline decoration-wavy decoration-1 underline-offset-2">
@@ -56,7 +56,7 @@ const Spiel = () => {
 export default function HomePage() {
   return (
     <main className="flex h-full w-full flex-col gap-1">
-      <div className="flex h-fit flex-row place-self-center py-5 font-mono text-6xl tracking-tight hover:cursor-default">
+      <div className="flex h-fit flex-row place-self-center py-5 font-mono text-5xl tracking-tight hover:cursor-default lg:text-7xl">
         <h1 className="">Hello Internet</h1>
         <span className="animate-pulse delay-1000">.</span>
       </div>
@@ -74,7 +74,10 @@ export default function HomePage() {
         <div className="group relative flex w-fit flex-row gap-1 hover:animate-pulse hover:cursor-default">
           <RocketLaunch />
           <span className="text-lg">
-            Sending humanity back to the Moon, Mars, and Beyond
+            Sending Humanity back to the{' '}
+            <span className="tracking-wide">Moon</span>,{' '}
+            <span className="tracking-wider">Mars</span>, and{' '}
+            <span className="tracking-widest">Beyond</span>
           </span>
         </div>
       </div>

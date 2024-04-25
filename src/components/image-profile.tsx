@@ -1,5 +1,17 @@
 import Image from 'next/image'
 
+import { LewisHovercard } from './git-hovercard'
+import { HoverCard, HoverCardTrigger } from './ui/hover-card'
+
+// TODO: This will be retrieved for the GitHub API
+const _gitLewis = {
+  url: 'https://github.com/lewismorgan',
+  username: 'lewismorgan',
+  bio: 'Developer with a passion for Star Wars, Programming, Video Games and OSS. Actively working in the Space Industry to send us to the Moon, Mars, & Beyond.',
+  repositories: 99,
+  achievements: 3,
+}
+
 export const ImageProfile = () => {
   return (
     <>
@@ -14,11 +26,16 @@ export const ImageProfile = () => {
       </div>
       <div className="flex flex-row gap-1 hover:cursor-default">
         <span className="text-muted-foreground font-mono text-sm">fg.1</span>
-        <a href="https://github.com/lewismorgan">
-          <span className="text-2xl tracking-wide hover:underline hover:decoration-dashed">
-            Software Engineer
-          </span>
-        </a>
+        <HoverCard openDelay={100} closeDelay={300}>
+          <HoverCardTrigger asChild>
+            <a href="https://github.com/lewismorgan">
+              <span className="text-2xl tracking-wide underline decoration-dashed">
+                Software Engineer
+              </span>
+            </a>
+          </HoverCardTrigger>
+          <LewisHovercard {..._gitLewis} />
+        </HoverCard>
       </div>
     </>
   )
