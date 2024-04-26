@@ -1,5 +1,7 @@
+import { LewisHovercard } from '~/components/git-hovercard'
 import { ImageProfile } from '~/components/image-profile'
 import { GradCapPath, RocketPath } from '~/components/svg-paths'
+import { HoverCard, HoverCardTrigger } from '~/components/ui/hover-card'
 import { type SimpleGitUser } from '~/lib/git'
 import { getUser } from '~/server/git'
 
@@ -53,6 +55,31 @@ const Spiel = () => {
   )
 }
 
+const Bullets = () => {
+  return (
+    <div className="flex flex-col gap-1 tracking-tight md:text-lg">
+      <div className="group flex w-full flex-row place-content-center items-center text-center align-middle hover:animate-pulse hover:cursor-default">
+        <span className="mx-1 inline-flex items-baseline self-center align-bottom">
+          <AcademicCap />
+        </span>
+        <span className="">Alumni of the University of South Florida</span>
+      </div>
+      <div className="group flex w-full flex-row place-content-center items-center text-center align-middle hover:animate-pulse hover:cursor-default">
+        <span className="">
+          Sending Humanity back to the{' '}
+          <span className="tracking-wide">Moon</span>,{' '}
+          <span className="tracking-wider">Mars</span>, and{' '}
+          <span className="text-nowrap tracking-widest">
+            Beyond{' '}
+            <span className="inline-flex items-baseline self-center align-bottom">
+              <RocketLaunch />
+            </span>
+          </span>
+        </span>
+      </div>
+    </div>
+  )
+}
 // TODO: Display 3 github projects
 // TODO: Scrolling-type feed with my 5 most recent commits
 // TODO: Dark mode and light mode toggle
@@ -80,28 +107,27 @@ export default async function HomePage() {
         <Spiel />
       </div>
       <div className="flex w-full flex-col items-center gap-1 pt-2 align-middle">
-        <ImageProfile {...userData} />
-        <div className="flex flex-col gap-1 pt-2 tracking-tight md:text-lg">
-          <div className="group flex w-full flex-row place-content-center items-center text-center align-middle hover:animate-pulse hover:cursor-default">
-            <span className="mx-1 inline-flex items-baseline self-center align-bottom">
-              <AcademicCap />
-            </span>
-            <span className="">Alumni of the University of South Florida</span>
-          </div>
-          <div className="group flex w-full flex-row place-content-center items-center text-center align-middle hover:animate-pulse hover:cursor-default">
-            <span className="">
-              Sending Humanity back to the{' '}
-              <span className="tracking-wide">Moon</span>,{' '}
-              <span className="tracking-wider">Mars</span>, and{' '}
-              <span className="text-nowrap tracking-widest">
-                Beyond{' '}
-                <span className="inline-flex items-baseline self-center align-bottom">
-                  <RocketLaunch />
+        <ImageProfile avatarUrl={userData.avatarUrl} name={userData.name} />
+        <div className="hover:cursor-default">
+          <HoverCard openDelay={100} closeDelay={300}>
+            <HoverCardTrigger asChild>
+              <a href="https://github.com/lewismorgan">
+                <span className="text-2xl tracking-wide underline decoration-dashed underline-offset-8">
+                  Software Engineer
                 </span>
-              </span>
-            </span>
-          </div>
+              </a>
+            </HoverCardTrigger>
+            <LewisHovercard
+              avatarUrl={userData.avatarUrl}
+              bio={userData.bio}
+              privateRepositories={userData.privateRepositories}
+              url={userData.url}
+              username={userData.url}
+              repositories={userData.repositories}
+            />
+          </HoverCard>
         </div>
+        <Bullets />
       </div>
     </main>
   )
