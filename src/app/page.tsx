@@ -122,7 +122,7 @@ export default async function HomePage() {
               bio={userData.bio}
               privateRepositories={userData.privateRepositories}
               url={userData.url}
-              username={userData.url}
+              username={userData.username}
               repositories={userData.repositories}
             />
           </HoverCard>
