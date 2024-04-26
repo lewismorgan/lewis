@@ -69,7 +69,7 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="flex h-full w-full flex-col gap-1">
+    <main className="flex h-full w-full flex-col gap-1 px-1">
       <div className="flex h-fit flex-row place-self-center py-5 font-mono text-4xl tracking-tight hover:cursor-default md:text-5xl lg:text-7xl">
         <h1>Hello Internet</h1>
         <span className="inline-flex animate-pulse delay-1000">.</span>
@@ -91,9 +91,11 @@ export default async function HomePage() {
               Sending Humanity back to the{' '}
               <span className="tracking-wide">Moon</span>,{' '}
               <span className="tracking-wider">Mars</span>, and{' '}
-              <span className="tracking-widest">Beyond</span>
-              <span className="mx-1 inline-flex items-baseline self-center align-bottom">
-                <RocketLaunch />
+              <span className="text-nowrap tracking-widest">
+                Beyond{' '}
+                <span className="inline-flex items-baseline self-center align-bottom">
+                  <RocketLaunch />
+                </span>
               </span>
             </span>
           </div>

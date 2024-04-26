@@ -47,7 +47,7 @@ export const LewisHovercard = ({
           <span>Public Repos</span>
           <span className="text-mono text-lg"> · </span>
           <span className="font-mono text-base">{privateRepositories}</span>
-          <span>Total Repos</span>
+          <span>Private Repos</span>
         </div>
       </div>
     </HoverCardContent>
