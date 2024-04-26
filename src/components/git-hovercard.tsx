@@ -6,18 +6,20 @@ import { HoverCardContent } from './ui/hover-card'
 
 type Props = {
   url: string
+  avatarUrl: string
   username: string
   bio: string
   repositories: number
-  achievements: number
+  privateRepositories: number
 }
 
 export const LewisHovercard = ({
   url,
+  avatarUrl,
   username,
   bio,
   repositories,
-  achievements,
+  privateRepositories,
 }: Props) => {
   const adjustedBio = bio.charAt(0).toLowerCase() + bio.slice(1)
   return (
@@ -25,10 +27,7 @@ export const LewisHovercard = ({
       <p className="p-1">
         <span className="inline-flex items-baseline self-center align-bottom">
           <Avatar className="h-6 w-6 self-center">
-            <AvatarImage
-              src="https://avatars.githubusercontent.com/u/1057112?v=4"
-              alt={username}
-            />
+            <AvatarImage src={avatarUrl} alt={username} />
             <AvatarFallback>LM</AvatarFallback>
           </Avatar>
         </span>
@@ -45,10 +44,10 @@ export const LewisHovercard = ({
       <div className="mb-3 flex flex-row justify-center gap-2 text-sm">
         <div className="space-x-1">
           <span className="font-mono text-base">{repositories}</span>
-          <span>Repositories</span>
+          <span>Public Repos</span>
           <span className="text-mono text-lg"> · </span>
-          <span className="font-mono text-base">{achievements}</span>
-          <span>Achievements</span>
+          <span className="font-mono text-base">{privateRepositories}</span>
+          <span>Total Repos</span>
         </div>
       </div>
     </HoverCardContent>

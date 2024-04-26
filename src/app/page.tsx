@@ -1,5 +1,7 @@
 import { ImageProfile } from '~/components/image-profile'
 import { GradCapPath, RocketPath } from '~/components/svg-paths'
+import { type SimpleGitUser } from '~/lib/git'
+import { getUser } from '~/server/git'
 
 const AcademicCap = () => {
   return (
@@ -53,7 +55,19 @@ const Spiel = () => {
 // TODO: Scrolling-type feed with my 5 most recent commits
 // TODO: Dark mode and light mode toggle
 
-export default function HomePage() {
+export default async function HomePage() {
+  const data = await getUser()
+
+  const userData: SimpleGitUser = {
+    avatarUrl: data.avatar_url,
+    name: data.name ?? '',
+    url: data.html_url ?? '',
+    username: data.login,
+    bio: data.bio ?? '',
+    repositories: data.public_repos,
+    privateRepositories: data.total_private_repos ?? 0,
+  }
+
   return (
     <main className="flex h-full w-full flex-col gap-1">
       <div className="flex h-fit flex-row place-self-center py-5 font-mono text-5xl tracking-tight hover:cursor-default lg:text-7xl">
@@ -64,7 +78,7 @@ export default function HomePage() {
         <Spiel />
       </div>
       <div className="flex w-full flex-col items-center pt-10 align-middle">
-        <ImageProfile />
+        <ImageProfile {...userData} />
         <div className="group relative flex w-fit flex-row gap-1 pt-5 hover:animate-pulse hover:cursor-default">
           <AcademicCap />
           <span className="text-lg">
