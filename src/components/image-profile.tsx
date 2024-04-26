@@ -18,15 +18,15 @@ export const ImageProfile = ({
 }: Props) => {
   return (
     <>
-      <div className="block h-[128] w-[128] md:h-[256] md:w-[256] lg:h-[512] lg:w-[512]">
+      <div className="w-128 h-128 block flex-shrink lg:h-[296] lg:w-[296]">
         <Image
           className="border-foreground overflow-clip rounded-full border-2 shadow-2xl"
-          width={512}
-          height={512}
+          width={296}
+          height={296}
           src={avatarUrl}
           alt={name}
         />
-        <span className="text-muted-foreground relative -left-6 bottom-6 align-bottom font-mono text-xs tracking-tighter lg:left-20 lg:text-sm">
+        <span className="text-muted-foreground relative bottom-5 left-5 h-fit w-fit">
           fig. 1
         </span>
       </div>

@@ -18,6 +18,7 @@ This is my main site. It's a work in progress.
 - [ ] Feed with my 5 most recent commits for the website
 - [ ] Highlight a featured project -- use spacenav
 - [ ] Ensure page looks good at all display sizes
+  - [ ] Setup a tool that will show me what the page looks like at different sizes
 - [ ] Setup GitHub Actions:
   - [ ] Linting stuff for the files
 
