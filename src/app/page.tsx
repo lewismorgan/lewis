@@ -1,3 +1,4 @@
+import { GitCard } from '~/components/git-card'
 import { LewisHovercard } from '~/components/git-hovercard'
 import { ImageProfile } from '~/components/image-profile'
 import { GradCapPath, RocketPath } from '~/components/svg-paths'
@@ -97,6 +98,20 @@ export default async function HomePage() {
     privateRepositories: data.total_private_repos ?? 0,
   }
 
+  const repos = [
+    {
+      name: 'spacenav',
+      description: 'SpaceX stats in a React App',
+      languages: ['TypeScript', 'JavaScript', 'CSS', 'HTML'],
+      commits: 55,
+    },
+    {
+      name: 'repo1',
+      description: 'description1',
+      languages: ['TypeScript', 'JavaScript'],
+      commits: 55,
+    },
+  ]
   return (
     <main className="flex h-full w-full flex-col gap-1 px-1">
       <div className="flex h-fit flex-row place-self-center py-5 font-mono text-4xl tracking-tight hover:cursor-default md:text-5xl lg:text-7xl">
@@ -128,6 +143,13 @@ export default async function HomePage() {
           </HoverCard>
         </div>
         <Bullets />
+      </div>
+      <div className="flex w-full flex-row flex-wrap justify-center gap-2 p-1 align-middle">
+        <GitCard {...repos[0]!} />
+        <GitCard {...repos[1]!} />
+        <GitCard {...repos[1]!} />
+        <GitCard {...repos[1]!} />
+        <GitCard {...repos[1]!} />
       </div>
     </main>
   )

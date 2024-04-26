@@ -15,9 +15,6 @@ export const ImageProfile = ({ avatarUrl, name }: Props) => {
         src={avatarUrl}
         alt={name}
       />
-      <span className="relative bottom-[130] right-[20] h-fit w-fit align-middle text-xs text-muted-foreground lg:bottom-10 lg:left-3">
-        fig. 1
-      </span>
     </div>
   )
 }

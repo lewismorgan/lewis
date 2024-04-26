@@ -8,6 +8,7 @@ This is my main site. It's a work in progress.
 - [X] Setup shadcn
 - [X] Hovercard that can be shown when hovering over my name or "Software Engineer"
 - [X] Link up the GitHub API
+- [ ] Hello Internet. types across the screen, clicking on code will re-play the animation
 - [ ] glowsticks
   - [ ] Lightsaber sound plays
   - [ ] Profile image turns into the death star
