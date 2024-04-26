@@ -76,12 +76,12 @@ export default async function HomePage() {
         <h1>Hello Internet</h1>
         <span className="inline-flex animate-pulse delay-1000">.</span>
       </div>
-      <div className="px-2 pb-5 text-center">
+      <div className="px-2 text-center">
         <Spiel />
       </div>
-      <div className="flex w-full flex-col items-center gap-1 align-middle">
+      <div className="flex w-full flex-col items-center gap-1 pt-2 align-middle">
         <ImageProfile {...userData} />
-        <div className="flex flex-col gap-1 md:text-lg">
+        <div className="flex flex-col gap-1 pt-2 tracking-tight md:text-lg">
           <div className="group flex w-full flex-row place-content-center items-center text-center align-middle hover:animate-pulse hover:cursor-default">
             <span className="mx-1 inline-flex items-baseline self-center align-bottom">
               <AcademicCap />

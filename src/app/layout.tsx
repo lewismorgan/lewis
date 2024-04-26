@@ -15,8 +15,10 @@ const source_code_pro = Source_Code_Pro({
   variable: '--font-source-code-pro',
 })
 
+// TODO: Title should update if glowsticks, spacelizards
+
 export const metadata = {
-  title: 'Hello World. - Lewis M.',
+  title: 'Lewis Morgan',
   description: 'Personal website for Lewis Morgan',
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 }
