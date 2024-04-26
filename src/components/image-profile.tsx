@@ -18,7 +18,7 @@ export const ImageProfile = ({
 }: Props) => {
   return (
     <>
-      <div className="block h-[256] max-h-[512] w-[256] max-w-[512] ease-linear hover:animate-pulse lg:h-[512] lg:w-[512]">
+      <div className="block h-[256] max-h-[512] w-[256] max-w-[512] ease-linear lg:h-[512] lg:w-[512]">
         <Image
           className="border-foreground overflow-clip rounded-full border-2 shadow-2xl"
           width={512}
