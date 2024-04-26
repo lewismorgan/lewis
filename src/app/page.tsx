@@ -11,7 +11,7 @@ const AcademicCap = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-7 w-7 text-green-700"
+      className="h-7 w-7 text-green-700 group-hover:translate-x-1 group-hover:rotate-[25deg] group-hover:scale-125"
     >
       <GradCapPath />
     </svg>
@@ -26,7 +26,7 @@ const RocketLaunch = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-7 w-7 text-orange-700 group-hover:-translate-x-1 group-hover:rotate-[25deg] group-hover:scale-125"
+      className="h-7 w-7 text-orange-700 group-hover:translate-x-1 group-hover:rotate-[25deg] group-hover:scale-125"
     >
       <RocketPath />
     </svg>
@@ -43,8 +43,8 @@ const Spiel = () => {
         <span className="relative font-semibold">glowsticks</span>
       </span>
       ,{' '}
-      <span className="tracking-wide text-green-800 underline decoration-wavy decoration-1 underline-offset-2">
-        space lizards
+      <span className="text-nowrap tracking-wide text-green-800 underline decoration-wavy decoration-1 underline-offset-2">
+        space-lizards
       </span>
       , and <span className="font-mono tracking-wider">code</span> lying around.
     </span>
@@ -70,29 +70,33 @@ export default async function HomePage() {
 
   return (
     <main className="flex h-full w-full flex-col gap-1">
-      <div className="flex h-fit flex-row place-self-center py-5 font-mono text-5xl tracking-tight hover:cursor-default lg:text-7xl">
-        <h1 className="">Hello Internet</h1>
-        <span className="animate-pulse delay-1000">.</span>
+      <div className="flex h-fit flex-row place-self-center py-5 font-mono text-4xl tracking-tight hover:cursor-default md:text-5xl lg:text-7xl">
+        <h1>Hello Internet</h1>
+        <span className="inline-flex animate-pulse delay-1000">.</span>
       </div>
-      <div className="px-5 text-center">
+      <div className="px-2 pb-5 text-center">
         <Spiel />
       </div>
-      <div className="flex w-full flex-col items-center pt-10 align-middle">
+      <div className="flex w-full flex-col items-center gap-1 align-middle">
         <ImageProfile {...userData} />
-        <div className="group relative flex w-fit flex-row gap-1 pt-5 hover:animate-pulse hover:cursor-default">
-          <AcademicCap />
-          <span className="text-lg">
-            Alumni of the University of South Florida
-          </span>
-        </div>
-        <div className="group relative flex w-fit flex-row gap-1 hover:animate-pulse hover:cursor-default">
-          <RocketLaunch />
-          <span className="text-lg">
-            Sending Humanity back to the{' '}
-            <span className="tracking-wide">Moon</span>,{' '}
-            <span className="tracking-wider">Mars</span>, and{' '}
-            <span className="tracking-widest">Beyond</span>
-          </span>
+        <div className="flex flex-col gap-1 md:text-lg">
+          <div className="group flex w-full flex-row place-content-center items-center text-center align-middle hover:animate-pulse hover:cursor-default">
+            <span className="mx-1 inline-flex items-baseline self-center align-bottom">
+              <AcademicCap />
+            </span>
+            <span className="">Alumni of the University of South Florida</span>
+          </div>
+          <div className="group flex w-full flex-row place-content-center items-center text-center align-middle hover:animate-pulse hover:cursor-default">
+            <span className="">
+              Sending Humanity back to the{' '}
+              <span className="tracking-wide">Moon</span>,{' '}
+              <span className="tracking-wider">Mars</span>, and{' '}
+              <span className="tracking-widest">Beyond</span>
+              <span className="mx-1 inline-flex items-baseline self-center align-bottom">
+                <RocketLaunch />
+              </span>
+            </span>
+          </div>
         </div>
       </div>
     </main>
