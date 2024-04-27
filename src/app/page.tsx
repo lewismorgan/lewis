@@ -4,7 +4,7 @@ import { ImageProfile } from '~/components/image-profile'
 import { GradCapPath, RocketPath } from '~/components/svg-paths'
 import { HoverCard, HoverCardTrigger } from '~/components/ui/hover-card'
 import { type SimpleGitUser } from '~/lib/git'
-import { getUser } from '~/server/git'
+import { getRepoCommit, getRepos, getUser } from '~/server/git'
 
 const AcademicCap = () => {
   return (
@@ -81,8 +81,6 @@ const Bullets = () => {
     </div>
   )
 }
-// TODO: Display 3 github projects
-// TODO: Scrolling-type feed with my 5 most recent commits
 // TODO: Dark mode and light mode toggle
 
 export default async function HomePage() {
@@ -98,22 +96,32 @@ export default async function HomePage() {
     privateRepositories: data.total_private_repos ?? 0,
   }
 
-  const repos = [
-    {
-      name: 'spacenav',
-      description: 'SpaceX stats in a React App',
-      languages: ['TypeScript', 'JavaScript', 'CSS', 'HTML'],
-      commits: 55,
-    },
-    {
-      name: 'repo1',
-      description: 'description1',
-      languages: ['TypeScript', 'JavaScript'],
-      commits: 55,
-    },
-  ]
+  const gitRepos = await getRepos()
+
+  const repositories = gitRepos.map(async repo => {
+    const commit = await getRepoCommit(repo)
+
+    return {
+      name: repo.name,
+      fork: repo.fork,
+      url: repo.html_url,
+      description: repo.description ?? '',
+      languages: [],
+      commits: 0,
+      commitData: {
+        author: commit.author,
+        message: commit.message,
+        date: commit.date,
+        sha: commit.sha,
+      },
+    }
+  })
+
+  const myReposAndCommits = await Promise.all(repositories)
+
+  const filteredRepos = myReposAndCommits.filter(repo => !repo.fork).slice(0, 5)
   return (
-    <main className="flex h-full w-full flex-col gap-1 px-1">
+    <main className="flex w-full flex-col gap-1 px-1">
       <div className="flex h-fit flex-row place-self-center py-5 font-mono text-4xl tracking-tight hover:cursor-default md:text-5xl lg:text-7xl">
         <h1>Hello Internet</h1>
         <span className="inline-flex animate-pulse delay-1000">.</span>
@@ -144,12 +152,10 @@ export default async function HomePage() {
         </div>
         <Bullets />
       </div>
-      <div className="flex w-full flex-row flex-wrap justify-center gap-2 p-1 align-middle">
-        <GitCard {...repos[0]!} />
-        <GitCard {...repos[1]!} />
-        <GitCard {...repos[1]!} />
-        <GitCard {...repos[1]!} />
-        <GitCard {...repos[1]!} />
+      <div className="my-5 flex w-full flex-row flex-wrap justify-center gap-5 align-middle">
+        {filteredRepos.map((repo, index) => (
+          <GitCard key={index} {...repo} />
+        ))}
       </div>
     </main>
   )

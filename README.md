@@ -15,9 +15,8 @@ This is my main site. It's a work in progress.
 - [ ] space-lizards
   - [ ] Lizard sound plays
   - [ ] Profile image turns into a lizard sci-fi head, make something with midjourney or chatgpt
-- [ ] Display 3 github project cards
-- [ ] Feed with my 5 most recent commits for the website
-- [ ] Highlight a featured project -- use spacenav
+- [X] Display github project cards
+- [X] Feed with my most recent commit
 - [ ] Ensure page looks good at all display sizes
   - [ ] Setup a tool that will show me what the page looks like at different sizes
 - [ ] Setup GitHub Actions:
