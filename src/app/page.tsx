@@ -98,24 +98,26 @@ export default async function HomePage() {
 
   const gitRepos = await getRepos()
 
-  const repositories = gitRepos.map(async repo => {
-    const commit = await getRepoCommit(repo)
+  const repositories = gitRepos
+    .filter(repo => !repo.fork)
+    .map(async repo => {
+      const commit = await getRepoCommit(repo)
 
-    return {
-      name: repo.name,
-      fork: repo.fork,
-      url: repo.html_url,
-      description: repo.description ?? '',
-      languages: [],
-      commits: 0,
-      commitData: {
-        author: commit.author,
-        message: commit.message,
-        date: commit.date,
-        sha: commit.sha,
-      },
-    }
-  })
+      return {
+        name: repo.name,
+        fork: repo.fork,
+        url: repo.html_url,
+        description: repo.description ?? '',
+        languages: [],
+        commits: 0,
+        commitData: {
+          author: commit.author,
+          message: commit.message,
+          date: commit.date,
+          sha: commit.sha,
+        },
+      }
+    })
 
   const myReposAndCommits = await Promise.all(repositories)
 
