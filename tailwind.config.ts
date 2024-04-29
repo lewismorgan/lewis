@@ -1,5 +1,4 @@
 import type { Config } from 'tailwindcss'
-import heropatterns from 'tailwindcss-hero-patterns/src/patterns'
 
 const config = {
   darkMode: ['class'],
@@ -11,9 +10,6 @@ const config = {
   ],
   prefix: '',
   theme: {
-    heroPatterns: {
-      deathstar: heropatterns.deathstar,
-    },
     container: {
       center: true,
       padding: '2rem',

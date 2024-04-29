@@ -52,7 +52,7 @@ export const GitCard = ({
         <div className="flex w-full flex-col p-1">
           <div className="flex flex-row justify-between align-middle text-xs lg:text-sm">
             <span className="mr-1 font-bold">lewismorgan</span>
-            <span className="w-[180] truncate text-ellipsis text-nowrap hover:underline xl:w-[250]">
+            <span className="w-[180px] truncate text-ellipsis text-nowrap hover:underline xl:w-[250px]">
               {commitData.message}
             </span>
           </div>

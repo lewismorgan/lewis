@@ -119,6 +119,7 @@ export default async function HomePage() {
       }
     })
 
+  // TODO: Hydrate the commits
   const myReposAndCommits = await Promise.all(repositories)
 
   const filteredRepos = myReposAndCommits.filter(repo => !repo.fork).slice(0, 5)
