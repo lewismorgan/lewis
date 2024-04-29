@@ -2,6 +2,7 @@
 
 This is my main site. It's a work in progress.
 
+There is still a bit of stuff to add before its ready.
 ## TODO
 
 - [X] Show my avatar
