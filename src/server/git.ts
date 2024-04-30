@@ -144,3 +144,35 @@ export async function getRepoCommit(repo: string): Promise<GitCommit> {
 
   return items[0]!
 }
+
+type listContributors =
+  Endpoints['GET /repos/{owner}/{repo}/contributors']['response']
+
+export type GitContributor = {
+  login: string
+  id: number
+  avatar_url: string
+  html_url: string
+  contributions: number
+}
+
+export async function getContributors(repo: string): Promise<GitContributor[]> {
+  const contributors = await octokit.request(
+    'GET /repos/{owner}/{repo}/contributors',
+    {
+      owner: 'lewismorgan',
+      repo: repo,
+    },
+  )
+
+  return contributors.data.map((contributor: listContributors['data'][0]) => {
+    const { login, id, avatar_url, html_url, contributions } = contributor
+    return {
+      login: login ?? '',
+      id: id ?? 0,
+      avatar_url: avatar_url ?? '',
+      html_url: html_url ?? '',
+      contributions: contributions ?? 0,
+    }
+  })
+}

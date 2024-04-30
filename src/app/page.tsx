@@ -4,7 +4,12 @@ import { Hero } from '~/components/hero'
 import { AcademicCap, RocketLaunch } from '~/components/icons'
 import { ImageProfile } from '~/components/image-profile'
 import { HoverCard, HoverCardTrigger } from '~/components/ui/hover-card'
-import { getMyGit, getRepositories, getRepositoryInformation } from '~/lib/git'
+import {
+  getMyGit,
+  getRepositories,
+  getRepositoryInformation,
+  getWithMyContributions,
+} from '~/lib/git'
 
 const Bullets = () => {
   return (
@@ -40,9 +45,13 @@ export default async function HomePage() {
   const repositories = await getRepositories()
 
   const filteredRepos = repositories.filter(repo => !repo.fork).slice(0, 5)
-  const reposAndCommits = await Promise.all(
+  const repoInformation = await Promise.all(
     filteredRepos.map(async repo => await getRepositoryInformation(repo)),
   )
+  const contributions = repoInformation.map(
+    async repo => await getWithMyContributions(repo),
+  )
+  const reposAndCommits = await Promise.all(contributions)
 
   return (
     <main className="flex w-full flex-col gap-1 px-1">

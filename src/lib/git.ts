@@ -1,4 +1,4 @@
-import { getRepoCommit, getRepos, getUser } from '~/server/git'
+import { getContributors, getRepoCommit, getRepos, getUser } from '~/server/git'
 
 export type SimpleGitUser = {
   avatarUrl: string
@@ -70,5 +70,23 @@ export async function getMyGit(): Promise<SimpleGitUser> {
     bio: data.bio ?? '',
     repositories: data.public_repos,
     privateRepositories: data.total_private_repos ?? 0,
+  }
+}
+
+export async function getWithMyContributions(
+  repo: Repository,
+): Promise<Repository> {
+  const contributors = await getContributors(repo.name)
+
+  const mine = contributors.find(
+    contributor => contributor.login === 'lewismorgan',
+  )
+  if (!mine) {
+    throw new Error('Could not find my contributions')
+  }
+
+  return {
+    ...repo,
+    commits: mine.contributions,
   }
 }
