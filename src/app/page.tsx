@@ -39,11 +39,11 @@ export default async function HomePage() {
   const git = await getMyGit()
   const repositories = await getRepositories()
 
-  const myReposAndCommits = await Promise.all(
-    repositories.flatMap(async repo => await getRepositoryInformation(repo)),
+  const filteredRepos = repositories.filter(repo => !repo.fork).slice(0, 5)
+  const reposAndCommits = await Promise.all(
+    filteredRepos.map(async repo => await getRepositoryInformation(repo)),
   )
 
-  const filteredRepos = myReposAndCommits.filter(repo => !repo.fork).slice(0, 5)
   return (
     <main className="flex w-full flex-col gap-1 px-1">
       <Hero />
@@ -71,7 +71,7 @@ export default async function HomePage() {
         <Bullets />
       </div>
       <div className="my-5 flex w-full flex-row flex-wrap justify-center gap-5 align-middle">
-        {filteredRepos.map((repo, index) => (
+        {reposAndCommits.map((repo, index) => (
           <GitCard key={index} {...repo} />
         ))}
       </div>
