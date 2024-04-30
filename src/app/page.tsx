@@ -1,60 +1,10 @@
 import { GitCard } from '~/components/git-card'
 import { LewisHovercard } from '~/components/git-hovercard'
+import { Hero } from '~/components/hero'
+import { AcademicCap, RocketLaunch } from '~/components/icons'
 import { ImageProfile } from '~/components/image-profile'
-import { GradCapPath, RocketPath } from '~/components/svg-paths'
 import { HoverCard, HoverCardTrigger } from '~/components/ui/hover-card'
-import { type SimpleGitUser } from '~/lib/git'
-import { getRepoCommit, getRepos, getUser } from '~/server/git'
-
-const AcademicCap = () => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className="h-7 w-7 text-green-700 group-hover:translate-x-1 group-hover:rotate-[25deg] group-hover:scale-125"
-    >
-      <GradCapPath />
-    </svg>
-  )
-}
-
-const RocketLaunch = () => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className="h-7 w-7 text-orange-700 group-hover:translate-x-1 group-hover:rotate-[25deg] group-hover:scale-125"
-    >
-      <RocketPath />
-    </svg>
-  )
-}
-
-const Spiel = () => {
-  return (
-    <span className="hover:cursor-default">
-      The digital space, domain, and realm of Lewis Morgan. There may be a lot
-      of{' '}
-      <span className="relative">
-        <span className="absolute -inset-0 block -skew-y-6 rounded-full bg-gradient-to-r from-transparent to-red-800 hover:animate-pulse"></span>
-        <span className="relative font-semibold hover:animate-pulse">
-          glowsticks
-        </span>
-      </span>
-      ,{' '}
-      <span className="text-nowrap tracking-wide text-green-800 underline decoration-wavy decoration-1 underline-offset-2">
-        space-lizards
-      </span>
-      , and <span className="font-mono tracking-wider">code</span> lying around.
-    </span>
-  )
-}
+import { getMyGit, getRepositories, getRepositoryInformation } from '~/lib/git'
 
 const Bullets = () => {
   return (
@@ -84,56 +34,21 @@ const Bullets = () => {
 // TODO: Dark mode and light mode toggle
 
 export default async function HomePage() {
-  const data = await getUser()
+  // TODO: Hydrate everything
 
-  const userData: SimpleGitUser = {
-    avatarUrl: data.avatar_url,
-    name: data.name ?? '',
-    url: data.html_url ?? '',
-    username: data.login,
-    bio: data.bio ?? '',
-    repositories: data.public_repos,
-    privateRepositories: data.total_private_repos ?? 0,
-  }
+  const git = await getMyGit()
+  const repositories = await getRepositories()
 
-  const gitRepos = await getRepos()
-
-  const repositories = gitRepos
-    .filter(repo => !repo.fork)
-    .map(async repo => {
-      const commit = await getRepoCommit(repo)
-
-      return {
-        name: repo.name,
-        fork: repo.fork,
-        url: repo.html_url,
-        description: repo.description ?? '',
-        languages: [],
-        commits: 0,
-        commitData: {
-          author: commit.author,
-          message: commit.message,
-          date: commit.date,
-          sha: commit.sha,
-        },
-      }
-    })
-
-  // TODO: Hydrate the commits
-  const myReposAndCommits = await Promise.all(repositories)
+  const myReposAndCommits = await Promise.all(
+    repositories.flatMap(async repo => await getRepositoryInformation(repo)),
+  )
 
   const filteredRepos = myReposAndCommits.filter(repo => !repo.fork).slice(0, 5)
   return (
     <main className="flex w-full flex-col gap-1 px-1">
-      <div className="flex h-fit flex-row place-self-center py-5 font-mono text-4xl tracking-tight hover:cursor-default md:text-5xl lg:text-7xl">
-        <h1>Hello Internet</h1>
-        <span className="inline-flex animate-pulse delay-1000">.</span>
-      </div>
-      <div className="px-2 text-center">
-        <Spiel />
-      </div>
+      <Hero />
       <div className="flex w-full flex-col items-center gap-1 pt-2 align-middle">
-        <ImageProfile avatarUrl={userData.avatarUrl} name={userData.name} />
+        <ImageProfile avatarUrl={git.avatarUrl} name={git.name} />
         <div className="hover:cursor-default">
           <HoverCard openDelay={100} closeDelay={300}>
             <HoverCardTrigger asChild>
@@ -144,12 +59,12 @@ export default async function HomePage() {
               </a>
             </HoverCardTrigger>
             <LewisHovercard
-              avatarUrl={userData.avatarUrl}
-              bio={userData.bio}
-              privateRepositories={userData.privateRepositories}
-              url={userData.url}
-              username={userData.username}
-              repositories={userData.repositories}
+              avatarUrl={git.avatarUrl}
+              bio={git.bio}
+              privateRepositories={git.privateRepositories}
+              url={git.url}
+              username={git.username}
+              repositories={git.repositories}
             />
           </HoverCard>
         </div>

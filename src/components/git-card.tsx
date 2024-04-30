@@ -10,13 +10,13 @@ type Props = {
   name: string
   description: string
   languages: string[]
-  commits: number
-  commitData: {
+  commits: number | null
+  commit: {
     author: string
     message: string
     date: string
     sha: string
-  }
+  } | null
 }
 
 export const GitCard = ({
@@ -24,7 +24,7 @@ export const GitCard = ({
   description,
   languages,
   commits,
-  commitData,
+  commit,
 }: Props) => {
   // TODO: Change these into badges
   const langComponents = languages.map((language, index) => (
@@ -52,12 +52,12 @@ export const GitCard = ({
         <div className="flex w-full flex-col p-1">
           <div className="flex flex-row justify-between align-middle text-xs lg:text-sm">
             <span className="mr-1 font-bold">lewismorgan</span>
-            <span className="w-[180px] truncate text-ellipsis text-nowrap hover:underline xl:w-[250px]">
-              {commitData.message}
+            <span className="w-56 truncate text-ellipsis text-nowrap hover:underline xl:w-64">
+              {commit?.message ?? 'Loading...'}
             </span>
           </div>
           <span className="text-right align-text-bottom text-xs">
-            {commitData.sha.slice(0, 7)} ·{' '}
+            {commit?.sha.slice(0, 7) ?? ''}
           </span>
         </div>
       </CardContent>

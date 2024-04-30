@@ -119,10 +119,10 @@ export type GitCommit = {
 
 type listGitCommitsResponse =
   Endpoints['GET /repos/{owner}/{repo}/commits']['response']
-export async function getRepoCommit(repo: Repo): Promise<GitCommit> {
+export async function getRepoCommit(repo: string): Promise<GitCommit> {
   const commits = await octokit.request('GET /repos/{owner}/{repo}/commits', {
     owner: 'lewismorgan',
-    repo: repo.name,
+    repo: repo,
     per_page: 1,
   })
 
@@ -132,7 +132,7 @@ export async function getRepoCommit(repo: Repo): Promise<GitCommit> {
       const { name, date } = commitData.author!
 
       return {
-        repo: repo.name,
+        repo: repo,
         sha,
         date: date,
         author: name,
