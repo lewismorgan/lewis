@@ -1,7 +1,7 @@
 import { Exo_2, Source_Code_Pro } from 'next/font/google'
 
 import '~/styles/globals.css'
-import { ThemeProvider } from '~/components/theme-provider'
+import { ThemeProvider } from '~/components/utils/theme-provider'
 
 const exo_2 = Exo_2({
   subsets: ['latin'],

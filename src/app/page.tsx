@@ -1,11 +1,11 @@
 import { Suspense } from 'react'
 
-import { GitCard } from '~/components/git-card'
 import { LewisHovercard } from '~/components/git-hovercard'
 import { Hero } from '~/components/hero'
-import { AcademicCap, RocketLaunch } from '~/components/icons'
 import { ImageProfile } from '~/components/image-profile'
+import { GitCard } from '~/components/server/git-card'
 import { HoverCard, HoverCardTrigger } from '~/components/ui/hover-card'
+import { AcademicCap, RocketLaunch } from '~/components/utils/icons'
 import { getMyGit, getRepositories } from '~/lib/git'
 
 const Bullets = () => {

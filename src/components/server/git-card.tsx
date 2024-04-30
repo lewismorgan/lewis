@@ -6,7 +6,7 @@ import {
   CardDescription,
   CardFooter,
   CardTitle,
-} from './ui/card'
+} from '../ui/card'
 
 import 'server-only'
 import { getContributors, getRepoCommit } from '~/server/git'
