@@ -1,15 +1,12 @@
+import { Suspense } from 'react'
+
 import { GitCard } from '~/components/git-card'
 import { LewisHovercard } from '~/components/git-hovercard'
 import { Hero } from '~/components/hero'
 import { AcademicCap, RocketLaunch } from '~/components/icons'
 import { ImageProfile } from '~/components/image-profile'
 import { HoverCard, HoverCardTrigger } from '~/components/ui/hover-card'
-import {
-  getMyGit,
-  getRepositories,
-  getRepositoryInformation,
-  getWithMyContributions,
-} from '~/lib/git'
+import { getMyGit, getRepositories } from '~/lib/git'
 
 const Bullets = () => {
   return (
@@ -39,19 +36,10 @@ const Bullets = () => {
 // TODO: Dark mode and light mode toggle
 
 export default async function HomePage() {
-  // TODO: Hydrate everything
-
   const git = await getMyGit()
-  const repositories = await getRepositories()
+  const repositoryData = await getRepositories()
 
-  const filteredRepos = repositories.filter(repo => !repo.fork).slice(0, 5)
-  const repoInformation = await Promise.all(
-    filteredRepos.map(async repo => await getRepositoryInformation(repo)),
-  )
-  const contributions = repoInformation.map(
-    async repo => await getWithMyContributions(repo),
-  )
-  const reposAndCommits = await Promise.all(contributions)
+  const repositories = repositoryData.filter(repo => !repo.fork).slice(0, 5)
 
   return (
     <main className="flex w-full flex-col gap-1 px-1">
@@ -80,9 +68,11 @@ export default async function HomePage() {
         <Bullets />
       </div>
       <div className="my-5 flex w-full flex-row flex-wrap justify-center gap-5 align-middle">
-        {reposAndCommits.map((repo, index) => (
-          <GitCard key={index} {...repo} />
-        ))}
+        <Suspense fallback={<div>Loading my latest repository info...</div>}>
+          {repositories.map((repo, index) => (
+            <GitCard key={index} {...repo} />
+          ))}
+        </Suspense>
       </div>
     </main>
   )
