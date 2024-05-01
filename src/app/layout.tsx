@@ -24,7 +24,6 @@ export const metadata = {
 }
 
 // TODO: Add a dark mode toggle button
-
 export default function RootLayout({
   children,
 }: {
