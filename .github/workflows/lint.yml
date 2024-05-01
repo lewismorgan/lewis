@@ -6,10 +6,13 @@ on:
   pull_request:
     branches: ['main']
 
+env:
+  CI: true
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
-
+    env:
+      STORE_PATH: ''
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,6 +35,7 @@ jobs:
 
       - uses: actions/cache@v4
         name: Setup pnpm cache
+        id: cache
         with:
           path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -39,7 +43,43 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: pnpm install
+  lint:
+    runs-on: ubuntu-latest
+    needs: setup
+    env:
+      STORE_PATH: ''
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        with:
+          version: 9.0.5
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache/restore@v4
+        name: Restore pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Install dependencies
         run: pnpm install
 
       - name: Lint the code
+        env:
+          GITHUB_TOKEN: ${{ secrets.API_KEY }}
         run: pnpm lint
