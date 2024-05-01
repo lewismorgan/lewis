@@ -154,4 +154,6 @@ jobs:
         run: pnpm install
 
       - name: Build the code
+        env:
+          GITHUB_TOKEN: ${{ secrets.API_KEY }}
         run: pnpm build
