@@ -1,15 +1,10 @@
 import { Suspense } from 'react'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardTitle,
-} from '../ui/card'
+import { Card, CardContent, CardDescription, CardTitle } from '../ui/card'
 
 import 'server-only'
-import { getContributors, getRepoCommit } from '~/server/git'
+import { formatTimeRelativeToNow } from '~/lib/utils'
+import { getRepoCommit } from '~/server/git'
 
 type Props = {
   name: string
@@ -21,27 +16,30 @@ export const Commit = async ({ repo }: { repo: string }) => {
   // by using a suspense boundary
   const commitData = await getRepoCommit(repo)
 
-  const { author, sha, message } = commitData
+  const { author, sha, message, date: unparsedDate } = commitData
+  const date = Date.parse(unparsedDate)
+  const formattedDate = formatTimeRelativeToNow(date)
+
   return (
-    <div className="flex w-full flex-col p-1">
-      <div className="flex flex-row justify-between align-middle text-xs lg:text-sm">
-        <span className="mr-1 font-bold">{author}</span>
-        <span className="w-56 truncate text-ellipsis text-nowrap hover:underline xl:w-64">
+    <>
+      <div className="flex flex-row align-middle text-sm lg:text-sm">
+        <span className="mr-1 font-semibold">{author}</span>
+        <span className="truncate text-ellipsis text-nowrap hover:underline">
           {message}
         </span>
       </div>
-      <span className="text-right align-text-bottom text-xs">
-        {sha.slice(0, 7)}
+      <span className="text-right align-text-bottom text-xs font-thin text-muted-foreground">
+        {sha.slice(0, 7)} • {formattedDate}
       </span>
-    </div>
+    </>
   )
 }
 
 export const GitCard = async ({ name, description }: Props) => {
-  const contributorData = await getContributors(name)
-  const commits = contributorData.reduce((acc, contributor) => {
-    return acc + contributor.contributions
-  }, 0)
+  // const contributorData = await getContributors(name)
+  // const commits = contributorData.reduce((acc, contributor) => {
+  //   return acc + contributor.contributions
+  // }, 0)
 
   const languages: string[] = []
 
@@ -58,9 +56,8 @@ export const GitCard = async ({ name, description }: Props) => {
     </div>
   ))
 
-  // TODO: Determine a pre-defined width and height for the card to make some skeletons
   return (
-    <Card className="w-fit p-1">
+    <Card className="w-fit max-w-80 p-1">
       <CardTitle className="p-1 font-mono font-thin tracking-tighter">
         {name}
       </CardTitle>
@@ -72,12 +69,11 @@ export const GitCard = async ({ name, description }: Props) => {
           {langComponents}
         </div>
         <Suspense fallback={<div>Loading...</div>}>
-          <Commit repo={name} />
+          <div className="flex w-full flex-col p-1">
+            <Commit repo={name} />
+          </div>
         </Suspense>
       </CardContent>
-      <CardFooter className="block text-right text-sm text-muted-foreground">
-        <span className="text-xs">{`${commits} commits are in this repository`}</span>
-      </CardFooter>
     </Card>
   )
 }
