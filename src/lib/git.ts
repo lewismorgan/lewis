@@ -15,6 +15,7 @@ type RepositoryData = {
   fork: boolean
   url: string
   description: string
+  languages_url: string
 }
 
 export async function getRepositories(): Promise<RepositoryData[]> {
@@ -26,9 +27,20 @@ export async function getRepositories(): Promise<RepositoryData[]> {
       fork: repo.fork,
       url: repo.html_url,
       description: repo.description ?? '',
-      languages: [],
+      languages_url: repo.languages_url,
     }
   })
+}
+
+export async function getLanguages(url: string): Promise<string[]> {
+  const urlFetch = await fetch(url)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const languagesData = await urlFetch.json()
+
+  if (languagesData) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return Object.keys(languagesData)
+  } else return []
 }
 
 export async function getMyGit(): Promise<SimpleGitUser> {

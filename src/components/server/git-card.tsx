@@ -6,10 +6,13 @@ import { Skeleton } from '../ui/skeleton'
 import 'server-only'
 import { formatTimeRelativeToNow } from '~/lib/utils'
 import { getRepoCommit } from '~/server/git'
+import { getLanguages } from '~/lib/git'
+import { Badge } from '../ui/badge'
 
 type Props = {
   name: string
   description: string
+  languages_url: string
 }
 
 export const Commit = async ({ repo }: { repo: string }) => {
@@ -40,25 +43,14 @@ export const GitCardSkeleton = () => {
   return <Skeleton className="h-24 w-64" />
 }
 
-export const GitCard = async ({ name, description }: Props) => {
-  // const contributorData = await getContributors(name)
-  // const commits = contributorData.reduce((acc, contributor) => {
-  //   return acc + contributor.contributions
-  // }, 0)
+export const GitCard = async ({ name, description, languages_url }: Props) => {
+  const languageData: string[] = await getLanguages(languages_url)
+  const languages = languageData.slice(0, 3)
 
-  const languages: string[] = []
-
-  // TODO: Get the language data from the repository
-  // TODO: Change into badge component
   const langComponents = languages.map((language, index) => (
-    <div key={language} className="text-xs text-muted-foreground md:text-sm">
-      <span key={language}>{language}</span>
-      {index < languages.length - 1 && (
-        <span key={`${language}-separator`} className="text-card-foreground">
-          {' · '}
-        </span>
-      )}
-    </div>
+    <Badge key={`${language}-${index}`} className="font-mono tracking-tighter">
+      {language}
+    </Badge>
   ))
 
   return (
@@ -70,9 +62,11 @@ export const GitCard = async ({ name, description }: Props) => {
         {description}
       </CardDescription>
       <CardContent className="flex w-full flex-col p-0">
-        <div className="flex w-full flex-row justify-center gap-1">
-          {langComponents}
-        </div>
+        {langComponents.length > 0 ? (
+          <div className="flex w-full flex-row justify-center gap-2">
+            {langComponents}
+          </div>
+        ) : undefined}
         <Suspense fallback={<div>Loading...</div>}>
           <div className="flex w-full flex-col p-1">
             <Commit repo={name} />
