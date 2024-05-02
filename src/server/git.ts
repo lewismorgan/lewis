@@ -177,5 +177,3 @@ export async function getContributors(repo: string): Promise<GitContributor[]> {
     }
   })
 }
-
-// const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))

@@ -9,7 +9,8 @@ This is my main site. It's a work in progress.
 - [X] Hovercard that can be shown when hovering over my name or "Software Engineer"
 - [X] Link up the GitHub API
 - [X] Data hydration/suspense for fast loading
-- [ ] Git cards load a skeleton first then pull in data
+- [X] Git cards properly hydrated
+- [ ] Git card language badges
 - [ ] Hello Internet. types across the screen, clicking on code will re-play the animation
 - [ ] glowsticks
   - [ ] Lightsaber sound plays

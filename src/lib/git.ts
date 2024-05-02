@@ -19,6 +19,7 @@ type RepositoryData = {
 
 export async function getRepositories(): Promise<RepositoryData[]> {
   const repositories = await getRepos()
+
   return repositories.map(repo => {
     return {
       name: repo.name,

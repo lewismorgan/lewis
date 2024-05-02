@@ -3,10 +3,12 @@ import { Suspense } from 'react'
 import { LewisHovercard } from '~/components/git-hovercard'
 import { Hero } from '~/components/hero'
 import { ImageProfile } from '~/components/image-profile'
-import { GitCard } from '~/components/server/git-card'
+import { GitCard, GitCardSkeleton } from '~/components/server/git-card'
 import { HoverCard, HoverCardTrigger } from '~/components/ui/hover-card'
 import { AcademicCap, RocketLaunch } from '~/components/utils/icons'
 import { getMyGit, getRepositories } from '~/lib/git'
+
+const REPOSITORY_DISPLAY_COUNT = 5
 
 const Bullets = () => {
   return (
@@ -35,11 +37,31 @@ const Bullets = () => {
 }
 // TODO: Dark mode and light mode toggle
 
-export default async function HomePage() {
-  const git = await getMyGit()
+const RepositoryOverview = async ({ count }: { count: number }) => {
   const repositoryData = await getRepositories()
 
-  const repositories = repositoryData.filter(repo => !repo.fork).slice(0, 5)
+  const repositories = repositoryData.filter(repo => !repo.fork).slice(0, count)
+
+  // Each card is wrapped in a suspense because each card fetches its own data
+  return (
+    <>
+      {repositories.map((repo, index) => (
+        <Suspense key={index} fallback={<GitCardSkeleton />}>
+          <GitCard key={index} {...repo} />
+        </Suspense>
+      ))}
+    </>
+  )
+}
+
+export default async function HomePage() {
+  const git = await getMyGit()
+
+  const repoLoadText = (
+    <div className="my-auto flex animate-pulse text-center align-middle font-mono font-light">
+      Summoning my repositories from the GitHub universe...
+    </div>
+  )
 
   return (
     <main className="flex w-full flex-col gap-1 px-1">
@@ -67,13 +89,27 @@ export default async function HomePage() {
         </div>
         <Bullets />
       </div>
-      <div className="my-5 flex w-full flex-row flex-wrap justify-center gap-5 align-middle">
-        <Suspense fallback={<div>Loading my latest repository info...</div>}>
-          {repositories.map((repo, index) => (
-            <GitCard key={index} {...repo} />
-          ))}
+      <section className="my-5 flex min-h-40 w-full flex-row flex-wrap justify-center gap-5 align-middle">
+        <span className="px-2 text-center align-middle font-sans font-light">
+          You can find some projects that I have launched into the digital
+          universe on GitHub. Below are some of the repositories that I have
+          created on GitHub.
+        </span>
+        <Suspense fallback={repoLoadText}>
+          <RepositoryOverview count={REPOSITORY_DISPLAY_COUNT} />
+          <span className="px-2 text-center align-middle font-sans font-light">
+            Not all of my repositories are displayed above. Source code is
+            available on GitHub. Check out my profile{' '}
+            <a
+              href="https://github.com/lewismorgan"
+              className="font-extralight underline underline-offset-2 hover:cursor-pointer"
+            >
+              @lewismorgan
+            </a>{' '}
+            to see more.
+          </span>
         </Suspense>
-      </div>
+      </section>
     </main>
   )
 }

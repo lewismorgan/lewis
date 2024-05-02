@@ -41,3 +41,6 @@ export function formatTimeRelativeToNow(date: number): string {
   const years = Math.floor((now - date) / 365 / 24 / 60 / 60 / 1000)
   return `${years} ${years <= 1 ? 'year' : 'years'} ago`
 }
+
+export const sleep = (ms: number) =>
+  new Promise(resolve => setTimeout(resolve, ms))

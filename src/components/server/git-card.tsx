@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 
 import { Card, CardContent, CardDescription, CardTitle } from '../ui/card'
+import { Skeleton } from '../ui/skeleton'
 
 import 'server-only'
 import { formatTimeRelativeToNow } from '~/lib/utils'
@@ -33,6 +34,10 @@ export const Commit = async ({ repo }: { repo: string }) => {
       </span>
     </>
   )
+}
+
+export const GitCardSkeleton = () => {
+  return <Skeleton className="h-24 w-64" />
 }
 
 export const GitCard = async ({ name, description }: Props) => {
