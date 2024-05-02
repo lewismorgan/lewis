@@ -23,7 +23,7 @@ export const metadata = {
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 }
 
-// TODO: Add a dark mode toggle button
+// TODO: Add a dark/light mode toggle button
 export default function RootLayout({
   children,
 }: {
@@ -31,9 +31,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${source_code_pro.variable} ${exo_2.variable}`}>
-      <body className="h-screen w-screen font-sans">
+      <body className="flex min-h-screen min-w-full flex-col font-sans">
         <ThemeProvider attribute="class" defaultTheme="dark">
-          {children}
+          <div className="mb-5 grow">{children}</div>
+          <footer className="fixed bottom-0 flex w-full justify-center text-xs">
+            <div className="rounded-tl-sm rounded-tr-sm border-l-[0.25px] border-r-[0.25px] border-t-[0.25px] border-foreground p-1 align-middle dark:bg-slate-950">
+              Created by Lewis Morgan. Source code for this site is available on
+              GitHub.
+            </div>
+          </footer>
         </ThemeProvider>
       </body>
     </html>

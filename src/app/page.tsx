@@ -36,7 +36,6 @@ const Bullets = () => {
     </div>
   )
 }
-// TODO: Dark mode and light mode toggle
 
 const RepositoryOverview = async ({ count }: { count: number }) => {
   const repositoryData = await getRepositories()

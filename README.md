@@ -10,6 +10,11 @@ This is my main site. It's a work in progress.
 - [X] Link up the GitHub API
 - [X] Data hydration/suspense for fast loading
 - [X] Git cards properly hydrated
+- [X] Core Sections
+  - [X] Hero
+  - [X] Spiel
+  - [X] Projects
+  - [X] Footer
 - [ ] Git card language badges
 - [ ] Hello Internet. types across the screen, clicking on code will re-play the animation
 - [ ] glowsticks
