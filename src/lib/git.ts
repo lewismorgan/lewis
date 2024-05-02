@@ -32,15 +32,49 @@ export async function getRepositories(): Promise<RepositoryData[]> {
   })
 }
 
-export async function getLanguages(url: string): Promise<string[]> {
-  const urlFetch = await fetch(url)
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const languagesData = await urlFetch.json()
+// add common name of programming lanagues to this type
 
-  if (languagesData) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return Object.keys(languagesData)
-  } else return []
+export type ProgrammingLanguage =
+  | 'JavaScript'
+  | 'HTML'
+  | 'CSS'
+  | 'Python'
+  | 'Java'
+  | 'C++'
+  | 'C#'
+  | 'Ruby'
+  | 'Swift'
+  | 'TypeScript'
+  | 'Rust'
+  | 'Kotlin'
+  | 'Shell'
+  | 'Objective-C'
+  | 'Visual Basic'
+  | 'Unhandled'
+
+type LanguageData = {
+  name: ProgrammingLanguage
+}
+
+export async function getLanguages(url: string): Promise<LanguageData[]> {
+  const urlFetch = await fetch(url)
+  const languagesData = (await urlFetch.json()) as Record<string, number>
+
+  // sort the languages by the most used
+  const sorted = Object.entries(languagesData).sort((a, b) => b[1] - a[1])
+
+  return sorted.map(([language]) => {
+    const lang = (language as ProgrammingLanguage) ?? 'Unhandled'
+    if (lang === 'Unhandled') {
+      console.warn(`Unhandled language: ${language}`)
+      return {
+        name: 'Unhandled',
+      }
+    }
+    return {
+      name: lang,
+    }
+  })
 }
 
 export async function getMyGit(): Promise<SimpleGitUser> {

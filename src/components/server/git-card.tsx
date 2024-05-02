@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 
-import { Badge } from '../ui/badge'
+import { LanguageBadges } from '../lang-badge'
 import { Card, CardContent, CardDescription, CardTitle } from '../ui/card'
 import { Skeleton } from '../ui/skeleton'
 
@@ -44,17 +44,14 @@ export const GitCardSkeleton = () => {
 }
 
 export const GitCard = async ({ name, description, languages_url }: Props) => {
-  const languageData: string[] = await getLanguages(languages_url)
-  const languages = languageData.slice(0, 3)
-
-  const langComponents = languages.map((language, index) => (
-    <Badge key={`${language}-${index}`} className="font-mono tracking-tighter">
-      {language}
-    </Badge>
-  ))
-
+  const languageData = await getLanguages(languages_url)
+  const langBadges = (
+    <LanguageBadges
+      languages={languageData.slice(0, 3).map(lang => lang.name)}
+    />
+  )
   return (
-    <Card className="w-fit max-w-80 p-1">
+    <Card className="h-fit w-fit max-w-80 p-1">
       <CardTitle className="p-1 font-mono font-thin tracking-tighter">
         {name}
       </CardTitle>
@@ -62,9 +59,9 @@ export const GitCard = async ({ name, description, languages_url }: Props) => {
         {description}
       </CardDescription>
       <CardContent className="flex w-full flex-col p-0">
-        {langComponents.length > 0 ? (
+        {languageData.length > 0 ? (
           <div className="flex w-full flex-row justify-center gap-2">
-            {langComponents}
+            {langBadges}
           </div>
         ) : undefined}
         <Suspense fallback={<div>Loading...</div>}>

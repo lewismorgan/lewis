@@ -44,13 +44,13 @@ const RepositoryOverview = async ({ count }: { count: number }) => {
 
   // Each card is wrapped in a suspense because each card fetches its own data
   return (
-    <>
+    <div className="flex flex-row flex-wrap items-center justify-center gap-2 align-middle">
       {repositories.map((repo, index) => (
         <Suspense key={index} fallback={<GitCardSkeleton />}>
           <GitCard key={index} {...repo} />
         </Suspense>
       ))}
-    </>
+    </div>
   )
 }
 
@@ -92,7 +92,7 @@ export default async function HomePage() {
         <Bullets />
       </div>
       <ContentSeperator />
-      <section className="my-5 flex min-h-40 w-full flex-row flex-wrap justify-center gap-5 align-middle">
+      <section className="flex min-h-40 w-full flex-row flex-wrap justify-center gap-5 align-middle">
         <span className="flex w-full justify-center px-2 text-center align-middle font-sans font-light">
           You can find most projects that I have launched into the digital
           universe on GitHub. <br /> Below, you&apos;ll find some of the
