@@ -1,13 +1,13 @@
 import { Suspense } from 'react'
 
+import { Badge } from '../ui/badge'
 import { Card, CardContent, CardDescription, CardTitle } from '../ui/card'
 import { Skeleton } from '../ui/skeleton'
 
 import 'server-only'
+import { getLanguages } from '~/lib/git'
 import { formatTimeRelativeToNow } from '~/lib/utils'
 import { getRepoCommit } from '~/server/git'
-import { getLanguages } from '~/lib/git'
-import { Badge } from '../ui/badge'
 
 type Props = {
   name: string
