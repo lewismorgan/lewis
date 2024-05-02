@@ -31,13 +31,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${source_code_pro.variable} ${exo_2.variable}`}>
-      <body className="flex min-h-screen min-w-full flex-col font-sans">
+      <body className="flex min-h-screen min-w-full flex-col font-sans ">
         <ThemeProvider attribute="class" defaultTheme="dark">
           <div className="mb-5 grow">{children}</div>
           <footer className="fixed bottom-0 flex w-full justify-center text-xs text-muted-foreground">
-            <div className="rounded-tl-sm rounded-tr-sm border-l-[0.25px] border-r-[0.25px] border-t-[0.25px] border-foreground p-1 align-middle dark:bg-slate-950">
-              Created by Lewis Morgan. Source code for this site is available on
-              GitHub.
+            <div className=" rounded-tl-sm rounded-tr-sm border-l border-r border-t border-border p-1 align-middle backdrop-blur-sm">
+              <span className="">
+                Created by Lewis Morgan. Source code for this site is available
+                on GitHub.
+              </span>
             </div>
           </footer>
         </ThemeProvider>
