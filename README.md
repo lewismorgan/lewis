@@ -23,6 +23,7 @@ This is my main site. It's a work in progress.
 - [ ] Ensure page looks good at all display sizes
   - [ ] Setup a tool that will show me what the page looks like at different sizes
 - [X] Setup GitHub Actions
+- [ ] Update the readme with a whole section on how I created and built this site
 
 ### Resume
 

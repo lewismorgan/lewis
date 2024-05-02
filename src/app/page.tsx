@@ -5,6 +5,7 @@ import { Hero } from '~/components/hero'
 import { ImageProfile } from '~/components/image-profile'
 import { GitCard, GitCardSkeleton } from '~/components/server/git-card'
 import { HoverCard, HoverCardTrigger } from '~/components/ui/hover-card'
+import { Separator } from '~/components/ui/separator'
 import { AcademicCap, RocketLaunch } from '~/components/utils/icons'
 import { getMyGit, getRepositories } from '~/lib/git'
 
@@ -54,6 +55,8 @@ const RepositoryOverview = async ({ count }: { count: number }) => {
   )
 }
 
+const ContentSeperator = () => <Separator className="mx-auto my-5 w-[95%]" />
+
 export default async function HomePage() {
   const git = await getMyGit()
 
@@ -66,7 +69,7 @@ export default async function HomePage() {
   return (
     <main className="flex w-full flex-col gap-1 px-1">
       <Hero />
-      <div className="flex w-full flex-col items-center gap-1 pt-2 align-middle">
+      <div className="flex w-full flex-col items-center gap-4 pt-2 align-middle">
         <ImageProfile avatarUrl={git.avatarUrl} name={git.name} />
         <div className="hover:cursor-default">
           <HoverCard openDelay={100} closeDelay={300}>
@@ -89,25 +92,29 @@ export default async function HomePage() {
         </div>
         <Bullets />
       </div>
+      <ContentSeperator />
       <section className="my-5 flex min-h-40 w-full flex-row flex-wrap justify-center gap-5 align-middle">
-        <span className="px-2 text-center align-middle font-sans font-light">
-          You can find some projects that I have launched into the digital
-          universe on GitHub. Below are some of the repositories that I have
-          created on GitHub.
+        <span className="flex w-full justify-center px-2 text-center align-middle font-sans font-light">
+          You can find most projects that I have launched into the digital
+          universe on GitHub. <br /> Below, you&apos;ll find some of the
+          repositories that I have created.
         </span>
         <Suspense fallback={repoLoadText}>
           <RepositoryOverview count={REPOSITORY_DISPLAY_COUNT} />
-          <span className="px-2 text-center align-middle font-sans font-light">
-            Not all of my repositories are displayed above. Source code is
-            available on GitHub. Check out my profile{' '}
-            <a
-              href="https://github.com/lewismorgan"
-              className="font-extralight underline underline-offset-2 hover:cursor-pointer"
-            >
-              @lewismorgan
-            </a>{' '}
-            to see more.
-          </span>
+          <div className="flex w-full justify-center px-2 text-center align-middle font-sans font-light">
+            <span className="">
+              Source code for these projects are available on GitHub, among many
+              others! <br />
+              Check out my profile{' '}
+              <a
+                href="https://github.com/lewismorgan"
+                className="font-extralight underline underline-offset-2 hover:cursor-pointer"
+              >
+                @lewismorgan
+              </a>{' '}
+              to see more.
+            </span>
+          </div>
         </Suspense>
       </section>
     </main>
