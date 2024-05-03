@@ -18,9 +18,24 @@ type RepositoryData = {
   languages_url: string
 }
 
-export async function getRepositories(): Promise<RepositoryData[]> {
-  const repositories = await getRepos()
+const repoBlacklist = [
+  'dotfiles',
+  'dotfiles-old',
+  'HTML-Basics',
+  'ISM4300_TechProj3B',
+  'ISM4300_TechProj3A',
+  'ISM4300_TechProj2b',
+  'ISM4300_TechProj2',
+  'ISM4300_HelloWorld',
+  'lewis-webapp',
+].map(repo => repo.toLowerCase())
 
+export async function getRepositories(): Promise<RepositoryData[]> {
+  const repositoryData = await getRepos()
+
+  const repositories = repositoryData.filter(
+    repo => !repoBlacklist.includes(repo.name.toLowerCase()),
+  )
   return repositories.map(repo => {
     return {
       name: repo.name,
@@ -50,6 +65,7 @@ export type ProgrammingLanguage =
   | 'Shell'
   | 'Objective-C'
   | 'Visual Basic'
+  | 'Makefile'
   | 'Unhandled'
 
 type LanguageData = {

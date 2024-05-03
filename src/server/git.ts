@@ -81,7 +81,7 @@ export async function getRepos(): Promise<Repo[]> {
     visibility: 'public',
     affiliation: 'owner',
     sort: 'pushed',
-    per_page: 10,
+    per_page: 15,
   })
 
   return data.map((repo: listUserReposResponse['data'][0]) => {
