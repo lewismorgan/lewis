@@ -44,3 +44,8 @@ export function formatTimeRelativeToNow(date: number): string {
 
 export const sleep = (ms: number) =>
   new Promise(resolve => setTimeout(resolve, ms))
+
+export function logComponentType() {
+  const componentType = typeof window === 'undefined' ? 'server' : 'client'
+  console.log(`This is a ${componentType} component`)
+}
