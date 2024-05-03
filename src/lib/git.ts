@@ -16,6 +16,7 @@ type RepositoryData = {
   url: string
   description: string
   languages_url: string
+  html_url: string
 }
 
 const repoBlacklist = [
@@ -43,6 +44,7 @@ export async function getRepositories(): Promise<RepositoryData[]> {
       url: repo.html_url,
       description: repo.description ?? '',
       languages_url: repo.languages_url,
+      html_url: repo.html_url,
     }
   })
 }

@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 
 import { LanguageBadges } from '../lang-badge'
+import { ExternalLink } from '../links'
 import { Card, CardContent, CardDescription, CardTitle } from '../ui/card'
 import { Skeleton } from '../ui/skeleton'
 
@@ -12,6 +13,7 @@ import { getRepoCommit } from '~/server/git'
 type Props = {
   name: string
   description: string
+  html_url: string
   languages_url: string
 }
 
@@ -43,7 +45,12 @@ export const GitCardSkeleton = () => {
   return <Skeleton className="h-24 w-64" />
 }
 
-export const GitCard = async ({ name, description, languages_url }: Props) => {
+export const GitCard = async ({
+  name,
+  description,
+  languages_url,
+  html_url,
+}: Props) => {
   const languageData = await getLanguages(languages_url)
   const langBadges = (
     <LanguageBadges
@@ -53,7 +60,7 @@ export const GitCard = async ({ name, description, languages_url }: Props) => {
   return (
     <Card className="h-fit w-fit max-w-80 p-1">
       <CardTitle className="p-1 font-mono font-thin tracking-tighter">
-        {name}
+        <ExternalLink href={html_url}>{name}</ExternalLink>
       </CardTitle>
       <CardDescription className="w-full p-1 text-left align-middle">
         {description}

@@ -1,6 +1,7 @@
 import { Exo_2, Source_Code_Pro } from 'next/font/google'
 
 import '~/styles/globals.css'
+import { ExternalLink } from '~/components/links'
 import { ThemeProvider } from '~/components/utils/theme-provider'
 
 const exo_2 = Exo_2({
@@ -35,11 +36,12 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark">
           <div className="mb-5 grow">{children}</div>
           <footer className="fixed bottom-0 flex w-full justify-center text-xs text-muted-foreground">
-            <div className=" rounded-tl-sm rounded-tr-sm border-l border-r border-t border-border p-1 align-middle backdrop-blur-sm">
-              <span className="">
-                Created by Lewis Morgan. Source code for this site is available
-                on GitHub.
-              </span>
+            <div className="rounded-tl-sm rounded-tr-sm border-l border-r border-t border-border p-1 align-middle backdrop-blur-sm">
+              Created by Lewis Morgan. Source code available on{' '}
+              <ExternalLink href="https://github.com/lewismorgan/lewis">
+                GitHub
+              </ExternalLink>
+              .
             </div>
           </footer>
         </ThemeProvider>

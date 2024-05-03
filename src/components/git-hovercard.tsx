@@ -33,11 +33,12 @@ export const LewisHovercard = ({
         </span>
         <a
           href={url}
+          target="_blank"
           className="mx-1 font-mono text-sm underline underline-offset-2"
         >
           {username}
         </a>
-        <span className="text-muted-foreground text-sm">
+        <span className="text-sm text-muted-foreground">
           is a {adjustedBio}
         </span>
       </p>

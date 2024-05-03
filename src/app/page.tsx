@@ -73,7 +73,7 @@ export default async function HomePage() {
         <div className="hover:cursor-default">
           <HoverCard openDelay={100} closeDelay={300}>
             <HoverCardTrigger asChild>
-              <a href="https://github.com/lewismorgan">
+              <a href="https://github.com/lewismorgan" target="_blank">
                 <span className="text-2xl tracking-wide underline decoration-dashed underline-offset-8">
                   Software Engineer
                 </span>
