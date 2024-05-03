@@ -4,8 +4,8 @@ const Spiel = () => {
       The digital space, domain, and realm of Lewis Morgan. <br /> You may find
       a lot of{' '}
       <span className="relative">
-        <span className="absolute -inset-0 block -skew-y-6 rounded-full bg-gradient-to-r from-transparent to-red-800 hover:animate-pulse"></span>
-        <span className="relative font-semibold hover:animate-pulse">
+        <span className="absolute -inset-0 block -skew-y-6 rounded-full bg-gradient-to-r from-transparent to-blue-400 hover:animate-pulse dark:to-red-800"></span>
+        <span className="relative font-semibold hover:animate-pulse dark:text-white">
           glowsticks
         </span>
       </span>

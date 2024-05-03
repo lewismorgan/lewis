@@ -1,6 +1,7 @@
 import { Exo_2, Source_Code_Pro } from 'next/font/google'
 
 import '~/styles/globals.css'
+import { ThemeToggle } from '~/components/client/theme-toggle'
 import { ExternalLink } from '~/components/links'
 import { ThemeProvider } from '~/components/utils/theme-provider'
 
@@ -24,7 +25,6 @@ export const metadata = {
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 }
 
-// TODO: Add a dark/light mode toggle button
 export default function RootLayout({
   children,
 }: {
@@ -34,6 +34,9 @@ export default function RootLayout({
     <html lang="en" className={`${source_code_pro.variable} ${exo_2.variable}`}>
       <body className="flex min-h-screen min-w-full flex-col font-sans ">
         <ThemeProvider attribute="class" defaultTheme="dark">
+          <div className="fixed bottom-20 right-2 h-fit w-fit backdrop-blur-sm md:right-10 md:top-10">
+            <ThemeToggle />
+          </div>
           <div className="mb-5 grow">{children}</div>
           <footer className="fixed bottom-0 flex w-full justify-center text-xs text-muted-foreground">
             <div className="rounded-tl-sm rounded-tr-sm border-l border-r border-t border-border p-1 align-middle backdrop-blur-sm">

@@ -101,8 +101,6 @@ export default async function HomePage() {
           <RepositoryOverview count={REPOSITORY_DISPLAY_COUNT} />
           <div className="flex w-full justify-center px-2 text-center align-middle font-sans font-light">
             <span className="">
-              Source code for these projects and many more is available.
-              <br />
               Visit my GitHub profile{' '}
               <a
                 href="https://github.com/lewismorgan"
@@ -110,7 +108,7 @@ export default async function HomePage() {
               >
                 @lewismorgan
               </a>{' '}
-              to check them out.
+              to check out the source code for all these projects and more!
             </span>
           </div>
         </Suspense>

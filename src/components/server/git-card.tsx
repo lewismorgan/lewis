@@ -58,7 +58,7 @@ export const GitCard = async ({
     />
   )
   return (
-    <Card className="h-fit w-fit max-w-80 p-1">
+    <Card className="h-fit w-fit max-w-80 p-1 shadow-md">
       <CardTitle className="p-1 font-mono font-thin tracking-tighter">
         <ExternalLink href={html_url}>{name}</ExternalLink>
       </CardTitle>
