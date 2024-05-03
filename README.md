@@ -15,22 +15,23 @@ This is my main site. It's a work in progress.
   - [X] Spiel
   - [X] Projects
   - [X] Footer
-- [ ] Git card language badges
-- [ ] Hello Internet. types across the screen, clicking on code will re-play the animation
-- [ ] glowsticks
-  - [ ] Lightsaber sound plays
-  - [ ] Profile image turns into the death star
-- [ ] space-lizards
-  - [ ] Lizard sound plays
-  - [ ] Profile image turns into a lizard sci-fi head, make something with midjourney or chatgpt
+- [X] Git card language badges
 - [X] Display github project cards
 - [X] Feed with my most recent commit
-- [ ] Ensure page looks good at all display sizes
-  - [ ] Setup a tool that will show me what the page looks like at different sizes
+- [X] Ensure page looks good at all display sizes
 - [X] Setup GitHub Actions
+- [ ] Interactivity
+  - [ ] Hello Internet. types across the screen, clicking on code will re-play the animation
+  - [ ] glowsticks
+    - [ ] Lightsaber sound plays
+    - [ ] Profile image turns into the death star
+  - [ ] space-lizards
+    - [ ] Lizard sound plays
+    - [ ] Profile image turns into a lizard sci-fi head, make something with midjourney or chatgpt
 - [ ] Update the readme with a whole section on how I created and built this site
-
-### Resume
-
 - [ ] Show my resume
-- [ ] Contact info
+- [ ] Contact form
+
+## License
+
+MIT License

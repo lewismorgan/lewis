@@ -94,24 +94,23 @@ export default async function HomePage() {
       <ContentSeperator />
       <section className="mb-5 flex min-h-40 w-full flex-row flex-wrap justify-center gap-5 align-middle">
         <span className="flex w-full justify-center px-2 text-center align-middle font-sans font-light">
-          You can find most projects that I have launched into the digital
-          universe on GitHub. <br /> Below, you&apos;ll find some of the
-          repositories that I have created.
+          You can find most of the projects that I have launched into the
+          digital universe on GitHub. These are some of my favorites!
         </span>
         <Suspense fallback={repoLoadText}>
           <RepositoryOverview count={REPOSITORY_DISPLAY_COUNT} />
           <div className="flex w-full justify-center px-2 text-center align-middle font-sans font-light">
             <span className="">
-              Source code for these projects are available on GitHub, among many
-              others! <br />
-              Check out my profile{' '}
+              Source code for these projects and many more is available.
+              <br />
+              Visit my GitHub profile{' '}
               <a
                 href="https://github.com/lewismorgan"
                 className="font-extralight underline underline-offset-2 hover:cursor-pointer"
               >
                 @lewismorgan
               </a>{' '}
-              to see more.
+              to check them out.
             </span>
           </div>
         </Suspense>

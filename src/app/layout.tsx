@@ -37,7 +37,7 @@ export default function RootLayout({
           <div className="mb-5 grow">{children}</div>
           <footer className="fixed bottom-0 flex w-full justify-center text-xs text-muted-foreground">
             <div className="rounded-tl-sm rounded-tr-sm border-l border-r border-t border-border p-1 align-middle backdrop-blur-sm">
-              Created by Lewis Morgan. Source code available on{' '}
+              Created by Lewis Morgan. Source code is available on{' '}
               <ExternalLink href="https://github.com/lewismorgan/lewis">
                 GitHub
               </ExternalLink>
