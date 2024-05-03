@@ -108,7 +108,7 @@ export default async function HomePage() {
               >
                 @lewismorgan
               </a>{' '}
-              to check out the source code for all these projects and more!
+              to check out the source code for all these projects and more.
             </span>
           </div>
         </Suspense>

@@ -1,20 +1,34 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+
 import { useTheme } from 'next-themes'
 
 import { Button } from '../ui/button'
 
 export const ThemeToggle = () => {
+  const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
 
+  // useEffect only runs on the client, so now we can safely show the UI
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    // Only enable this button for use when client has fully loaded
+    return null
+  }
+
+  const isDark = theme === 'dark' || theme === undefined
   return (
     <Button
       aria-label="Toggle Theme"
       variant={'outline'}
       className="bg-transparent p-3 focus:outline-none"
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
     >
-      {theme === 'dark' ? <LightSide /> : <DarkSide />}
+      {isDark ? <LightSide /> : <DarkSide />}
     </Button>
   )
 }
