@@ -34,7 +34,7 @@ export default function RootLayout({
     <html lang="en" className={`${source_code_pro.variable} ${exo_2.variable}`}>
       <body className="flex min-h-screen min-w-full flex-col font-sans ">
         <ThemeProvider attribute="class" defaultTheme="dark">
-          <div className="fixed bottom-20 right-2 h-fit w-fit backdrop-blur-sm md:right-10 md:top-10">
+          <div className="fixed bottom-20 right-2 h-fit w-fit md:right-10 md:top-10">
             <ThemeToggle />
           </div>
           <div className="mb-5 grow">{children}</div>
