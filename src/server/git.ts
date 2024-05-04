@@ -1,6 +1,8 @@
 import { Octokit } from '@octokit/core'
 import { type Endpoints } from '@octokit/types'
 
+import { type RepositoryData } from '~/lib/types'
+
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 })
@@ -64,19 +66,8 @@ export async function getUser(): Promise<User> {
   }
 }
 
-export type Repo = {
-  id: number
-  description: string | null
-  name: string
-  languages_url: string
-  commits_url: string
-  url: string
-  html_url: string
-  fork: boolean
-}
-
 type listUserReposResponse = Endpoints['GET /user/repos']['response']
-export async function getRepos(): Promise<Repo[]> {
+export async function getRepos(): Promise<RepositoryData[]> {
   const { data } = await octokit.request('GET /user/repos', {
     visibility: 'public',
     affiliation: 'owner',
@@ -97,7 +88,7 @@ export async function getRepos(): Promise<Repo[]> {
     } = repo
     return {
       id,
-      description,
+      description: description ?? '',
       name,
       languages_url,
       commits_url,

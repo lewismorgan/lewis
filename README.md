@@ -20,6 +20,7 @@ This is my main site. It's a work in progress.
 - [X] Feed with my most recent commit
 - [X] Ensure page looks good at all display sizes
 - [X] Setup GitHub Actions
+- [ ] Move Git calls to api folder
 - [ ] Interactivity
   - [ ] Hello Internet. types across the screen, clicking on code will re-play the animation
   - [ ] glowsticks

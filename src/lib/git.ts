@@ -1,23 +1,10 @@
+import {
+  type ProgrammingLanguage,
+  type RepositoryData,
+  type SimpleGitUser,
+} from './types'
+
 import { getRepos, getUser } from '~/server/git'
-
-export type SimpleGitUser = {
-  avatarUrl: string
-  name: string
-  url: string
-  username: string
-  bio: string
-  repositories: number
-  privateRepositories: number
-}
-
-type RepositoryData = {
-  name: string
-  fork: boolean
-  url: string
-  description: string
-  languages_url: string
-  html_url: string
-}
 
 const repoBlacklist = [
   'dotfiles',
@@ -50,25 +37,6 @@ export async function getRepositories(): Promise<RepositoryData[]> {
 }
 
 // add common name of programming lanagues to this type
-
-export type ProgrammingLanguage =
-  | 'JavaScript'
-  | 'HTML'
-  | 'CSS'
-  | 'Python'
-  | 'Java'
-  | 'C++'
-  | 'C#'
-  | 'Ruby'
-  | 'Swift'
-  | 'TypeScript'
-  | 'Rust'
-  | 'Kotlin'
-  | 'Shell'
-  | 'Objective-C'
-  | 'Visual Basic'
-  | 'Makefile'
-  | 'Unhandled'
 
 type LanguageData = {
   name: ProgrammingLanguage
