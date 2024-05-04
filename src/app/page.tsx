@@ -7,7 +7,7 @@ import { GitCard, GitCardSkeleton } from '~/components/server/git-card'
 import { HoverCard, HoverCardTrigger } from '~/components/ui/hover-card'
 import { Separator } from '~/components/ui/separator'
 import { AcademicCap, RocketLaunch } from '~/components/utils/icons'
-import { getMyGit, getRepositories } from '~/lib/git'
+import { getMyGit, getRepositories } from '~/server'
 
 const REPOSITORY_DISPLAY_COUNT = 5
 

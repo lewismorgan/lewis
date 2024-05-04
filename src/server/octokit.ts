@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/core'
 import { type Endpoints } from '@octokit/types'
 
-import { type RepositoryData } from '~/lib/types'
+import { type GitCommit, type RepositoryData } from '~/lib/types'
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -99,23 +99,20 @@ export async function getRepos(): Promise<RepositoryData[]> {
   })
 }
 
-export type GitCommit = {
-  repo: string
-  sha: string
-  date: string
-  author: string
-  message: string
-  url: string
-}
-
 type listGitCommitsResponse =
   Endpoints['GET /repos/{owner}/{repo}/commits']['response']
-export async function getRepoCommit(repo: string): Promise<GitCommit> {
+export async function getRepoCommit({
+  repo,
+  count,
+}: {
+  repo: string
+  count: number
+}): Promise<GitCommit[]> {
   const commits = await octokit.request('GET /repos/{owner}/{repo}/commits', {
     owner: 'lewismorgan',
     committer: 'lewismorgan',
     repo: repo,
-    per_page: 1,
+    per_page: count,
   })
 
   const items = commits.data.map(
@@ -134,7 +131,7 @@ export async function getRepoCommit(repo: string): Promise<GitCommit> {
     },
   )
 
-  return items[0]!
+  return items
 }
 
 type listContributors =

@@ -17,6 +17,15 @@ export type SimpleGitUser = {
   privateRepositories: number
 }
 
+export type GitCommit = {
+  repo: string
+  sha: string
+  date: string
+  author: string
+  message: string
+  url: string
+}
+
 export type ProgrammingLanguage =
   | 'JavaScript'
   | 'HTML'

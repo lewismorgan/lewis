@@ -1,6 +1,6 @@
 import { Badge } from './ui/badge'
 
-import { type ProgrammingLanguage } from '~/lib/git'
+import { type ProgrammingLanguage } from '~/lib/types'
 
 function getLangColorVariants(language: ProgrammingLanguage) {
   switch (language) {

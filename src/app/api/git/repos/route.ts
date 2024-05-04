@@ -1,4 +1,4 @@
-import { getRepositories } from '~/lib/git'
+import { getRepositories } from '~/server'
 
 export async function GET() {
   const data = await getRepositories()

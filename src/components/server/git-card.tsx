@@ -7,8 +7,7 @@ import { Card, CardContent, CardDescription, CardTitle } from '../ui/card'
 import { Skeleton } from '../ui/skeleton'
 
 import 'server-only'
-import { getLanguages } from '~/lib/git'
-import { getRepoCommit } from '~/server/git'
+import { getLanguages, getLatestCommit } from '~/server'
 
 type Props = {
   name: string
@@ -21,7 +20,7 @@ export const Commit = async ({ repo }: { repo: string }) => {
   // Because this is a seperate component, it will hydrate when the data is loaded
   // by using a suspense boundary. Allows core repo details to show while waiting for
   // the commit data to load.
-  const commitData = await getRepoCommit(repo)
+  const commitData = await getLatestCommit(repo)
 
   const { author, sha, message, date: unparsedDate } = commitData
   const date = Date.parse(unparsedDate)

@@ -1,10 +1,10 @@
 import {
+  type GitCommit,
   type ProgrammingLanguage,
   type RepositoryData,
   type SimpleGitUser,
-} from './types'
-
-import { getRepos, getUser } from '~/server/git'
+} from '../lib/types'
+import { getRepoCommit, getRepos, getUser } from './octokit'
 
 const repoBlacklist = [
   'dotfiles',
@@ -36,12 +36,21 @@ export async function getRepositories(): Promise<RepositoryData[]> {
   })
 }
 
-// add common name of programming lanagues to this type
+export async function getLatestCommit(repository: string): Promise<GitCommit> {
+  const data = await getRepoCommit({ repo: repository, count: 1 })
+
+  if (data.length === 0 || !data[0]) {
+    throw new Error('No commits found')
+  }
+
+  return data[0]
+}
 
 type LanguageData = {
   name: ProgrammingLanguage
 }
 
+// TODO: Refactor this to just return an array of ProgrammingLanguage
 export async function getLanguages(url: string): Promise<LanguageData[]> {
   const urlFetch = await fetch(url)
   const languagesData = (await urlFetch.json()) as Record<string, number>
