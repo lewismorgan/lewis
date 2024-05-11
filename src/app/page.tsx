@@ -2,7 +2,6 @@ import { Suspense } from 'react'
 
 import { LewisHovercard } from '~/components/git-hovercard'
 import { Hero } from '~/components/hero'
-import { ImageProfile } from '~/components/image-profile'
 import { GitCard, GitCardSkeleton } from '~/components/server/git-card'
 import { HoverCard, HoverCardTrigger } from '~/components/ui/hover-card'
 import { Separator } from '~/components/ui/separator'
@@ -67,9 +66,8 @@ export default async function HomePage() {
 
   return (
     <main className="flex w-full flex-col gap-1 px-1">
-      <Hero />
+      <Hero profileImage={git.avatarUrl} name={git.username} />
       <div className="flex w-full flex-col items-center gap-4 pt-2 align-middle">
-        <ImageProfile avatarUrl={git.avatarUrl} name={git.name} />
         <div className="hover:cursor-default">
           <HoverCard openDelay={100} closeDelay={300}>
             <HoverCardTrigger asChild>

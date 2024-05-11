@@ -46,12 +46,9 @@ export async function getLatestCommit(repository: string): Promise<GitCommit> {
   return data[0]
 }
 
-type LanguageData = {
-  name: ProgrammingLanguage
-}
-
-// TODO: Refactor this to just return an array of ProgrammingLanguage
-export async function getLanguages(url: string): Promise<LanguageData[]> {
+export async function getLanguages(
+  url: string,
+): Promise<ProgrammingLanguage[]> {
   const urlFetch = await fetch(url)
   const languagesData = (await urlFetch.json()) as Record<string, number>
 
@@ -62,13 +59,8 @@ export async function getLanguages(url: string): Promise<LanguageData[]> {
     const lang = (language as ProgrammingLanguage) ?? 'Unhandled'
     if (lang === 'Unhandled') {
       console.warn(`Unhandled language: ${language}`)
-      return {
-        name: 'Unhandled',
-      }
     }
-    return {
-      name: lang,
-    }
+    return lang
   })
 }
 
