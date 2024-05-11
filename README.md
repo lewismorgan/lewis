@@ -22,7 +22,7 @@ This is my main site. It's a work in progress.
 - [X] Setup GitHub Actions
 - [X] Move Git calls to api folder
 - [ ] Interactivity
-  - [x] Hello Internet. types across the screen
+  - [X] Hello Internet. types across the screen
   - [ ] glowsticks
     - [ ] Lightsaber sound plays
     - [ ] Profile image turns into the death star
