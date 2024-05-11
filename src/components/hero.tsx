@@ -1,3 +1,5 @@
+import { TypingAnimation } from './client/typing-animation'
+
 const Spiel = () => {
   return (
     <div className="space-y-2 hover:cursor-default">
@@ -26,9 +28,8 @@ const Spiel = () => {
 export const Hero = () => {
   return (
     <>
-      <div className="flex h-fit flex-row place-self-center py-5 font-mono text-4xl tracking-tight hover:cursor-default md:text-5xl lg:text-7xl">
-        <h1>Hello Internet</h1>
-        <span className="inline-flex animate-pulse delay-1000">.</span>
+      <div className="flex h-16 flex-row place-self-center py-5 font-mono text-4xl tracking-tight hover:cursor-default md:h-20 md:text-5xl lg:h-24 lg:text-7xl">
+        <TypingAnimation finalText="Hello_Internet" />
       </div>
       <div className="px-2 text-center">
         <Spiel />
