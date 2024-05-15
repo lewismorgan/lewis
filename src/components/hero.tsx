@@ -17,41 +17,55 @@ export const Hero = ({
   name: string
 }) => {
   const { theme } = useTheme()
-  const [side, setSide] = useState<ForceSide>('theme')
+  const [activeForceSide, setActiveSide] = useState<ForceSide>('theme')
   const [replayQueued, setReplayQueued] = useState(false)
+  const [lizards, setLizards] = useState(false)
 
   useEffect(() => {
-    // resets the activeMode to default when the theme changes
-    setSide('theme')
+    // resets all the avatar changers to the default when the theme changes
+    setActiveSide('theme')
+    setLizards(false)
   }, [theme])
 
   const handleGlowsticksClick = () => {
+    if (lizards) setLizards(false)
     switch (theme) {
       case 'light':
-        side !== 'light' ? setSide('light') : setSide('theme')
+        activeForceSide !== 'light'
+          ? setActiveSide('light')
+          : setActiveSide('theme')
         break
       case 'dark':
-        side !== 'dark' ? setSide('dark') : setSide('theme')
+        activeForceSide !== 'dark'
+          ? setActiveSide('dark')
+          : setActiveSide('theme')
         break
       default:
-        setSide('theme')
+        setActiveSide('theme')
         break
     }
   }
 
-  const avatarUrl =
-    side === 'light'
+  const fsAvatarUrl =
+    activeForceSide === 'light'
       ? '/grogu.jpg'
-      : side === 'dark'
+      : activeForceSide === 'dark'
         ? '/anakin.png'
         : profileImage
 
+  const lizardImgs = ['/lizard.png', '/astro_lizard.png']
+
+  const lizardsAvatarUrl = lizardImgs[Math.random() > 0.5 ? 0 : 1]
+
   const spielProps = {
     imgName: name,
-    avatarUrl,
+    avatarUrl: lizards ? lizardsAvatarUrl : fsAvatarUrl,
     onGlowsticksClick: handleGlowsticksClick,
     onCodeClick: () => {
       setReplayQueued(!replayQueued)
+    },
+    onLizardsClick: () => {
+      setLizards(!lizards)
     },
   } as SpielProps
 
