@@ -114,3 +114,5 @@ export default async function HomePage() {
     </main>
   )
 }
+
+export const revalidate = 3600 // revalidate at most every hour

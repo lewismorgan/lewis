@@ -30,8 +30,14 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // hydration warning suppression is only 1 level deep per react docs, this is to prevent the theme being put in html class errors
+  // https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
   return (
-    <html lang="en" className={`${source_code_pro.variable} ${exo_2.variable}`}>
+    <html
+      lang="en"
+      className={`${source_code_pro.variable} ${exo_2.variable}`}
+      suppressHydrationWarning
+    >
       <body className="flex min-h-screen min-w-full flex-col font-sans ">
         <ThemeProvider attribute="class" defaultTheme="dark">
           <div className="fixed bottom-20 right-2 h-fit w-fit md:right-10 md:top-10">

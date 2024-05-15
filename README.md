@@ -23,12 +23,13 @@ This is my main site. It's a work in progress.
 - [X] Move Git calls to api folder
 - [ ] Interactivity
   - [X] Hello Internet. types across the screen
-  - [ ] glowsticks
-    - [ ] Lightsaber sound plays
+  - [X] glowsticks
     - [X] Profile image turns into a character based on if it is dark or light mode
   - [ ] space-lizards
     - [ ] Lizard sound plays
     - [ ] Profile image turns into a lizard sci-fi head, make something with midjourney or chatgpt
+  - [X] code
+    - [X] Hello_Internet reverses direction.
 - [ ] Update the readme with a whole section on how I created and built this site
 - [ ] Show my resume
 - [ ] Contact form
