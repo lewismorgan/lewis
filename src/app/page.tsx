@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 
+import { Hero } from '~/components/client/hero'
 import { LewisHovercard } from '~/components/git-hovercard'
-import { Hero } from '~/components/hero'
 import { GitCard, GitCardSkeleton } from '~/components/server/git-card'
 import { HoverCard, HoverCardTrigger } from '~/components/ui/hover-card'
 import { Separator } from '~/components/ui/separator'

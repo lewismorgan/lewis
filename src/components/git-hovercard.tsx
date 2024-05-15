@@ -1,6 +1,3 @@
-// left-hand side show my avatar, then show lewismorgan
-// show
-
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { HoverCardContent } from './ui/hover-card'
 

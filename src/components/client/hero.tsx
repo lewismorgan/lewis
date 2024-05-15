@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 
 import { useTheme } from 'next-themes'
 
-import { TypingAnimation } from './client/typing-animation'
 import { Spiel, type SpielProps } from './spiel'
+import { TypingAnimation } from './typing-animation'
 
 export type ForceSide = 'light' | 'dark' | 'theme'
 

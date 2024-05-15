@@ -1,6 +1,6 @@
 'use client'
 
-import { ImageProfile } from './image-profile'
+import { ImageProfile } from '../image-profile'
 
 export type SpielProps = {
   imgName: string
