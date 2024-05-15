@@ -65,6 +65,10 @@ export const Hero = ({
       setReplayQueued(!replayQueued)
     },
     onLizardsClick: () => {
+      if (!lizards) {
+        // reset the force side to default before lizards are shown
+        setActiveSide('theme')
+      }
       setLizards(!lizards)
     },
   } as SpielProps
