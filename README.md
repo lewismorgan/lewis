@@ -1,5 +1,8 @@
 # lewis
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/lewismorgan/lewis/ci.yml)
+![GitHub deployments](https://img.shields.io/github/deployments/lewismorgan/lewis/Production?logo=vercel&label=Vercel&link=https%3A%2F%2Flewismorgan.dev)
+
 Personal landing page for me made using NextJS, TailwindCSS, and deployed using Vercel.
 
 * Displays some info about myself and shows some data from my GitHub repositories.
@@ -34,7 +37,7 @@ Visit the deployed website using your web browser
 
 ## CI/CD
 
-The project also makes use of GitHub Actions to report any lint, type or build time errors. As such, the site is automatically deployed to Vercel on push to the main branch, handled outside the `ci` action through a direct connection with Vercel. Each commit will display status badges of the `ci` action, and the deployment status of the site from Vercel.
+The project also makes use of GitHub Actions to report any lint, type or build time errors. As such, the site is automatically deployed to Vercel on push to the main branch, handled outside the `ci` action through a direct connection with Vercel using GitHub Deployment Environments. Each commit will display status badges of the `ci` action, and the deployment status of the site from Vercel.
 
 ## License
 
