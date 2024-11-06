@@ -7,7 +7,7 @@ import { useTheme } from 'next-themes'
 import { Spiel, type SpielProps } from './spiel'
 import { TypingAnimation } from './typing-animation'
 
-export type ForceSide = 'light' | 'dark' | 'theme'
+export type ForceSide = 'light' | 'dark' | 'none'
 
 export const Hero = ({
   profileImage,
@@ -17,41 +17,47 @@ export const Hero = ({
   name: string
 }) => {
   const { theme } = useTheme()
-  const [activeForceSide, setActiveSide] = useState<ForceSide>('theme')
+  const [activeForceSide, setActiveSide] = useState<ForceSide>('none')
   const [replayQueued, setReplayQueued] = useState(false)
   const [lizards, setLizards] = useState(false)
 
   useEffect(() => {
     // resets all the avatar changers to the default when the theme changes
-    setActiveSide('theme')
+    setActiveSide('none')
     setLizards(false)
   }, [theme])
 
-  const handleGlowsticksClick = () => {
-    if (lizards) setLizards(false)
+  const toggleForceSide = (theme: string | undefined) => {
     switch (theme) {
       case 'light':
-        activeForceSide !== 'light'
-          ? setActiveSide('light')
-          : setActiveSide('theme')
+        setActiveSide('light')
         break
       case 'dark':
-        activeForceSide !== 'dark'
-          ? setActiveSide('dark')
-          : setActiveSide('theme')
+        setActiveSide('dark')
         break
       default:
-        setActiveSide('theme')
+        setActiveSide('none')
         break
     }
   }
 
-  const fsAvatarUrl =
-    activeForceSide === 'light'
-      ? '/grogu.jpg'
-      : activeForceSide === 'dark'
-        ? '/anakin.png'
-        : profileImage
+  const getForceSensitiveAvatarUrl = (theme: string) => {
+    switch (theme) {
+      case 'light':
+        return '/grogu.jpg'
+      case 'dark':
+        return '/anakin.png'
+      default:
+        return profileImage
+    }
+  }
+
+  const handleGlowsticksClick = () => {
+    if (lizards) setLizards(false)
+    toggleForceSide(theme)
+  }
+
+  const fsAvatarUrl = getForceSensitiveAvatarUrl(activeForceSide)
 
   const lizardImgs = ['/lizard.png', '/astro_lizard.png']
 
@@ -67,7 +73,7 @@ export const Hero = ({
     onLizardsClick: () => {
       if (!lizards) {
         // reset the force side to default before lizards are shown
-        setActiveSide('theme')
+        setActiveSide('none')
       }
       setLizards(!lizards)
     },
