@@ -42,6 +42,7 @@ const RepositoryOverview = async ({ count }: { count: number }) => {
   const repositories = repositoryData.filter(repo => !repo.fork).slice(0, count)
 
   // Each card is wrapped in a suspense because each card fetches its own data
+  // TODO: Make these a fixed size so the page doesn't jump around when hydrating
   return (
     <div className="flex w-fit max-w-[950px] flex-row flex-wrap items-center justify-center gap-4 align-middle">
       {repositories.map((repo, index) => (
