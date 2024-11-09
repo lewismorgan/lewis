@@ -43,7 +43,7 @@ export const GitCard = async ({
   const languageData = await getLanguages(languages_url)
   const langBadges = <LanguageBadges languages={languageData.slice(0, 3)} />
   return (
-    <Card className="h-fit w-fit max-w-80 p-1 shadow-md">
+    <Card className="max-h-80 w-80 p-1 shadow-md lg:w-[420px]">
       <CardTitle className="p-1 font-mono font-thin tracking-tighter">
         <ExternalLink href={html_url}>{name}</ExternalLink>
       </CardTitle>
