@@ -5,10 +5,15 @@
   "type": "module",
   "scripts": {
     "build": "next build",
-    "dev": "next dev --turbopack",
-    "lint": "next lint -c .eslintrc.cjs",
+    "check": "next lint && tsc --noEmit",
+    "dev": "next dev --turbo",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
+    "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "preview": "next build && next start",
     "start": "next start",
-    "type-check": "tsc"
+    "type-check": "tsc --no-emit"
   },
   "dependencies": {
     "@octokit/core": "^6.1.2",
@@ -50,13 +55,13 @@
     "typescript": "^5.6.3"
   },
   "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
-  "ct3aMetadata": {
-    "initVersion": "7.32.0"
-  },
   "pnpm": {
     "overrides": {
       "@types/react": "npm:types-react@19.0.0-rc.1",
       "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
     }
+  },
+  "ct3aMetadata": {
+    "initVersion": "7.32.0"
   }
 }

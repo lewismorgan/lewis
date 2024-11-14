@@ -1,6 +1,5 @@
-// /** @type {import("eslint").Linter.Config} */
+/** @type {import("eslint").Linter.BaseConfig} */
 const config = {
-  root: true,
   parser: '@typescript-eslint/parser',
   extends: [
     'next/core-web-vitals',
@@ -9,17 +8,7 @@ const config = {
   ],
   plugins: ['@typescript-eslint', 'simple-import-sort'],
   parserOptions: {
-    sourceType: 'module',
-    ecmaVersion: 'latest',
-    ecmaFeatures: {
-      jsx: true,
-    },
-    project: './tsconfig.json',
-  },
-  settings: {
-    react: {
-      version: 'detect',
-    },
+    project: true,
   },
   rules: {
     '@typescript-eslint/array-type': 'off',
@@ -53,7 +42,7 @@ const config = {
       },
     ],
   },
-  ignorePatterns: ['dist/**', '*.js', '*.cjs', '*.mjs', 'src/components/ui/**'],
+  ignorePatterns: ['src/components/ui/**'],
 }
 
 module.exports = config
