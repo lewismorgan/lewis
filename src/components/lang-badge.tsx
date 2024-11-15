@@ -45,7 +45,7 @@ export const LanguageBadges = ({
       return (
         <Badge
           key={`${name}-${index}`}
-          className={` text-white ${color} hover:animate-pulse hover:cursor-default hover:ring-1 hover:ring-background hover:ring-offset-2`}
+          className={`text-white ${color} hover:animate-pulse hover:cursor-default hover:ring-1 hover:ring-background hover:ring-offset-2`}
         >
           <div className="font-outline-1 relative">
             {name}

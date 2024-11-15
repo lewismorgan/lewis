@@ -1,14 +1,35 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+import { FlatCompat } from '@eslint/eslintrc'
 import eslint from '@eslint/js'
-import tsparser from '@typescript-eslint/parser'
+import simpleImportSort from 'eslint-plugin-simple-import-sort'
+import { dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import tseslint from 'typescript-eslint'
-import eslintPluginSimpleImportSort from 'eslint-plugin-simple-import-sort'
 
-export default tseslint.config(
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+})
+
+const eslintConfig = tseslint.config(
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+  ...compat.extends('next/core-web-vitals'),
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
   {
-    parserOptions: { project: true },
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+    },
+    languageOptions: {
+      parserOptions: {
+        project: true,
+      },
+    },
     rules: {
       '@typescript-eslint/array-type': 'off',
       '@typescript-eslint/consistent-type-definitions': 'off',
@@ -44,15 +65,4 @@ export default tseslint.config(
   },
 )
 
-// export default [
-//   {
-//     languageOptions: {
-//       parser: tsparser,
-//     },
-//     plugins: {
-//       tseslint: tseslint,
-//       simpleImportSort: eslintPluginSimpleImportSort,
-//     },
-//     rules: {},
-//   },
-// ]
+export default eslintConfig

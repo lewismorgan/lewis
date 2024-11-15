@@ -10,7 +10,11 @@
     "ghcr.io/devcontainers-extra/features/corepack:1": {}
   },
   "mounts": [
-    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+    {
+      "source": "${localEnv:HOME}/.ssh",
+      "target": "/home/node/.ssh",
+      "type": "bind"
+    }
   ],
   "customizations": {
     "vscode": {
