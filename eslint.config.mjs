@@ -27,7 +27,8 @@ const eslintConfig = tseslint.config(
     },
     languageOptions: {
       parserOptions: {
-        project: true,
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     rules: {
@@ -62,6 +63,9 @@ const eslintConfig = tseslint.config(
         },
       ],
     },
+  },
+  {
+    ignores: ['src/components/ui/*.tsx'],
   },
 )
 

@@ -9,20 +9,21 @@
     "ghcr.io/devcontainers/features/node:1": {},
     "ghcr.io/devcontainers-extra/features/corepack:1": {}
   },
-  "mounts": [
-    {
-      "source": "${localEnv:HOME}/.ssh",
-      "target": "/home/node/.ssh",
-      "type": "bind"
-    }
-  ],
+  // "mounts": [
+  //   {
+  //     "source": "${localEnv:HOME}/.ssh",
+  //     "target": "/home/node/.ssh",
+  //     "type": "bind"
+  //   }
+  // ],
   "customizations": {
     "vscode": {
       "extensions": [
         "bradlc.vscode-tailwindcss",
         "burkeholland.simple-react-snippets",
         "esbenp.prettier-vscode",
-        "VisualStudioExptTeam.vscodeintellicode"
+        "VisualStudioExptTeam.vscodeintellicode",
+        "eamodio.gitlens"
       ]
     }
   }

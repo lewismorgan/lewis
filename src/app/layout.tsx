@@ -1,11 +1,10 @@
 import { Analytics } from '@vercel/analytics/react'
 import { Exo_2, Source_Code_Pro } from 'next/font/google'
 
+import '~/styles/globals.css'
 import { ThemeToggle } from '~/components/client/theme-toggle'
 import { ExternalLink } from '~/components/links'
 import { ThemeProvider } from '~/components/utils/theme-provider'
-
-import '~/styles/globals.css'
 
 const exo_2 = Exo_2({
   subsets: ['latin'],
