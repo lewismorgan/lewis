@@ -13,7 +13,7 @@
     "lint:fix": "next lint --fix",
     "preview": "next build && next start",
     "start": "next start",
-    "type-check": "tsc --no-emit"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@octokit/core": "^6.1.2",
