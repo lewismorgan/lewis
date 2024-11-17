@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 import { FlatCompat } from '@eslint/eslintrc'
 import eslint from '@eslint/js'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
@@ -10,13 +8,11 @@ import tseslint from 'typescript-eslint'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
 const compat = new FlatCompat({
   baseDirectory: __dirname,
 })
 
 const eslintConfig = tseslint.config(
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   ...compat.extends('next/core-web-vitals'),
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
