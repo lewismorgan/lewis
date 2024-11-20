@@ -6,6 +6,8 @@ import {
 } from '../lib/types'
 import { getRepoCommit, getRepos, getUser } from './octokit'
 
+import { sleep } from '~/lib/utils'
+
 const repoBlacklist = [
   'dotfiles',
   'dotfiles-old',
@@ -18,7 +20,11 @@ const repoBlacklist = [
   'lewis-webapp',
 ].map(repo => repo.toLowerCase())
 
-export async function getRepositories(): Promise<RepositoryData[]> {
+export async function getRepositories(
+  slow: boolean,
+): Promise<RepositoryData[]> {
+  if (slow) await sleep(5000)
+
   const repositoryData = await getRepos()
 
   const repositories = repositoryData.filter(
@@ -36,8 +42,14 @@ export async function getRepositories(): Promise<RepositoryData[]> {
   })
 }
 
-export async function getLatestCommit(repository: string): Promise<GitCommit> {
+export async function getLatestCommit(
+  repository: string,
+  slow: boolean,
+): Promise<GitCommit> {
   const data = await getRepoCommit({ repo: repository, count: 1 })
+
+  // The slow mode allows simulating a slow connection
+  if (slow) await sleep(Math.random() * 10000)
 
   if (data.length === 0 || !data[0]) {
     throw new Error('No commits found')
@@ -50,6 +62,12 @@ export async function getLanguages(
   url: string,
 ): Promise<ProgrammingLanguage[]> {
   const urlFetch = await fetch(url)
+
+  if (!urlFetch.ok) {
+    console.error('Failed to fetch languages:', urlFetch.statusText)
+    return []
+  }
+
   const languagesData = (await urlFetch.json()) as Record<string, number>
 
   // sort the languages by the most used

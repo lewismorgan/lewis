@@ -1,12 +1,11 @@
-import { Suspense } from 'react'
-
 import { Hero } from '~/components/client/hero'
+import { SlowModeContainer } from '~/components/client/repo-container'
 import { LewisHovercard } from '~/components/git-hovercard'
-import { GitCard, GitCardSkeleton } from '~/components/server/git-card'
+import { RepositoryOverview } from '~/components/server/repo-overview'
 import { HoverCard, HoverCardTrigger } from '~/components/ui/hover-card'
 import { Separator } from '~/components/ui/separator'
 import { AcademicCap, RocketLaunch } from '~/components/utils/icons'
-import { getMyGit, getRepositories } from '~/server'
+import { getMyGit } from '~/server'
 
 const REPOSITORY_DISPLAY_COUNT = 5
 
@@ -36,34 +35,15 @@ const Bullets = () => {
   )
 }
 
-const RepositoryOverview = async ({ count }: { count: number }) => {
-  const repositoryData = await getRepositories()
-
-  const repositories = repositoryData.filter(repo => !repo.fork).slice(0, count)
-
-  // Each card is wrapped in a suspense because each card fetches its own data
-  // TODO: Make these a fixed size so the page doesn't jump around when hydrating
-  return (
-    <div className="flex w-fit max-w-[950px] flex-row flex-wrap items-center justify-center gap-4 align-middle">
-      {repositories.map((repo, index) => (
-        <Suspense key={index} fallback={<GitCardSkeleton />}>
-          <GitCard key={index} {...repo} />
-        </Suspense>
-      ))}
-    </div>
-  )
-}
-
 const ContentSeperator = () => <Separator className="mx-auto my-5 w-[95%]" />
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
   const git = await getMyGit()
-
-  const repoLoadText = (
-    <div className="my-auto flex animate-pulse text-center align-middle font-mono font-light">
-      Summoning my repositories from the GitHub universe...
-    </div>
-  )
+  const slowmode = (await searchParams).slowmode === 'true'
 
   return (
     <main className="flex w-full flex-col gap-1 px-1">
@@ -94,10 +74,18 @@ export default async function HomePage() {
       <section className="mb-5 flex min-h-40 w-full flex-row flex-wrap justify-center gap-5 align-middle">
         <span className="flex w-full justify-center px-2 text-center align-middle font-sans font-light">
           You can find most of the projects that I have launched into the
-          digital universe on GitHub. These are some of my favorites!
+          digital universe on GitHub. These are some of my favorites! <br />
+          <br />
+          Use the Slow Mode toggle to see what happens on a slower network
+          connection.
         </span>
-        <Suspense fallback={repoLoadText}>
-          <RepositoryOverview count={REPOSITORY_DISPLAY_COUNT} />
+        <div className="flex flex-col space-y-4">
+          <SlowModeContainer>
+            <RepositoryOverview
+              count={REPOSITORY_DISPLAY_COUNT}
+              slowMode={slowmode}
+            />
+          </SlowModeContainer>
           <div className="flex w-full justify-center px-2 text-center align-middle font-sans font-light">
             <span className="">
               Visit my GitHub profile{' '}
@@ -110,7 +98,7 @@ export default async function HomePage() {
               to check out the source code for all these projects and more.
             </span>
           </div>
-        </Suspense>
+        </div>
       </section>
     </main>
   )

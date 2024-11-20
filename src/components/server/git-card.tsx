@@ -14,13 +14,21 @@ type Props = {
   description: string
   html_url: string
   languages_url: string
+  slowMode: boolean
 }
 
-export const Commit = async ({ repo }: { repo: string }) => {
+export const Commit = async ({
+  repo,
+  slow,
+}: {
+  repo: string
+  slow: boolean
+}) => {
   // Because this is a seperate component, it will hydrate when the data is loaded
   // by using a suspense boundary. Allows core repo details to show while waiting for
   // the commit data to load.
-  const commitData = await getLatestCommit(repo)
+
+  const commitData = await getLatestCommit(repo, slow)
 
   const { author, sha, message, date: unparsedDate } = commitData
   const date = Date.parse(unparsedDate)
@@ -31,7 +39,7 @@ export const Commit = async ({ repo }: { repo: string }) => {
 }
 
 export const GitCardSkeleton = () => {
-  return <Skeleton className="h-24 w-64" />
+  return <Skeleton className="h-24 w-80 p-1 shadow-md lg:w-[420px]" />
 }
 
 export const GitCard = async ({
@@ -39,6 +47,7 @@ export const GitCard = async ({
   description,
   languages_url,
   html_url,
+  slowMode,
 }: Props) => {
   const languageData = await getLanguages(languages_url)
   const langBadges = <LanguageBadges languages={languageData.slice(0, 3)} />
@@ -58,7 +67,7 @@ export const GitCard = async ({
         ) : undefined}
         <Suspense fallback={<div>Loading...</div>}>
           <div className="flex w-full flex-col p-1">
-            <Commit repo={name} />
+            <Commit repo={name} slow={slowMode} />
           </div>
         </Suspense>
       </CardContent>
