@@ -30,6 +30,14 @@ export const Commit = async ({
 
   const commitData = await getLatestCommit(repo, slow)
 
+  if (commitData === undefined) {
+    return (
+      <span className="m-auto text-sm font-thin text-muted-foreground">
+        Unable to load latest commit data
+      </span>
+    )
+  }
+
   const { author, sha, message, date: unparsedDate } = commitData
   const date = Date.parse(unparsedDate)
 
@@ -49,7 +57,7 @@ export const GitCard = async ({
   html_url,
   slowMode,
 }: Props) => {
-  const languageData = await getLanguages(languages_url)
+  const languageData = await getLanguages(languages_url, slowMode)
   const langBadges = <LanguageBadges languages={languageData.slice(0, 3)} />
   return (
     <Card className="max-h-80 w-80 p-1 shadow-md lg:w-[420px]">

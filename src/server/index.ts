@@ -23,7 +23,7 @@ const repoBlacklist = [
 export async function getRepositories(
   slow: boolean,
 ): Promise<RepositoryData[]> {
-  if (slow) await sleep(5000)
+  if (slow) await sleep(1000)
 
   const repositoryData = await getRepos()
 
@@ -45,14 +45,15 @@ export async function getRepositories(
 export async function getLatestCommit(
   repository: string,
   slow: boolean,
-): Promise<GitCommit> {
+): Promise<GitCommit | undefined> {
   const data = await getRepoCommit({ repo: repository, count: 1 })
 
   // The slow mode allows simulating a slow connection
-  if (slow) await sleep(Math.random() * 10000)
+  if (slow) await sleep(2000)
 
   if (data.length === 0 || !data[0]) {
-    throw new Error('No commits found')
+    console.error('No commits found for', repository)
+    return undefined
   }
 
   return data[0]
@@ -60,7 +61,9 @@ export async function getLatestCommit(
 
 export async function getLanguages(
   url: string,
+  slow: boolean,
 ): Promise<ProgrammingLanguage[]> {
+  if (slow) await sleep(2000)
   const urlFetch = await fetch(url)
 
   if (!urlFetch.ok) {
