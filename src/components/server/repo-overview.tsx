@@ -30,7 +30,6 @@ export const RepositoryOverview = ({
   count: number
   slowMode: boolean
 }) => {
-  console.log('RepositoryOverview slowMode:', slowMode)
   const repoLoadText = (
     <div className="my-auto flex animate-pulse text-center align-middle font-mono font-light">
       Summoning my repositories from the GitHub universe...
