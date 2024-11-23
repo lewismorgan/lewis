@@ -1,4 +1,5 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
-  "editor.linkedEditing": true
+  "editor.linkedEditing": true,
+  "debug.javascript.autoAttachFilter": "disabled"
 }
