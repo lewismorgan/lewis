@@ -4,17 +4,11 @@
   "name": "lewis-app",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+  // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/node:1": {}
   },
-  // "mounts": [
-  //   {
-  //     "source": "${localEnv:HOME}/.ssh",
-  //     "target": "/home/node/.ssh",
-  //     "type": "bind"
-  //   }
-  // ],
   "customizations": {
     "vscode": {
       "extensions": [
@@ -26,15 +20,12 @@
       ]
     }
   },
-
-  // Features to add to the dev container. More info: https://containers.dev/features.
-  // "features": {},
-
+  
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "corepack enable && corepack install && pnpm install"
+  "postCreateCommand": ". ${NVM_DIR}/nvm.sh && nvm use && corepack enable && corepack install && pnpm install"
 
   // Configure tool-specific properties.
   // "customizations": {},
