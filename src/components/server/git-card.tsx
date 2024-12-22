@@ -47,7 +47,9 @@ export const Commit = async ({
 }
 
 export const GitCardSkeleton = () => {
-  return <Skeleton className="h-24 w-80 p-1 shadow-md lg:w-[420px]" />
+  return (
+    <Skeleton className="h-36 w-[340px] p-1 shadow-md md:w-[375px] lg:w-[420px]" />
+  )
 }
 
 export const GitCard = async ({
@@ -60,7 +62,7 @@ export const GitCard = async ({
   const languageData = await getLanguages(languages_url, slowMode)
   const langBadges = <LanguageBadges languages={languageData.slice(0, 3)} />
   return (
-    <Card className="max-h-80 w-80 p-1 shadow-md lg:w-[420px]">
+    <Card className="max-h-80 w-[340px] p-1 shadow-md md:w-[375px] lg:w-[420px]">
       <CardTitle className="p-1 font-mono font-thin tracking-tighter">
         <ExternalLink href={html_url}>{name}</ExternalLink>
       </CardTitle>

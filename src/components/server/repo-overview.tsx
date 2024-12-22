@@ -31,14 +31,14 @@ export const RepositoryOverview = ({
   slowMode: boolean
 }) => {
   const repoLoadText = (
-    <div className="my-auto flex animate-pulse text-center align-middle font-mono font-light">
+    <div className="my-auto flex w-full animate-pulse text-center align-middle font-mono font-light">
       Summoning my repositories from the GitHub universe...
     </div>
   )
 
   // Each card is wrapped in a suspense because each card fetches its own data
   return (
-    <div className="flex w-fit max-w-[950px] flex-row flex-wrap items-center justify-center gap-4 align-middle">
+    <div className="grid grid-cols-1 justify-items-center gap-2 md:grid-cols-2 md:last:odd:*:col-span-2">
       <Suspense fallback={repoLoadText}>
         <RepositoryCards count={count} slowMode={slowMode} />
       </Suspense>
