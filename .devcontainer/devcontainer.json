@@ -16,15 +16,29 @@
         "burkeholland.simple-react-snippets",
         "esbenp.prettier-vscode",
         "eamodio.gitlens"
-      ]
+      ],
+      "mcp": {
+        "servers": {
+          "awesome-copilot": {
+            "type": "stdio",
+            "command": "docker",
+            "args": [
+              "run",
+              "-i",
+              "--rm",
+              "ghcr.io/microsoft/mcp-dotnet-samples/awesome-copilot:latest"
+            ]
+          }
+        }
+      }
     }
   },
-  
+
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": ". ${NVM_DIR}/nvm.sh && nvm use && corepack enable && corepack install && pnpm install"
+  "postCreateCommand": ". ${NVM_DIR}/nvm.sh && nvm install && nvm use && corepack enable && corepack install && pnpm install"
 
   // Configure tool-specific properties.
   // "customizations": {},
