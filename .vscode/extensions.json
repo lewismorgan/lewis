@@ -2,7 +2,6 @@
   "recommendations": [
     "dbaeumer.vscode-eslint",
     "github.copilot",
-    "visualstudioexptteam.vscodeintellicode",
     "esbenp.prettier-vscode"
   ]
 }
