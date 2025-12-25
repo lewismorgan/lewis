@@ -26,7 +26,7 @@ export const ThemeToggle = () => {
     <Button
       aria-label="Toggle Theme"
       variant={'outline'}
-      className="bg-transparent p-3 backdrop-blur-sm focus:outline-none"
+      className="bg-transparent p-3 backdrop-blur-xs focus:outline-hidden"
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
     >
       {isDark ? <LightSide /> : <DarkSide />}

@@ -23,7 +23,7 @@ const Bullets = () => {
           Sending Humanity back to the{' '}
           <span className="tracking-wide">Moon</span>,{' '}
           <span className="tracking-wider">Mars</span>, and{' '}
-          <span className="text-nowrap tracking-widest">
+          <span className="tracking-widest text-nowrap">
             Beyond{' '}
             <span className="inline-flex items-baseline self-center align-bottom">
               <RocketLaunch />

@@ -9,6 +9,7 @@ You are helping create a new React component in this Next.js project.
 Guidance:
 - Confirm requirements: purpose, inputs/props, state, data needs, a11y, and styling source.
 - Prefer server components unless client interactivity or browser APIs are required.
+- Style with Tailwind utility classes and the existing shadcn/ui primitives; do not introduce new styling systems unless explicitly requested.
 - Keep props typed, small, and documented inline when non-obvious.
 - Suggest tests only if scoped and lightweight (RTL/Playwright) once the test stack is added.
 - Align with repository patterns and lint/prettier settings; avoid new dependencies unless justified.

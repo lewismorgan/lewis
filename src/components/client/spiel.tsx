@@ -22,7 +22,7 @@ export const Spiel = ({
       <div>
         You may find a lot of{' '}
         <span className="relative">
-          <span className="absolute -inset-0 block -skew-y-6 rounded-full bg-gradient-to-r from-transparent to-blue-400 hover:animate-pulse dark:to-red-800"></span>
+          <span className="absolute inset-0 block -skew-y-6 rounded-full bg-linear-to-r from-transparent to-blue-400 hover:animate-pulse dark:to-red-800"></span>
           <span
             className="relative font-semibold hover:animate-pulse hover:cursor-pointer dark:text-white"
             onClick={onGlowsticksClick}
@@ -32,7 +32,7 @@ export const Spiel = ({
         </span>
         ,{' '}
         <span
-          className="text-nowrap tracking-wide text-green-800 underline decoration-wavy decoration-1 underline-offset-2 hover:cursor-pointer"
+          className="tracking-wide text-nowrap text-green-800 underline decoration-wavy decoration-1 underline-offset-2 hover:cursor-pointer"
           onClick={onLizardsClick}
         >
           space-lizards
