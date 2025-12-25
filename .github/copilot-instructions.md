@@ -5,6 +5,7 @@ description: "Repository-wide Copilot guidance for a Next.js + TypeScript person
 
 - Default to TypeScript, React function components, and Next.js App Router conventions.
 - Prefer accessibility-first UI (semantic HTML, ARIA where needed, focus management on dialogs and menus).
+- Use Tailwind and the existing shadcn/ui primitives for styling; avoid introducing new styling systems or ad-hoc CSS unless necessary.
 - Keep changes small and incremental; prioritize clarity over cleverness.
 - Honor existing lint/prettier rules; do not disable lint rules unless explicitly asked.
 - Surface trade-offs and risks before large refactors; offer safer fallback options when time is tight.
