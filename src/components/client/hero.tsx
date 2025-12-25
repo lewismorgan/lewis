@@ -20,9 +20,11 @@ export const Hero = ({
   const [activeForceSide, setActiveSide] = useState<ForceSide>('none')
   const [replayQueued, setReplayQueued] = useState(false)
   const [lizards, setLizards] = useState(false)
+  const lizardImgs = ['/lizard.png', '/astro_lizard.png']
+  const [lizardsAvatarUrl, setLizardsAvatarUrl] = useState(lizardImgs[0])
 
   useEffect(() => {
-    // resets all the avatar changers to the default when the theme changes
+    // resets all the avatar changers to the default when the theme changes; allowed sync because theme updates originate outside component
     setActiveSide('none')
     setLizards(false)
   }, [theme])
@@ -59,10 +61,6 @@ export const Hero = ({
 
   const fsAvatarUrl = getForceSensitiveAvatarUrl(activeForceSide)
 
-  const lizardImgs = ['/lizard.png', '/astro_lizard.png']
-
-  const lizardsAvatarUrl = lizardImgs[Math.random() > 0.5 ? 0 : 1]
-
   const spielProps = {
     imgName: name,
     avatarUrl: lizards ? lizardsAvatarUrl : fsAvatarUrl,
@@ -74,8 +72,10 @@ export const Hero = ({
       if (!lizards) {
         // reset the force side to default before lizards are shown
         setActiveSide('none')
+        const nextLizardIndex = Math.random() > 0.5 ? 0 : 1
+        setLizardsAvatarUrl(lizardImgs[nextLizardIndex])
       }
-      setLizards(!lizards)
+      setLizards(prev => !prev)
     },
   } as SpielProps
 

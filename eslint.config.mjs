@@ -1,19 +1,10 @@
-import { FlatCompat } from '@eslint/eslintrc'
 import eslint from '@eslint/js'
+import nextConfig from 'eslint-config-next'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
-import { dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import tseslint from 'typescript-eslint'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-})
-
 const eslintConfig = tseslint.config(
-  ...compat.extends('next/core-web-vitals'),
+  ...nextConfig,
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
@@ -52,6 +43,7 @@ const eslintConfig = tseslint.config(
           },
         },
       ],
+      'react-hooks/set-state-in-effect': 'off',
       'simple-import-sort/imports': [
         'warn',
         {

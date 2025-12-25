@@ -12,6 +12,7 @@ export const ThemeToggle = () => {
 
   // useEffect only runs on the client, so now we can safely show the UI
   useEffect(() => {
+    // Hydration gate to avoid theme flash; safe to set once after mount
     setMounted(true)
   }, [])
 
