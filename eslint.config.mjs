@@ -43,6 +43,7 @@ const eslintConfig = tseslint.config(
           },
         },
       ],
+      '@typescript-eslint/no-require-imports': 'off',
       'react-hooks/set-state-in-effect': 'off',
       'simple-import-sort/imports': [
         'warn',
@@ -54,6 +55,18 @@ const eslintConfig = tseslint.config(
   },
   {
     ignores: ['src/components/ui/*.tsx'],
+  },
+  {
+    files: ['**/*.cjs'],
+    languageOptions: {
+      globals: {
+        module: 'readonly',
+        require: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        global: 'readonly',
+      },
+    },
   },
 )
 
