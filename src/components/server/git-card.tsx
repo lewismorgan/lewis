@@ -32,7 +32,7 @@ export const Commit = async ({
 
   if (commitData === undefined) {
     return (
-      <span className="m-auto text-sm font-thin text-muted-foreground">
+      <span className="text-muted-foreground m-auto text-sm font-thin">
         Unable to load latest commit data
       </span>
     )

@@ -18,11 +18,11 @@ export const GitCardCommit = ({
     <>
       <div className="flex flex-row align-middle text-sm lg:text-sm">
         <span className="mr-1 font-semibold">{author}</span>
-        <span className="truncate text-ellipsis text-nowrap hover:underline">
+        <span className="truncate text-nowrap text-ellipsis hover:underline">
           {message}
         </span>
       </div>
-      <span className="text-right align-text-bottom text-xs font-thin text-muted-foreground">
+      <span className="text-muted-foreground text-right align-text-bottom text-xs font-thin">
         {sha.slice(0, 7)} • {formattedDate}
       </span>
     </>

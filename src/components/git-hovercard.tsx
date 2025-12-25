@@ -35,7 +35,7 @@ export const LewisHovercard = ({
         >
           {username}
         </a>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-muted-foreground text-sm">
           is a {adjustedBio}
         </span>
       </p>

@@ -41,12 +41,12 @@ export default function RootLayout({
     >
       <body className="flex min-h-screen min-w-full flex-col font-sans">
         <ThemeProvider attribute="class" defaultTheme="dark">
-          <div className="fixed bottom-20 right-2 h-fit w-fit md:right-10 md:top-10">
+          <div className="fixed right-2 bottom-20 h-fit w-fit md:top-10 md:right-10">
             <ThemeToggle />
           </div>
           <div className="mb-5 grow">{children}</div>
-          <footer className="fixed bottom-0 flex w-full justify-center text-xs text-muted-foreground">
-            <div className="rounded-tl-sm rounded-tr-sm border-l border-r border-t border-border p-1 align-middle backdrop-blur-sm">
+          <footer className="text-muted-foreground fixed bottom-0 flex w-full justify-center text-xs">
+            <div className="border-border rounded-tl-sm rounded-tr-sm border-t border-r border-l p-1 align-middle backdrop-blur-xs">
               Created by Lewis Morgan. Source code is available on{' '}
               <ExternalLink href="https://github.com/lewismorgan/lewis">
                 GitHub
