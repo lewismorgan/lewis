@@ -16,171 +16,149 @@ permissions:
 
 env:
   CI: true
+  NODE_VERSION: '24.x'
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
-
-      - name: Install Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24.x
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
-
+  # Lint, type-check, and unit tests run in parallel (no dependencies)
   lint:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: setup
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
 
-      - name: Install Node.js
+      - name: Setup Node.js with pnpm cache
         uses: actions/setup-node@v6
         with:
-          node-version: 24.x
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Lint the code
+      - name: Run ESLint and formatting checks
         env:
           SKIP_ENV_VALIDATION: 'true'
         run: pnpm lint
 
-  types:
-    needs: setup
+  type-check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
 
-      - name: Install Node.js
+      - name: Setup Node.js with pnpm cache
         uses: actions/setup-node@v6
         with:
-          node-version: 24.x
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Check the types
+      - name: Check types with TypeScript
         env:
           SKIP_ENV_VALIDATION: 'true'
         run: pnpm type-check
 
   unit-tests:
-    needs: setup
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
 
-      - name: Install Node.js
+      - name: Setup Node.js with pnpm cache
         uses: actions/setup-node@v6
         with:
-          node-version: 24.x
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Run Vitest unit tests
         env:
           SKIP_ENV_VALIDATION: 'true'
         run: pnpm test
 
+      - name: Upload test coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitest-results
+          path: test-results/
+          retention-days: 7
+
   e2e-tests:
-    needs: setup
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
 
-      - name: Install Node.js
+      - name: Setup Node.js with pnpm cache
         uses: actions/setup-node@v6
         with:
-          node-version: 24.x
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright browsers
+      - name: Install Playwright browsers with system dependencies
         run: pnpm exec playwright install --with-deps
 
       - name: Run Playwright E2E tests
         env:
           SKIP_ENV_VALIDATION: 'true'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm test:e2e
 
-      - name: Upload Playwright report
+      - name: Upload Playwright test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: playwright-report
+          path: playwright-report/
           retention-days: 7
 
+  # Build depends on all quality gates: lint, types, unit tests, and e2e tests
   build:
-    needs: [setup, lint, types, unit-tests]
+    needs: [lint, type-check, unit-tests, e2e-tests]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
 
-      - name: Install Node.js
+      - name: Setup Node.js with pnpm cache
         uses: actions/setup-node@v6
         with:
-          node-version: 24.x
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Build the code
+      - name: Build application
         env:
           SKIP_ENV_VALIDATION: 'true'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm build
