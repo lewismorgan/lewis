@@ -73,8 +73,16 @@ Instructions
 
 ## Testing Approach
 
-- Currently no automated tests. Do not block small fixes on missing tests; note gaps in TODOs/issues.
-- When adding coverage, start with smoke/E2E for primary journeys (nav, hero, repo list) and keep fixtures lean; avoid external network in tests.
+**Structure:**
+- Unit tests live in colocated `__tests__` folders next to source code (e.g., `src/components/client/__tests__/hero.test.tsx`)
+- Vitest setup: `src/__tests__/setup.ts`
+- Playwright E2E tests: `test/` folder (e.g., `test/home.spec.ts`)
+
+**Guidelines:**
+- Do not block small fixes on missing tests; note gaps in TODOs/issues
+- When adding coverage, start with smoke/E2E for primary journeys (nav, hero, repo list) and keep fixtures lean; avoid external network in tests
+- Use React Testing Library for unit tests; Playwright for E2E
+- Keep tests fast and isolated
 
 ## Technology-Specific Guidelines
 
