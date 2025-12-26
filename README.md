@@ -39,6 +39,42 @@ pnpm install
 
 Visit the deployed website using your web browser
 
+## Testing
+
+The project includes unit tests (Jest + React Testing Library) and E2E tests (Playwright).
+
+### Unit Tests
+
+Run unit tests in watch mode during development:
+
+```bash
+pnpm test:watch
+```
+
+Run all unit tests once:
+
+```bash
+pnpm test
+```
+
+### E2E Tests
+
+Run end-to-end tests:
+
+```bash
+pnpm test:e2e
+```
+
+Run E2E tests with the Playwright UI:
+
+```bash
+pnpm test:e2e:ui
+```
+
+Tests are located in:
+- `src/**/*.test.tsx` - Unit tests for components
+- `e2e/**/*.spec.ts` - End-to-end tests
+
 ## Structure
 
 - `src/app` - Pages that are rendered by NextJS
