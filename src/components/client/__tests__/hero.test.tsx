@@ -16,7 +16,10 @@ vi.mock('~/components/client/spiel', () => ({
     onGlowsticksClick,
     onLizardsClick,
     onCodeClick,
-  }: Pick<SpielProps, 'onGlowsticksClick' | 'onLizardsClick' | 'onCodeClick'>) => (
+  }: Pick<
+    SpielProps,
+    'onGlowsticksClick' | 'onLizardsClick' | 'onCodeClick'
+  >) => (
     <div data-testid="spiel">
       <button onClick={onGlowsticksClick} data-testid="glowsticks-btn">
         Glowsticks
@@ -51,7 +54,9 @@ describe('Hero Component', () => {
 
   it('should render the welcome message', () => {
     render(<Hero {...defaultProps} />)
-    expect(screen.getByText(/Welcome to the digital space/i)).toBeInTheDocument()
+    expect(
+      screen.getByText(/Welcome to the digital space/i),
+    ).toBeInTheDocument()
   })
 
   it('should render the Spiel component', () => {
@@ -94,7 +99,9 @@ describe('Hero Component', () => {
 
   it('should have proper flex layout classes', () => {
     const { container } = render(<Hero {...defaultProps} />)
-    const mainDiv = container.querySelector('.flex.w-full.flex-col.p-1.align-middle')
+    const mainDiv = container.querySelector(
+      '.flex.w-full.flex-col.p-1.align-middle',
+    )
     expect(mainDiv).toBeInTheDocument()
   })
 })

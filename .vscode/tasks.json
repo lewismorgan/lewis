@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "check",
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"label": "npm: check",
+			"detail": "pnpm lint && tsc --noEmit"
+		}
+	]
+}

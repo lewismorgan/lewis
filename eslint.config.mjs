@@ -1,5 +1,7 @@
 import eslint from '@eslint/js'
 import nextConfig from 'eslint-config-next'
+import prettier from 'eslint-config-prettier'
+import prettierPlugin from 'eslint-plugin-prettier'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import tseslint from 'typescript-eslint'
 
@@ -8,9 +10,11 @@ const eslintConfig = tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
+  prettier,
   {
     plugins: {
       'simple-import-sort': simpleImportSort,
+      prettier: prettierPlugin,
     },
     languageOptions: {
       parserOptions: {
@@ -51,10 +55,11 @@ const eslintConfig = tseslint.config(
           groups: [['^react'], ['^antd'], ['^@?\\w'], ['@/(.*)'], ['^[./]']],
         },
       ],
+      'prettier/prettier': 'warn',
     },
   },
   {
-    ignores: ['src/components/ui/*.tsx'],
+    ignores: ['src/components/ui/*.tsx', 'coverage/**'],
   },
   {
     files: ['**/*.cjs'],

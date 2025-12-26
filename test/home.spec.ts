@@ -9,7 +9,9 @@ test.describe('Home Page', () => {
   test('should display welcome message', async ({ page }) => {
     await page.goto('/')
     await expect(
-      page.locator('text=Welcome to the digital space, domain, and realm of Lewis Morgan'),
+      page.locator(
+        'text=Welcome to the digital space, domain, and realm of Lewis Morgan',
+      ),
     ).toBeVisible()
   })
 

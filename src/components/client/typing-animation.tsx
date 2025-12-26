@@ -17,17 +17,18 @@ export const TypingAnimation = ({
 
   // Check for completion after each index update
   useEffect(() => {
-    const isComplete = (!reverse && index === finalText.length) || (reverse && index === 0)
-    
+    const isComplete =
+      (!reverse && index === finalText.length) || (reverse && index === 0)
+
     if (isComplete && !hasCompletedRef.current) {
       hasCompletedRef.current = true
-      
+
       // Clear the interval when complete
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
         intervalRef.current = null
       }
-      
+
       // Call completion callback
       onCompleted?.(reverse)
     }
@@ -36,9 +37,9 @@ export const TypingAnimation = ({
   // Animation interval
   useEffect(() => {
     hasCompletedRef.current = false
-    
+
     intervalRef.current = setInterval(() => {
-      setIndex((currentIndex) => {
+      setIndex(currentIndex => {
         if (!reverse) {
           if (currentIndex < finalText.length) {
             return currentIndex + 1

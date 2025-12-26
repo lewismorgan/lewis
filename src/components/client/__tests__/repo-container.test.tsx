@@ -11,7 +11,8 @@ describe('SlowModeContainer', () => {
       useSearchParams: () => new URLSearchParams('slowmode=false'),
     }))
 
-    const { SlowModeContainer } = await import('~/components/client/repo-container')
+    const { SlowModeContainer } =
+      await import('~/components/client/repo-container')
 
     render(
       <SlowModeContainer>
@@ -36,7 +37,8 @@ describe('SlowModeContainer', () => {
       useSearchParams: () => new URLSearchParams('slowmode=true'),
     }))
 
-    const { SlowModeContainer } = await import('~/components/client/repo-container')
+    const { SlowModeContainer } =
+      await import('~/components/client/repo-container')
 
     const user = userEvent.setup()
     const pushSpy = vi.spyOn(window.history, 'pushState')
@@ -68,7 +70,8 @@ describe('SlowModeContainer', () => {
       useSearchParams: () => new URLSearchParams('slowmode=false'),
     }))
 
-    const { SlowModeContainer } = await import('~/components/client/repo-container')
+    const { SlowModeContainer } =
+      await import('~/components/client/repo-container')
 
     const user = userEvent.setup()
     const pushSpy = vi.spyOn(window.history, 'pushState')

@@ -16,7 +16,15 @@ interface MockImageProps {
 }
 
 vi.mock('next/image', () => ({
-  default: (props: MockImageProps) => <img alt={props.alt} src={props.src} width={props.width} height={props.height} className={props.className} />,
+  default: (props: MockImageProps) => (
+    <img
+      alt={props.alt}
+      src={props.src}
+      width={props.width}
+      height={props.height}
+      className={props.className}
+    />
+  ),
 }))
 
 describe('Spiel Component', () => {

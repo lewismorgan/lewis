@@ -25,7 +25,13 @@ describe('TypingAnimation', () => {
     const text = 'ABC'
     const onCompleted = vi.fn((reversed: boolean) => reversed)
 
-    render(<TypingAnimation finalText={text} reverse={false} onCompleted={onCompleted} />)
+    render(
+      <TypingAnimation
+        finalText={text}
+        reverse={false}
+        onCompleted={onCompleted}
+      />,
+    )
 
     const heading = screen.getByRole('heading', { level: 1 })
 
@@ -61,7 +67,13 @@ describe('TypingAnimation', () => {
     const text = 'Hi'
     const onCompleted = vi.fn((reversed: boolean) => reversed)
 
-    render(<TypingAnimation finalText={text} reverse={true} onCompleted={onCompleted} />)
+    render(
+      <TypingAnimation
+        finalText={text}
+        reverse={true}
+        onCompleted={onCompleted}
+      />,
+    )
 
     const heading = screen.getByRole('heading', { level: 1 })
 
