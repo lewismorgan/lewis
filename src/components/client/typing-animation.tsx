@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export const TypingAnimation = ({
   finalText,
@@ -12,30 +12,54 @@ export const TypingAnimation = ({
   onCompleted?: (reversed: boolean) => void
 }) => {
   const [index, setIndex] = useState(reverse ? finalText.length : 0)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const hasCompletedRef = useRef(false)
 
+  // Check for completion after each index update
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!reverse) {
-        if (index < finalText.length) {
-          setIndex(index + 1)
-        } else {
-          clearInterval(interval)
-          onCompleted?.(reverse)
-        }
-      } else {
-        if (index === finalText.length) {
-          setIndex(index - 1)
-        } else if (index != 0) {
-          setIndex(index - 1)
-        } else {
-          clearInterval(interval)
-          onCompleted?.(reverse)
-        }
+    const isComplete = (!reverse && index === finalText.length) || (reverse && index === 0)
+    
+    if (isComplete && !hasCompletedRef.current) {
+      hasCompletedRef.current = true
+      
+      // Clear the interval when complete
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
       }
+      
+      // Call completion callback
+      onCompleted?.(reverse)
+    }
+  }, [index, reverse, finalText.length, onCompleted])
+
+  // Animation interval
+  useEffect(() => {
+    hasCompletedRef.current = false
+    
+    intervalRef.current = setInterval(() => {
+      setIndex((currentIndex) => {
+        if (!reverse) {
+          if (currentIndex < finalText.length) {
+            return currentIndex + 1
+          }
+          return currentIndex
+        } else {
+          if (currentIndex > 0) {
+            return currentIndex - 1
+          }
+          return currentIndex
+        }
+      })
     }, 250)
 
-    return () => clearInterval(interval)
-  }, [finalText.length, index, reverse, onCompleted])
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
+  }, [finalText.length, reverse])
 
   const currentText = finalText.slice(0, index)
 
