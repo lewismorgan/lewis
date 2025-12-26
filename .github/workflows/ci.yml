@@ -125,7 +125,7 @@ jobs:
       - name: Run Playwright E2E tests
         env:
           SKIP_ENV_VALIDATION: 'true'
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.API_KEY }}
         run: pnpm test:e2e
 
       - name: Upload Playwright test report
@@ -160,5 +160,5 @@ jobs:
       - name: Build application
         env:
           SKIP_ENV_VALIDATION: 'true'
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.API_KEY }}
         run: pnpm build
