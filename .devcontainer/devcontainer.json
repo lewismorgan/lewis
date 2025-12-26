@@ -17,7 +17,8 @@
         "esbenp.prettier-vscode",
         "eamodio.gitlens",
         "ms-playwright.playwright",
-        "github.vscode-github-actions"
+        "github.vscode-github-actions",
+        "vitest.explorer"
       ],
       "mcp": {
         "servers": {
