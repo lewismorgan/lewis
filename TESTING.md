@@ -4,9 +4,9 @@ This document outlines the testing infrastructure set up for the lewis-app proje
 
 ## Overview
 
-The project includes both **unit tests** (Jest + React Testing Library) and **end-to-end tests** (Playwright) to cover critical user flows.
+The project includes both **unit tests** (Vitest + React Testing Library) and **end-to-end tests** (Playwright) to cover critical user flows.
 
-## Unit Tests (Jest + React Testing Library)
+## Unit Tests (Vitest + React Testing Library)
 
 ### Running Tests
 
@@ -16,48 +16,192 @@ pnpm test
 
 # Run tests in watch mode (for development)
 pnpm test:watch
+
+# Run tests with coverage report
+pnpm test:coverage
 ```
 
 ### Test Structure
 
-Unit tests are colocated with their components using the `.test.tsx` naming convention:
+Unit tests are organized in the `src/test/` directory, mirroring the source structure:
 
-- [src/components/client/hero.test.tsx](../src/components/client/hero.test.tsx) - Hero component tests
-- [src/components/client/theme-toggle.test.tsx](../src/components/client/theme-toggle.test.tsx) - Theme toggle tests
-- [src/components/links.test.tsx](../src/components/links.test.tsx) - ExternalLink component tests
-
-### Test Utilities
-
-[src/lib/test-utils.tsx](../src/lib/test-utils.tsx) provides a custom render function that wraps components with necessary providers:
-
-- `ThemeProvider` - Ensures theme context is available during tests
-
-Usage:
-
-```typescript
-import { render, screen } from '~/lib/test-utils'
-
-describe('MyComponent', () => {
-  it('renders correctly', () => {
-    render(<MyComponent />)
-    expect(screen.getByText('expected text')).toBeInTheDocument()
-  })
-})
+```
+src/test/
+  lib/
+    utils.test.ts                 # Utility function tests
+  components/
+    client/
+      hero.test.tsx               # Client component tests
+  setup.ts                        # Test environment setup
 ```
 
 ### Configuration
 
-- **jest.config.ts** - Main Jest configuration with Next.js integration
-- **jest.setup.ts** - Setup file that:
+- **[vitest.config.mts](../vitest.config.mts)** - Vitest configuration with:
+  - `jsdom` environment for DOM testing
+  - React plugin for JSX support
+  - TypeScript path aliases (`~/*` support)
+  - Setup files for test initialization
+  - E2E test exclusion (Playwright compatibility)
+  - UI base components (`src/components/ui/**`) excluded from unit tests
+
+- **[src/test/setup.ts](../src/test/setup.ts)** - Setup file that:
   - Imports `@testing-library/jest-dom` for extended matchers
-  - Polyfills `window.matchMedia` for `next-themes` compatibility
+  - Configures automatic cleanup after each test
+  - Mocks `next/navigation` for Next.js routing
+  - Mocks `next-themes` for theme context
+
+### Available Dependencies
+
+- `vitest` - Fast unit test framework
+- `@testing-library/react` - React component testing utilities
+- `@testing-library/dom` - DOM testing utilities
+- `@testing-library/jest-dom` - Extended DOM matchers
+- `@testing-library/user-event` - User interaction simulation
+- `jsdom` - JavaScript DOM implementation
+- `@vitejs/plugin-react` - React support
+- `vite-tsconfig-paths` - TypeScript path alias resolution
 
 ### Key Testing Practices
 
-1. **Test critical user journeys** - Focus on components visible to users (Hero, ThemeToggle, navigation)
-2. **Use semantic queries** - Prefer `getByRole`, `getByLabelText`, and `getByText` over implementation details
-3. **Keep tests simple** - One assertion per test when possible; multiple related assertions are acceptable
-4. **Mock minimally** - Let components render naturally; only mock external dependencies if needed
+1. **Test behavior, not implementation** - Test what users see and do
+2. **Use semantic queries** - Prefer `getByRole()`, `getByLabelText()`, `getByText()` over `getByTestId()`
+3. **Mock external dependencies** - Mock API calls, routing, and theme providers
+4. **Test user interactions** - Use `userEvent` for realistic user behavior
+5. **Keep tests focused** - One main behavior per test
+6. **Use descriptive names** - `should X when Y happens`
+
+### Writing Tests
+
+#### Test File Template
+
+```typescript
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { MyComponent } from '~/components/MyComponent'
+
+describe('MyComponent', () => {
+  it('should render correctly', () => {
+    render(<MyComponent />)
+    expect(screen.getByText('Expected Text')).toBeInTheDocument()
+  })
+
+  it('should handle user interactions', async () => {
+    const user = userEvent.setup()
+    render(<MyComponent />)
+    
+    const button = screen.getByRole('button', { name: /click/i })
+    await user.click(button)
+    
+    expect(screen.getByText('Updated Text')).toBeInTheDocument()
+  })
+})
+```
+
+#### Common Query Methods
+
+```typescript
+// Recommended - semantic queries
+screen.getByRole('button', { name: /submit/i })
+screen.getByLabelText('Username')
+screen.getByText('Welcome')
+
+// Acceptable - specific queries
+screen.getByPlaceholderText('Enter name')
+screen.getByAltText('Profile')
+screen.getByTestId('custom-element')
+
+// Multiple elements
+screen.getAllByRole('listitem')
+screen.queryByText('Optional')  // Returns null if not found
+screen.findByText('Async text') // For async updates
+```
+
+#### User Interaction Examples
+
+```typescript
+const user = userEvent.setup()
+
+// Click
+await user.click(element)
+
+// Type
+await user.type(inputElement, 'text')
+await user.keyboard('{Enter}')
+
+// Select
+await user.selectOptions(selectElement, 'option-value')
+
+// Hover
+await user.hover(element)
+```
+
+#### Common Assertions
+
+```typescript
+expect(element).toBeInTheDocument()
+expect(element).toBeVisible()
+expect(element).toBeDisabled()
+expect(element).toHaveClass('className')
+expect(element).toHaveAttribute('src', '/image.jpg')
+expect(element).toHaveTextContent('text')
+expect(element).toHaveValue('value')
+```
+
+### Mocking Examples
+
+#### Mock a Module
+
+```typescript
+vi.mock('~/lib/api', () => ({
+  fetchUser: vi.fn(() => Promise.resolve({ id: 1, name: 'John' })),
+}))
+
+import { fetchUser } from '~/lib/api'
+
+it('loads user data', async () => {
+  expect(await fetchUser()).toEqual({ id: 1, name: 'John' })
+})
+```
+
+#### Mock a Function
+
+```typescript
+const handleClick = vi.fn()
+render(<Button onClick={handleClick}>Click</Button>)
+
+await user.click(screen.getByRole('button'))
+expect(handleClick).toHaveBeenCalledOnce()
+```
+
+#### Clear Mocks Between Tests
+
+```typescript
+afterEach(() => {
+  vi.clearAllMocks()
+})
+```
+
+### Current Test Coverage
+
+| Category | Files | Tests | Status |
+|----------|-------|-------|--------|
+| Utilities | `src/lib/utils.ts` | 17 | ✓ Passing |
+| Client Components | `src/components/client/hero.tsx` | 7 | ✓ Passing |
+| **Total** | **2 files** | **24** | ✓ **All Passing** |
+
+#### Test Examples
+
+**[src/test/lib/utils.test.ts](../src/test/lib/utils.test.ts)** - Tests for utility functions including:
+- `cn()` - Class name merging
+- `formatTimeRelativeToNow()` - Time formatting with fake timers
+- `sleep()` - Promise-based delay
+
+**[src/test/components/client/hero.test.tsx](../src/test/components/client/hero.test.tsx)** - Tests for the Hero component including:
+- Rendering typing animation
+- Display of welcome message
+- Interactive click handlers for glowsticks, lizards, and code
 
 ## End-to-End Tests (Playwright)
 

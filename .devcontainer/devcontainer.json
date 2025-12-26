@@ -16,7 +16,8 @@
         "burkeholland.simple-react-snippets",
         "esbenp.prettier-vscode",
         "eamodio.gitlens",
-        "ms-playwright.playwright"
+        "ms-playwright.playwright",
+        "github.vscode-github-actions"
       ],
       "mcp": {
         "servers": {

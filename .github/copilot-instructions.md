@@ -64,7 +64,8 @@ Instructions
 
 ## Technology-Specific Guidelines
 ### JavaScript/TypeScript
-- Honor `strict` TS and ES2022 target; include explicit return types on exports. Use discriminated unions over `any`.
+- Honor `strict` TS and ES2022 target; include explicit return types on exports. Prefer discriminated unions over `any`.
+- Avoid `any` and `unknown` unless absolutely necessary; if used, include a short comment explaining why the escape hatch is required and prefer type narrowing or generics first.
 - Stick to ES module syntax and the `~` alias for internal imports.
 
 ### React/Next.js

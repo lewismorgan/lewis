@@ -38,6 +38,7 @@
   },
   "include": [
     "eslint.config.mjs",
+    "vitest.config.mts",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
