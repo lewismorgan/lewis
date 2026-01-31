@@ -65,19 +65,14 @@ describe('ReadmeDialog Component', () => {
 
   it('should display loading state while fetching', async () => {
     const user = userEvent.setup()
+
+    // Create a promise that never resolves during the test
     const mockPromise = new Promise<{
       ok: boolean
       json: () => Promise<{ content: string }>
-    }>(resolve =>
-      setTimeout(
-        () =>
-          resolve({
-            ok: true,
-            json: async () => ({ content: '# Test' }),
-          }),
-        100,
-      ),
-    )
+    }>(() => {
+      // Never resolves
+    })
     ;(global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(mockPromise)
 
     render(<ReadmeDialog repoName="test-repo" />)
@@ -87,7 +82,10 @@ describe('ReadmeDialog Component', () => {
     })
     await user.click(button)
 
-    expect(screen.getByText(/Loading README\.\.\./i)).toBeInTheDocument()
+    // Check for loading state immediately
+    await waitFor(() => {
+      expect(screen.getByText(/Loading README\.\.\./i)).toBeInTheDocument()
+    })
   })
 
   it('should display error message when fetch fails', async () => {
