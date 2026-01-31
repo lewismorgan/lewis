@@ -4,18 +4,18 @@ Instructions
 
 ## Priority Guidelines
 
-- Respect detected versions: Next 16.1.1 (App Router), React 19.2.3, TypeScript 5.9.x targeting ES2022 with Bundler resolution, Tailwind CSS 4.1.18, pnpm 10.26.x, Octokit 6.1.x, next-themes.
+- Respect detected versions: NextJS using App Router, React, TypeScript targeting ES2022 with Bundler resolution, Tailwind CSS v4, pnpm, Octokit, next-themes, and any other dependencies from the package.json at the root of the project directory.
 - Follow existing guidance in .github/instructions (code review, documentation, performance, security, testing)
 - Keep to the monolithic personal-site architecture: App Router pages plus colocated server/client components; avoid introducing new layers or services.
 - Match established patterns before inventing new ones; prefer server components unless browser APIs or stateful interactivity requires `"use client"` (see [src/components/client/hero.tsx](../src/components/client/hero.tsx)).
 - Optimize for maintainability, performance, security, accessibility, and testability equally.
-- Always use context7 when I need code generation, setup or configuration steps, or library/API documentation. This means you should automatically use the Context7 MCP tools to resolve library id and get library docs without me having to explicitly ask.
+- Always use context7 when I need code generation, setup or configuration steps, or library/API documentation and guidance. This means you should automatically use the Context7 MCP tools to resolve library id and get library docs without me having to explicitly ask.
 
 ## Technology Version Detection
 
-- Languages: TypeScript 5.9.x with `strict` and `noUncheckedIndexedAccess`, `target` ES2022 and `module` ESNext Bundler ([tsconfig.json](../tsconfig.json)). Avoid syntax needing newer targets.
-- Frameworks/libraries: Next 16.1.1 App Router, React 19.2.3, Tailwind 4.1.18, Radix UI primitives, shadcn-style components, next-themes. Generate code that compiles against these exact versions.
-- Tooling: pnpm 10.26.x package manager, Prettier 3.4, ESLint 9 with `eslint-config-next` and `simple-import-sort`. Do not introduce configs incompatible with these versions.
+- Languages: TypeScript 5 with `strict` and `noUncheckedIndexedAccess`, `target` ES2022 and `module` ESNext Bundler ([tsconfig.json](../tsconfig.json)). Avoid syntax needing newer targets.
+- Frameworks/libraries: Next 16 App Router, React 19, Tailwind 4, Radix UI primitives, shadcn-style components, next-themes
+- Tooling: pnpm 10 package manager, Prettier for formatting, ESLint with `eslint-config-next` and `simple-import-sort`. Do not introduce configs incompatible with these versions.
 
 ## Context Files
 
@@ -72,6 +72,10 @@ Instructions
 - Inline comments only for non-obvious behavior (e.g., hydration suppression in [src/app/layout.tsx](../src/app/layout.tsx)).
 
 ## Testing Approach
+
+All new components that are created should be structured to facilitate future testing, even if tests are not added immediately. When adding a new component, you should always include at least one test in a colocated `__tests__` folder.
+
+Tests do not need to be added for small fixes or refactors, but any new features or significant changes should include tests. If tests are not added immediately, please note the gaps in TODOs or issues for future work. No tests are required for shadcn/ui components or simple presentational components that do not contain logic.
 
 **Structure:**
 - Unit tests live in colocated `__tests__` folders next to source code (e.g., `src/components/client/__tests__/hero.test.tsx`)
