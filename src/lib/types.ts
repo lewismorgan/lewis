@@ -17,11 +17,18 @@ export type SimpleGitUser = {
   privateRepositories: number
 }
 
+export type GitAuthor = {
+  username: string
+  avatarUrl: string
+  profileUrl: string
+  isBot: boolean
+}
+
 export type GitCommit = {
   repo: string
   sha: string
   date: string
-  author: string
+  authors: GitAuthor[]
   message: string
   url: string
 }
