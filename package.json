@@ -9,6 +9,7 @@
     "check": "pnpm lint && tsc --noEmit",
     "clean": "rm -rf .next",
     "clean:node": "rm -rf node_modules .next pnpm-lock.yaml",
+    "clean:tests": "rm -rf playwright-report test-results coverage",
     "dev": "next dev --turbo",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",

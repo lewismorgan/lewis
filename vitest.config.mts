@@ -17,5 +17,18 @@ export default defineConfig({
       'test/**',
       'src/components/ui/__tests__/**',
     ],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html', 'clover'],
+      exclude: [
+        'node_modules/',
+        'src/__tests__/**',
+        '**/*.test.{ts,tsx}',
+        '**/__tests__/**',
+        'src/components/ui/**', // shadcn components
+        '*.config.*',
+        'src/env.js',
+      ],
+    },
   },
 })
