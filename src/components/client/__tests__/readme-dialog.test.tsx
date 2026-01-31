@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ReadmeDialog } from '~/components/client/readme-dialog'
 
@@ -36,9 +36,7 @@ describe('ReadmeDialog Component', () => {
     await user.click(button)
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/test-repo \/ README\.md/i),
-      ).toBeInTheDocument()
+      expect(screen.getByText(/test-repo \/ README\.md/i)).toBeInTheDocument()
     })
   })
 
@@ -67,19 +65,20 @@ describe('ReadmeDialog Component', () => {
 
   it('should display loading state while fetching', async () => {
     const user = userEvent.setup()
-    ;(global.fetch as ReturnType<typeof vi.fn>).mockImplementationOnce(
-      () =>
-        new Promise(resolve =>
-          setTimeout(
-            () =>
-              resolve({
-                ok: true,
-                json: async () => ({ content: '# Test' }),
-              }),
-            100,
-          ),
-        ),
+    const mockPromise = new Promise<{
+      ok: boolean
+      json: () => Promise<{ content: string }>
+    }>(resolve =>
+      setTimeout(
+        () =>
+          resolve({
+            ok: true,
+            json: async () => ({ content: '# Test' }),
+          }),
+        100,
+      ),
     )
+    ;(global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(mockPromise)
 
     render(<ReadmeDialog repoName="test-repo" />)
 

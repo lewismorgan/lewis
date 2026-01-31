@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 import { getReadme } from '~/server/octokit'
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ repo: string }> },
 ) {
   const { repo } = await params
