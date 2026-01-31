@@ -158,9 +158,10 @@ function isBot(username: string): boolean {
 async function getAuthorDetails(
   name: string,
   username?: string,
+  isBotOverride?: boolean,
 ): Promise<GitAuthor> {
   const actualUsername = username ?? name
-  const bot = isBot(actualUsername)
+  const bot = isBotOverride ?? isBot(actualUsername)
 
   // Clean up username (remove [bot] tag if present)
   const cleanUsername = actualUsername.replace('[bot]', '').trim()
@@ -226,7 +227,11 @@ export async function getRepoCommit({
       const coAuthors = parseCoAuthors(commitData.message)
       const coAuthorDetails = await Promise.all(
         coAuthors.map(async coAuthor => {
-          return getAuthorDetails(coAuthor.username, coAuthor.username)
+          return getAuthorDetails(
+            coAuthor.username,
+            coAuthor.username,
+            coAuthor.isBot,
+          )
         }),
       )
 
