@@ -109,8 +109,9 @@ export async function getRepos(): Promise<RepositoryData[]> {
  */
 function parseCoAuthors(
   message: string,
-): Array<{ username: string; isBot: boolean }> {
-  const coAuthors: Array<{ username: string; isBot: boolean }> = []
+): Array<{ username: string; email: string; isBot: boolean }> {
+  const coAuthors: Array<{ username: string; email: string; isBot: boolean }> =
+    []
   const lines = message.split('\n')
 
   for (const line of lines) {
@@ -136,6 +137,7 @@ function parseCoAuthors(
 
       coAuthors.push({
         username,
+        email,
         isBot,
       })
     }
@@ -145,11 +147,35 @@ function parseCoAuthors(
 }
 
 /**
- * Determine if an author is a bot based on username
+ * Determine if an author is a bot based on username or email
  */
-function isBot(username: string): boolean {
+function isBot(username: string, email?: string): boolean {
   // Check if username contains [bot] tag
-  return username.includes('[bot]')
+  if (username.includes('[bot]')) {
+    return true
+  }
+
+  // Check for common bot usernames (case-insensitive)
+  const botNames = [
+    'copilot',
+    'dependabot',
+    'renovate',
+    'github-actions',
+    'greenkeeper',
+    'snyk-bot',
+    'mergify',
+  ]
+  const lowerUsername = username.toLowerCase()
+  if (botNames.some(botName => lowerUsername.includes(botName))) {
+    return true
+  }
+
+  // Check email pattern for bots (numeric ID + username@users.noreply.github.com)
+  if (email && /^\d+\+.+@users\.noreply\.github\.com$/.test(email)) {
+    return true
+  }
+
+  return false
 }
 
 /**
@@ -158,10 +184,11 @@ function isBot(username: string): boolean {
 async function getAuthorDetails(
   name: string,
   username?: string,
+  email?: string,
   isBotOverride?: boolean,
 ): Promise<GitAuthor> {
   const actualUsername = username ?? name
-  const bot = isBotOverride ?? isBot(actualUsername)
+  const bot = isBotOverride ?? isBot(actualUsername, email)
 
   // Clean up username (remove [bot] tag if present)
   const cleanUsername = actualUsername.replace('[bot]', '').trim()
@@ -172,10 +199,12 @@ async function getAuthorDetails(
       const { data } = await octokit.request('GET /users/{username}', {
         username: cleanUsername,
       })
+      // GitHub API returns type: "Bot" for bot accounts
+      const isBotAccount = data.type === 'Bot' || bot
       return {
         username: data.login,
         profileUrl: data.html_url,
-        isBot: bot,
+        isBot: isBotAccount,
       }
     } catch (error) {
       // If user fetch fails, fall back to using the username directly
@@ -217,10 +246,12 @@ export async function getRepoCommit({
       // Get primary author
       const primaryAuthorName = commitData.author?.name ?? 'Unknown'
       const primaryAuthorUsername = commitAuthor?.login
+      const primaryAuthorEmail = commitData.author?.email
 
       const primaryAuthor = await getAuthorDetails(
         primaryAuthorName,
         primaryAuthorUsername,
+        primaryAuthorEmail,
       )
 
       // Parse co-authors from commit message
@@ -230,6 +261,7 @@ export async function getRepoCommit({
           return getAuthorDetails(
             coAuthor.username,
             coAuthor.username,
+            coAuthor.email,
             coAuthor.isBot,
           )
         }),
