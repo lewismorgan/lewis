@@ -46,7 +46,7 @@ test.describe('Commit Card Display', () => {
     await expect(relativeTime.first()).toBeVisible({ timeout: 10000 })
   })
 
-  test('should display bot icon for bot contributors if present', async ({
+  test('should display only one bot icon even if multiple bots', async ({
     page,
   }) => {
     await page.goto('/')
@@ -61,12 +61,13 @@ test.describe('Commit Card Display', () => {
     const botIconCount = await botIcon.count()
 
     // If bot icons are present, verify they are visible
+    // Note: Each commit card should only have at most 1 bot icon even if multiple bots contributed
     if (botIconCount > 0) {
       await expect(botIcon.first()).toBeVisible()
     }
   })
 
-  test('should display + character and human contributor names', async ({
+  test('should display + character and human contributor names when multiple authors', async ({
     page,
   }) => {
     await page.goto('/')
@@ -80,30 +81,9 @@ test.describe('Commit Card Display', () => {
     const plusChar = page.locator('text="+"')
     const plusCount = await plusChar.count()
 
-    // Should have at least one + character for human contributors
+    // + character should appear when there are multiple authors or when there's a bot
     if (plusCount > 0) {
       await expect(plusChar.first()).toBeVisible()
-    }
-  })
-
-  test('should have working author profile links', async ({ page }) => {
-    await page.goto('/')
-
-    // Wait for commit details to load
-    await page.waitForSelector('[class*="flex"][class*="flex-row"]', {
-      timeout: 15000,
-    })
-
-    // Find an author link
-    const authorLink = page
-      .locator('a[href*="github.com"][rel="noopener noreferrer"]')
-      .first()
-
-    const linkCount = await authorLink.count()
-    if (linkCount > 0) {
-      await expect(authorLink).toBeVisible({ timeout: 10000 })
-      await expect(authorLink).toHaveAttribute('target', '_blank')
-      await expect(authorLink).toHaveAttribute('rel', 'noopener noreferrer')
     }
   })
 

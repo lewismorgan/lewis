@@ -44,14 +44,7 @@ describe('GitCardCommit', () => {
     expect(formatTimeRelativeToNow).toHaveBeenCalledWith(baseProps.date)
   })
 
-  it('renders + character and human author name', () => {
-    render(<GitCardCommit {...baseProps} />)
-
-    expect(screen.getByText('+')).toBeInTheDocument()
-    expect(screen.getByText('Lewis')).toBeInTheDocument()
-  })
-
-  it('renders multiple + characters and human author names', () => {
+  it('renders + character and human author name when multiple authors', () => {
     const multiAuthorProps = {
       ...baseProps,
       authors: [
@@ -75,6 +68,13 @@ describe('GitCardCommit', () => {
     expect(screen.getByText('Alice')).toBeInTheDocument()
   })
 
+  it('does not render + character when there is only one author', () => {
+    render(<GitCardCommit {...baseProps} />)
+
+    expect(screen.queryByText('+')).not.toBeInTheDocument()
+    expect(screen.getByText('Lewis')).toBeInTheDocument()
+  })
+
   it('renders bot icon for bot authors without name', () => {
     const botAuthorProps = {
       ...baseProps,
@@ -92,6 +92,35 @@ describe('GitCardCommit', () => {
     expect(screen.getByLabelText('Bot contributor')).toBeInTheDocument()
     // Bot name should NOT be displayed
     expect(screen.queryByText('dependabot')).not.toBeInTheDocument()
+  })
+
+  it('renders only one bot icon even with multiple bots', () => {
+    const multiBotsProps = {
+      ...baseProps,
+      authors: [
+        {
+          username: 'dependabot',
+          profileUrl: 'https://github.com/dependabot',
+          isBot: true,
+        },
+        {
+          username: 'copilot',
+          profileUrl: 'https://github.com/copilot',
+          isBot: true,
+        },
+        {
+          username: 'renovate',
+          profileUrl: 'https://github.com/renovate',
+          isBot: true,
+        },
+      ],
+    }
+
+    render(<GitCardCommit {...multiBotsProps} />)
+
+    // Should only have one bot icon even though there are 3 bots
+    const botIcons = screen.getAllByLabelText('Bot contributor')
+    expect(botIcons).toHaveLength(1)
   })
 
   it('removes duplicate authors', () => {
@@ -118,8 +147,9 @@ describe('GitCardCommit', () => {
 
     render(<GitCardCommit {...duplicateAuthorProps} />)
 
-    // Should only have one + and one name even though Lewis appears 3 times
-    expect(screen.getAllByText('+')).toHaveLength(1)
+    // Should only have one name even though Lewis appears 3 times
+    // And no + since it's only one unique author
+    expect(screen.queryByText('+')).not.toBeInTheDocument()
     expect(screen.getByText('Lewis')).toBeInTheDocument()
   })
 
@@ -142,9 +172,9 @@ describe('GitCardCommit', () => {
 
     render(<GitCardCommit {...mixedAuthorProps} />)
 
-    // Should have bot icon
+    // Should have one bot icon
     expect(screen.getByLabelText('Bot contributor')).toBeInTheDocument()
-    // Should have + and human name
+    // Should have + with human name (since there's a bot, show + even for one human)
     expect(screen.getByText('+')).toBeInTheDocument()
     expect(screen.getByText('Lewis')).toBeInTheDocument()
     // Should NOT display bot name

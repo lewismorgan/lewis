@@ -28,25 +28,29 @@ export const GitCardCommit = ({
   const bots = uniqueAuthors.filter(author => author.isBot)
   const humans = uniqueAuthors.filter(author => !author.isBot)
 
+  // Show bot icon if there's at least one bot
+  const hasBots = bots.length > 0
+
   return (
     <>
       <div className="flex flex-row items-center gap-2 text-sm lg:text-sm">
         <div className="flex flex-row items-center gap-1">
-          {/* Show bot icons without names */}
-          {bots.map((bot, index) => (
+          {/* Show single bot icon if any bots are present */}
+          {hasBots && (
             <Bot
-              key={`bot-${bot.username}-${index}`}
               className="text-muted-foreground h-4 w-4"
               aria-label="Bot contributor"
             />
-          ))}
-          {/* Show + character and human author names */}
+          )}
+          {/* Show + character and human author names only if multiple authors */}
           {humans.map((human, index) => (
             <span
               key={`human-${human.username}-${index}`}
               className="flex items-center gap-1"
             >
-              <span className="text-muted-foreground">+</span>
+              {(humans.length > 1 || hasBots) && (
+                <span className="text-muted-foreground">+</span>
+              )}
               <a
                 href={human.profileUrl}
                 target="_blank"
