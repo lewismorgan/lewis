@@ -87,7 +87,7 @@ export function ReadmeDialog({ repoName }: ReadmeDialogProps) {
             Repository documentation and information
           </DialogDescription>
         </DialogHeader>
-        <div className="overflow-y-auto px-1">
+        <div className="max-h-[60vh] overflow-y-auto px-1">
           {isLoading && (
             <div className="flex items-center justify-center py-8">
               <div className="text-muted-foreground">Loading README...</div>
