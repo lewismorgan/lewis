@@ -105,20 +105,38 @@ export async function getRepos(): Promise<RepositoryData[]> {
 
 /**
  * Parse co-authors from commit message trailers
- * GitHub adds co-authors in the format: "Co-authored-by: Name <email>"
+ * GitHub adds co-authors in the format: "Co-authored-by: username[bot] <email>" or "Co-authored-by: username <email>"
  */
 function parseCoAuthors(
   message: string,
-): Array<{ name: string; email: string }> {
-  const coAuthors: Array<{ name: string; email: string }> = []
+): Array<{ username: string; isBot: boolean }> {
+  const coAuthors: Array<{ username: string; isBot: boolean }> = []
   const lines = message.split('\n')
 
   for (const line of lines) {
+    // Match: Co-authored-by: username[bot] <email> or Co-authored-by: username <email>
     const match = /^Co-authored-by:\s*([^<]+)\s*<([^>]+)>/.exec(line)
     if (match) {
+      const namepart = match[1]?.trim() ?? ''
+      const email = match[2]?.trim() ?? ''
+
+      // Check if it's a bot by looking for [bot] tag in the name
+      const isBot = namepart.includes('[bot]')
+
+      // Extract username from the name (remove [bot] if present)
+      let username = namepart.replace('[bot]', '').trim()
+
+      // If we can extract username from email format like "123456+username@users.noreply.github.com"
+      const emailMatch = /(?:\d+\+)?([^@]+)@users\.noreply\.github\.com/.exec(
+        email,
+      )
+      if (emailMatch) {
+        username = emailMatch[1] ?? username
+      }
+
       coAuthors.push({
-        name: match[1]?.trim() ?? '',
-        email: match[2]?.trim() ?? '',
+        username,
+        isBot,
       })
     }
   }
@@ -127,61 +145,50 @@ function parseCoAuthors(
 }
 
 /**
- * Determine if an author is a bot based on username or email patterns
+ * Determine if an author is a bot based on username
  */
-function isBot(username: string, email: string): boolean {
-  const botPatterns = [
-    'bot',
-    'dependabot',
-    'renovate',
-    'snyk',
-    'copilot',
-    'github-actions',
-    'greenkeeper',
-  ]
-
-  const lowerUsername = username.toLowerCase()
-  const lowerEmail = email.toLowerCase()
-
-  return botPatterns.some(
-    pattern => lowerUsername.includes(pattern) || lowerEmail.includes(pattern),
-  )
+function isBot(username: string): boolean {
+  // Check if username contains [bot] tag
+  return username.includes('[bot]')
 }
 
 /**
- * Fetch author details from GitHub by email or use fallback data
+ * Fetch author details from GitHub by username
  */
 async function getAuthorDetails(
   name: string,
-  email: string,
   username?: string,
 ): Promise<GitAuthor> {
-  // Check if it's a bot first
-  const bot = isBot(username ?? name, email)
+  const actualUsername = username ?? name
+  const bot = isBot(actualUsername)
+
+  // Clean up username (remove [bot] tag if present)
+  const cleanUsername = actualUsername.replace('[bot]', '').trim()
 
   // If we have a username from the commit, try to get their profile
   if (username) {
     try {
       const { data } = await octokit.request('GET /users/{username}', {
-        username,
+        username: cleanUsername,
       })
       return {
         username: data.login,
-        avatarUrl: data.avatar_url,
         profileUrl: data.html_url,
         isBot: bot,
       }
     } catch (error) {
-      // If user fetch fails, fall back to email-based approach
-      console.warn(`Failed to fetch user ${username}, using fallback`, error)
+      // If user fetch fails, fall back to using the username directly
+      console.warn(
+        `Failed to fetch user ${cleanUsername}, using fallback`,
+        error,
+      )
     }
   }
 
-  // Fallback: use name and default avatar
+  // Fallback: use name directly
   return {
-    username: username ?? name,
-    avatarUrl: `https://github.com/${username ?? name}.png?size=40`,
-    profileUrl: `https://github.com/${username ?? name}`,
+    username: cleanUsername,
+    profileUrl: `https://github.com/${cleanUsername}`,
     isBot: bot,
   }
 }
@@ -208,12 +215,10 @@ export async function getRepoCommit({
 
       // Get primary author
       const primaryAuthorName = commitData.author?.name ?? 'Unknown'
-      const primaryAuthorEmail = commitData.author?.email ?? ''
       const primaryAuthorUsername = commitAuthor?.login
 
       const primaryAuthor = await getAuthorDetails(
         primaryAuthorName,
-        primaryAuthorEmail,
         primaryAuthorUsername,
       )
 
@@ -221,16 +226,7 @@ export async function getRepoCommit({
       const coAuthors = parseCoAuthors(commitData.message)
       const coAuthorDetails = await Promise.all(
         coAuthors.map(async coAuthor => {
-          // Try to extract username from GitHub noreply email format
-          // e.g., "username@users.noreply.github.com" or "123456+username@users.noreply.github.com"
-          let username: string | undefined
-          const noreplyMatch =
-            /(?:\d+\+)?([^@]+)@users\.noreply\.github\.com/.exec(coAuthor.email)
-          if (noreplyMatch) {
-            username = noreplyMatch[1]
-          }
-
-          return getAuthorDetails(coAuthor.name, coAuthor.email, username)
+          return getAuthorDetails(coAuthor.username, coAuthor.username)
         }),
       )
 

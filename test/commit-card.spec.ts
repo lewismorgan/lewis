@@ -66,25 +66,7 @@ test.describe('Commit Card Display', () => {
     }
   })
 
-  test('should display + icons for human contributors', async ({ page }) => {
-    await page.goto('/')
-
-    // Wait for commit details to load
-    await page.waitForSelector('[class*="flex"][class*="flex-row"]', {
-      timeout: 15000,
-    })
-
-    // Check for + icons (they would have aria-label starting with "Contributor:")
-    const plusIcon = page.locator('[aria-label^="Contributor:"]')
-    const plusIconCount = await plusIcon.count()
-
-    // Should have at least one + icon for human contributors
-    if (plusIconCount > 0) {
-      await expect(plusIcon.first()).toBeVisible()
-    }
-  })
-
-  test('should not display author usernames in commit cards', async ({
+  test('should display + character and human contributor names', async ({
     page,
   }) => {
     await page.goto('/')
@@ -94,17 +76,35 @@ test.describe('Commit Card Display', () => {
       timeout: 15000,
     })
 
-    // Author usernames should NOT be displayed as text links anymore
-    // Only icons (bot or +) should be present
-    const commitCardArea = page
-      .locator('[class*="flex"][class*="flex-row"]')
+    // Check for + characters
+    const plusChar = page.locator('text="+"')
+    const plusCount = await plusChar.count()
+
+    // Should have at least one + character for human contributors
+    if (plusCount > 0) {
+      await expect(plusChar.first()).toBeVisible()
+    }
+  })
+
+  test('should have working author profile links', async ({ page }) => {
+    await page.goto('/')
+
+    // Wait for commit details to load
+    await page.waitForSelector('[class*="flex"][class*="flex-row"]', {
+      timeout: 15000,
+    })
+
+    // Find an author link
+    const authorLink = page
+      .locator('a[href*="github.com"][rel="noopener noreferrer"]')
       .first()
 
-    // Verify we have the icon container
-    const iconContainer = commitCardArea.locator(
-      '[class*="flex"][class*="items-center"][class*="gap-1"]',
-    )
-    await expect(iconContainer).toBeVisible()
+    const linkCount = await authorLink.count()
+    if (linkCount > 0) {
+      await expect(authorLink).toBeVisible({ timeout: 10000 })
+      await expect(authorLink).toHaveAttribute('target', '_blank')
+      await expect(authorLink).toHaveAttribute('rel', 'noopener noreferrer')
+    }
   })
 
   test('should not display avatars', async ({ page }) => {

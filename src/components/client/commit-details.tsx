@@ -1,5 +1,5 @@
 'use client'
-import { Bot, Plus } from 'lucide-react'
+import { Bot } from 'lucide-react'
 
 import { type GitAuthor } from '~/lib/types'
 import { formatTimeRelativeToNow } from '~/lib/utils'
@@ -40,13 +40,22 @@ export const GitCardCommit = ({
               aria-label="Bot contributor"
             />
           ))}
-          {/* Show + icon for each human author */}
+          {/* Show + character and human author names */}
           {humans.map((human, index) => (
-            <Plus
+            <span
               key={`human-${human.username}-${index}`}
-              className="text-muted-foreground h-4 w-4"
-              aria-label={`Contributor: ${human.username}`}
-            />
+              className="flex items-center gap-1"
+            >
+              <span className="text-muted-foreground">+</span>
+              <a
+                href={human.profileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold hover:underline"
+              >
+                {human.username}
+              </a>
+            </span>
           ))}
         </div>
         <span className="truncate text-nowrap text-ellipsis hover:underline">

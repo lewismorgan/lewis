@@ -18,7 +18,6 @@ describe('GitCardCommit', () => {
     authors: [
       {
         username: 'Lewis',
-        avatarUrl: 'https://github.com/Lewis.png',
         profileUrl: 'https://github.com/Lewis',
         isBot: false,
       },
@@ -45,26 +44,24 @@ describe('GitCardCommit', () => {
     expect(formatTimeRelativeToNow).toHaveBeenCalledWith(baseProps.date)
   })
 
-  it('renders + icon for human authors', () => {
+  it('renders + character and human author name', () => {
     render(<GitCardCommit {...baseProps} />)
 
-    const plusIcon = screen.getByLabelText('Contributor: Lewis')
-    expect(plusIcon).toBeInTheDocument()
+    expect(screen.getByText('+')).toBeInTheDocument()
+    expect(screen.getByText('Lewis')).toBeInTheDocument()
   })
 
-  it('renders multiple + icons for multiple human authors', () => {
+  it('renders multiple + characters and human author names', () => {
     const multiAuthorProps = {
       ...baseProps,
       authors: [
         {
           username: 'Lewis',
-          avatarUrl: 'https://github.com/Lewis.png',
           profileUrl: 'https://github.com/Lewis',
           isBot: false,
         },
         {
           username: 'Alice',
-          avatarUrl: 'https://github.com/Alice.png',
           profileUrl: 'https://github.com/Alice',
           isBot: false,
         },
@@ -73,8 +70,9 @@ describe('GitCardCommit', () => {
 
     render(<GitCardCommit {...multiAuthorProps} />)
 
-    expect(screen.getByLabelText('Contributor: Lewis')).toBeInTheDocument()
-    expect(screen.getByLabelText('Contributor: Alice')).toBeInTheDocument()
+    expect(screen.getAllByText('+')).toHaveLength(2)
+    expect(screen.getByText('Lewis')).toBeInTheDocument()
+    expect(screen.getByText('Alice')).toBeInTheDocument()
   })
 
   it('renders bot icon for bot authors without name', () => {
@@ -83,7 +81,6 @@ describe('GitCardCommit', () => {
       authors: [
         {
           username: 'dependabot',
-          avatarUrl: 'https://github.com/dependabot.png',
           profileUrl: 'https://github.com/dependabot',
           isBot: true,
         },
@@ -103,19 +100,16 @@ describe('GitCardCommit', () => {
       authors: [
         {
           username: 'Lewis',
-          avatarUrl: 'https://github.com/Lewis.png',
           profileUrl: 'https://github.com/Lewis',
           isBot: false,
         },
         {
           username: 'Lewis',
-          avatarUrl: 'https://github.com/Lewis.png',
           profileUrl: 'https://github.com/Lewis',
           isBot: false,
         },
         {
           username: 'Lewis',
-          avatarUrl: 'https://github.com/Lewis.png',
           profileUrl: 'https://github.com/Lewis',
           isBot: false,
         },
@@ -124,9 +118,9 @@ describe('GitCardCommit', () => {
 
     render(<GitCardCommit {...duplicateAuthorProps} />)
 
-    // Should only have one + icon even though Lewis appears 3 times
-    const plusIcons = screen.getAllByLabelText(/Contributor:/)
-    expect(plusIcons).toHaveLength(1)
+    // Should only have one + and one name even though Lewis appears 3 times
+    expect(screen.getAllByText('+')).toHaveLength(1)
+    expect(screen.getByText('Lewis')).toBeInTheDocument()
   })
 
   it('renders mixed bot and human authors correctly', () => {
@@ -135,13 +129,11 @@ describe('GitCardCommit', () => {
       authors: [
         {
           username: 'Lewis',
-          avatarUrl: 'https://github.com/Lewis.png',
           profileUrl: 'https://github.com/Lewis',
           isBot: false,
         },
         {
           username: 'copilot',
-          avatarUrl: 'https://github.com/copilot.png',
           profileUrl: 'https://github.com/copilot',
           isBot: true,
         },
@@ -152,10 +144,10 @@ describe('GitCardCommit', () => {
 
     // Should have bot icon
     expect(screen.getByLabelText('Bot contributor')).toBeInTheDocument()
-    // Should have + icon for human
-    expect(screen.getByLabelText('Contributor: Lewis')).toBeInTheDocument()
-    // Should NOT display usernames
-    expect(screen.queryByText('Lewis')).not.toBeInTheDocument()
+    // Should have + and human name
+    expect(screen.getByText('+')).toBeInTheDocument()
+    expect(screen.getByText('Lewis')).toBeInTheDocument()
+    // Should NOT display bot name
     expect(screen.queryByText('copilot')).not.toBeInTheDocument()
   })
 

@@ -19,7 +19,6 @@ export type SimpleGitUser = {
 
 export type GitAuthor = {
   username: string
-  avatarUrl: string
   profileUrl: string
   isBot: boolean
 }
