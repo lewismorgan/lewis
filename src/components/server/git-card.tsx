@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 
 import { GitCardCommit } from '../client/commit-details'
+import { ReadmeDialog } from '../client/readme-dialog'
 import { LanguageBadges } from '../lang-badge'
 import { ExternalLink } from '../links'
 import { Card, CardContent, CardDescription, CardTitle } from '../ui/card'
@@ -63,8 +64,9 @@ export const GitCard = async ({
   const langBadges = <LanguageBadges languages={languageData.slice(0, 3)} />
   return (
     <Card className="max-h-80 w-[340px] p-1 shadow-md md:w-[375px] lg:w-[420px]">
-      <CardTitle className="p-1 font-mono font-thin tracking-tighter">
+      <CardTitle className="flex items-center justify-between p-1 font-mono font-thin tracking-tighter">
         <ExternalLink href={html_url}>{name}</ExternalLink>
+        <ReadmeDialog repoName={name} />
       </CardTitle>
       <CardDescription className="w-full p-1 text-left align-middle">
         {description}

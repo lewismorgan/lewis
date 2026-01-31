@@ -165,3 +165,20 @@ export async function getContributors(repo: string): Promise<GitContributor[]> {
     }
   })
 }
+
+export async function getReadme(repo: string): Promise<string | null> {
+  try {
+    const response = await octokit.request('GET /repos/{owner}/{repo}/readme', {
+      owner: 'lewismorgan',
+      repo: repo,
+      mediaType: {
+        format: 'raw',
+      },
+    })
+
+    return response.data as unknown as string
+  } catch (error) {
+    console.error(`Failed to fetch README for ${repo}:`, error)
+    return null
+  }
+}
