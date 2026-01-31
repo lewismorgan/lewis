@@ -200,7 +200,9 @@ async function getAuthorDetails(
         username: cleanUsername,
       })
       // GitHub API returns type: "Bot" for bot accounts
-      const isBotAccount = data.type === 'Bot' || bot
+      // Also check the returned login against bot patterns as an extra safety check
+      const isBotAccount =
+        data.type === 'Bot' || bot || isBot(data.login, email)
       return {
         username: data.login,
         profileUrl: data.html_url,
