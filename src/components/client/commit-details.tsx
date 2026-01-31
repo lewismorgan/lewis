@@ -1,5 +1,5 @@
 'use client'
-import { Bot } from 'lucide-react'
+import { Bot, Plus } from 'lucide-react'
 
 import { type GitAuthor } from '~/lib/types'
 import { formatTimeRelativeToNow } from '~/lib/utils'
@@ -18,33 +18,35 @@ export const GitCardCommit = ({
   // Using a client component for this because the date formatting is done client-side
   const formattedDate = formatTimeRelativeToNow(date)
 
+  // Remove duplicate authors based on username
+  const uniqueAuthors = authors.filter(
+    (author, index, self) =>
+      index === self.findIndex(a => a.username === author.username),
+  )
+
+  // Separate bots and humans
+  const bots = uniqueAuthors.filter(author => author.isBot)
+  const humans = uniqueAuthors.filter(author => !author.isBot)
+
   return (
     <>
       <div className="flex flex-row items-center gap-2 text-sm lg:text-sm">
         <div className="flex flex-row items-center gap-1">
-          {authors.map((author, index) => (
-            <div
-              key={`${author.username}-${index}`}
-              className="flex items-center gap-1"
-            >
-              {author.isBot && (
-                <Bot
-                  className="text-muted-foreground h-4 w-4"
-                  aria-label="Bot contributor"
-                />
-              )}
-              <a
-                href={author.profileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold hover:underline"
-              >
-                {author.username}
-              </a>
-              {index < authors.length - 1 && (
-                <span className="text-muted-foreground">,</span>
-              )}
-            </div>
+          {/* Show bot icons without names */}
+          {bots.map((bot, index) => (
+            <Bot
+              key={`bot-${bot.username}-${index}`}
+              className="text-muted-foreground h-4 w-4"
+              aria-label="Bot contributor"
+            />
+          ))}
+          {/* Show + icon for each human author */}
+          {humans.map((human, index) => (
+            <Plus
+              key={`human-${human.username}-${index}`}
+              className="text-muted-foreground h-4 w-4"
+              aria-label={`Contributor: ${human.username}`}
+            />
           ))}
         </div>
         <span className="truncate text-nowrap text-ellipsis hover:underline">

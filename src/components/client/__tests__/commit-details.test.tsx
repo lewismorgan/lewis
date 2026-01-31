@@ -32,10 +32,9 @@ describe('GitCardCommit', () => {
     vi.mocked(formatTimeRelativeToNow).mockReturnValue('5 mins ago')
   })
 
-  it('renders author, message, and formatted relative time with truncated sha', () => {
+  it('renders message and formatted relative time with truncated sha', () => {
     render(<GitCardCommit {...baseProps} />)
 
-    expect(screen.getByText(baseProps.authors[0]!.username)).toBeInTheDocument()
     expect(screen.getByText(/Refactor auth flow/)).toBeInTheDocument()
     expect(screen.getByText('abcdef1 • 5 mins ago')).toBeInTheDocument()
   })
@@ -46,7 +45,14 @@ describe('GitCardCommit', () => {
     expect(formatTimeRelativeToNow).toHaveBeenCalledWith(baseProps.date)
   })
 
-  it('renders multiple authors with commas between them', () => {
+  it('renders + icon for human authors', () => {
+    render(<GitCardCommit {...baseProps} />)
+
+    const plusIcon = screen.getByLabelText('Contributor: Lewis')
+    expect(plusIcon).toBeInTheDocument()
+  })
+
+  it('renders multiple + icons for multiple human authors', () => {
     const multiAuthorProps = {
       ...baseProps,
       authors: [
@@ -67,12 +73,11 @@ describe('GitCardCommit', () => {
 
     render(<GitCardCommit {...multiAuthorProps} />)
 
-    expect(screen.getByText('Lewis')).toBeInTheDocument()
-    expect(screen.getByText('Alice')).toBeInTheDocument()
-    expect(screen.getAllByText(',')).toHaveLength(1)
+    expect(screen.getByLabelText('Contributor: Lewis')).toBeInTheDocument()
+    expect(screen.getByLabelText('Contributor: Alice')).toBeInTheDocument()
   })
 
-  it('renders bot icon for bot authors', () => {
+  it('renders bot icon for bot authors without name', () => {
     const botAuthorProps = {
       ...baseProps,
       authors: [
@@ -88,18 +93,43 @@ describe('GitCardCommit', () => {
     render(<GitCardCommit {...botAuthorProps} />)
 
     expect(screen.getByLabelText('Bot contributor')).toBeInTheDocument()
-    expect(screen.getByText('dependabot')).toBeInTheDocument()
+    // Bot name should NOT be displayed
+    expect(screen.queryByText('dependabot')).not.toBeInTheDocument()
   })
 
-  it('does not render avatar for non-bot authors', () => {
-    render(<GitCardCommit {...baseProps} />)
+  it('removes duplicate authors', () => {
+    const duplicateAuthorProps = {
+      ...baseProps,
+      authors: [
+        {
+          username: 'Lewis',
+          avatarUrl: 'https://github.com/Lewis.png',
+          profileUrl: 'https://github.com/Lewis',
+          isBot: false,
+        },
+        {
+          username: 'Lewis',
+          avatarUrl: 'https://github.com/Lewis.png',
+          profileUrl: 'https://github.com/Lewis',
+          isBot: false,
+        },
+        {
+          username: 'Lewis',
+          avatarUrl: 'https://github.com/Lewis.png',
+          profileUrl: 'https://github.com/Lewis',
+          isBot: false,
+        },
+      ],
+    }
 
-    // Check that username is displayed without avatar or bot icon
-    expect(screen.getByText('Lewis')).toBeInTheDocument()
-    expect(screen.queryByLabelText('Bot contributor')).not.toBeInTheDocument()
+    render(<GitCardCommit {...duplicateAuthorProps} />)
+
+    // Should only have one + icon even though Lewis appears 3 times
+    const plusIcons = screen.getAllByLabelText(/Contributor:/)
+    expect(plusIcons).toHaveLength(1)
   })
 
-  it('renders mixed bot and human authors', () => {
+  it('renders mixed bot and human authors correctly', () => {
     const mixedAuthorProps = {
       ...baseProps,
       authors: [
@@ -120,9 +150,13 @@ describe('GitCardCommit', () => {
 
     render(<GitCardCommit {...mixedAuthorProps} />)
 
-    expect(screen.getByText('Lewis')).toBeInTheDocument()
-    expect(screen.getByText('copilot')).toBeInTheDocument()
+    // Should have bot icon
     expect(screen.getByLabelText('Bot contributor')).toBeInTheDocument()
+    // Should have + icon for human
+    expect(screen.getByLabelText('Contributor: Lewis')).toBeInTheDocument()
+    // Should NOT display usernames
+    expect(screen.queryByText('Lewis')).not.toBeInTheDocument()
+    expect(screen.queryByText('copilot')).not.toBeInTheDocument()
   })
 
   it('only shows first line of multi-line commit messages', () => {

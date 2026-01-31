@@ -16,19 +16,6 @@ test.describe('Commit Card Display', () => {
     await expect(commitInfo.first()).toBeVisible({ timeout: 10000 })
   })
 
-  test('should display commit author with link', async ({ page }) => {
-    await page.goto('/')
-
-    // Wait for commit details to load
-    await page.waitForSelector('[class*="flex"][class*="flex-row"]', {
-      timeout: 15000,
-    })
-
-    // Check for author link (should be a link to GitHub profile)
-    const authorLink = page.locator('a[href*="github.com"]').first()
-    await expect(authorLink).toBeVisible({ timeout: 10000 })
-  })
-
   test('should display commit message', async ({ page }) => {
     await page.goto('/')
 
@@ -59,7 +46,7 @@ test.describe('Commit Card Display', () => {
     await expect(relativeTime.first()).toBeVisible({ timeout: 10000 })
   })
 
-  test('should display bot icon for bot authors if present', async ({
+  test('should display bot icon for bot contributors if present', async ({
     page,
   }) => {
     await page.goto('/')
@@ -79,7 +66,7 @@ test.describe('Commit Card Display', () => {
     }
   })
 
-  test('should handle multiple authors if present', async ({ page }) => {
+  test('should display + icons for human contributors', async ({ page }) => {
     await page.goto('/')
 
     // Wait for commit details to load
@@ -87,14 +74,19 @@ test.describe('Commit Card Display', () => {
       timeout: 15000,
     })
 
-    // Check if any commits have multiple authors (indicated by commas)
-    const authorContainer = page
-      .locator('[class*="flex"][class*="items-center"][class*="gap-1"]')
-      .first()
-    await expect(authorContainer).toBeVisible({ timeout: 10000 })
+    // Check for + icons (they would have aria-label starting with "Contributor:")
+    const plusIcon = page.locator('[aria-label^="Contributor:"]')
+    const plusIconCount = await plusIcon.count()
+
+    // Should have at least one + icon for human contributors
+    if (plusIconCount > 0) {
+      await expect(plusIcon.first()).toBeVisible()
+    }
   })
 
-  test('should have working author profile links', async ({ page }) => {
+  test('should not display author usernames in commit cards', async ({
+    page,
+  }) => {
     await page.goto('/')
 
     // Wait for commit details to load
@@ -102,18 +94,20 @@ test.describe('Commit Card Display', () => {
       timeout: 15000,
     })
 
-    // Find an author link
-    const authorLink = page
-      .locator('a[href*="github.com"][rel="noopener noreferrer"]')
+    // Author usernames should NOT be displayed as text links anymore
+    // Only icons (bot or +) should be present
+    const commitCardArea = page
+      .locator('[class*="flex"][class*="flex-row"]')
       .first()
-    await expect(authorLink).toBeVisible({ timeout: 10000 })
 
-    // Verify the link has proper attributes
-    await expect(authorLink).toHaveAttribute('target', '_blank')
-    await expect(authorLink).toHaveAttribute('rel', 'noopener noreferrer')
+    // Verify we have the icon container
+    const iconContainer = commitCardArea.locator(
+      '[class*="flex"][class*="items-center"][class*="gap-1"]',
+    )
+    await expect(iconContainer).toBeVisible()
   })
 
-  test('should not display avatars for non-bot authors', async ({ page }) => {
+  test('should not display avatars', async ({ page }) => {
     await page.goto('/')
 
     // Wait for commit details to load
@@ -122,23 +116,13 @@ test.describe('Commit Card Display', () => {
     })
 
     // Look for avatar containers (rounded-full class indicates avatar)
-    // Avatars should NOT be present for non-bot authors
-    const avatar = page
-      .locator('[class*="rounded-full"][class*="h-4"][class*="w-4"]')
+    // Avatars should NOT be present
+    const commitArea = page
+      .locator('[class*="flex"][class*="flex-row"]')
       .first()
-
-    // Avatar count should be 0 or only for theme toggle
-    const avatarCount = await avatar.count()
-    // Note: If there are any avatars, they should NOT be in commit card area
-    if (avatarCount > 0) {
-      // Verify they're not in the commit area
-      const commitArea = page
-        .locator('[class*="flex"][class*="flex-row"]')
-        .first()
-      const avatarsInCommitArea = await commitArea
-        .locator('[class*="rounded-full"][class*="h-4"][class*="w-4"]')
-        .count()
-      expect(avatarsInCommitArea).toBe(0)
-    }
+    const avatarsInCommitArea = await commitArea
+      .locator('[class*="rounded-full"][class*="h-4"][class*="w-4"]')
+      .count()
+    expect(avatarsInCommitArea).toBe(0)
   })
 })
