@@ -88,10 +88,11 @@ describe('ReadmeDialog Component', () => {
     })
   })
 
-  it('should display error message when fetch fails', async () => {
+  it('should display custom message when README is not found (404)', async () => {
     const user = userEvent.setup()
     ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: false,
+      status: 404,
       json: async () => ({ error: 'README not found' }),
     })
 
@@ -103,8 +104,35 @@ describe('ReadmeDialog Component', () => {
     await user.click(button)
 
     await waitFor(() => {
+      expect(
+        screen.getByText(
+          /It doesn't seem like this project has a README. I must really be slacking./i,
+        ),
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByText(/Failed to load README/i),
+      ).not.toBeInTheDocument()
+    })
+  })
+
+  it('should display error message when fetch fails with non-404 error', async () => {
+    const user = userEvent.setup()
+    ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      json: async () => ({ error: 'Internal server error' }),
+    })
+
+    render(<ReadmeDialog repoName="test-repo" />)
+
+    const button = screen.getByRole('button', {
+      name: /View README for test-repo/i,
+    })
+    await user.click(button)
+
+    await waitFor(() => {
       expect(screen.getByText(/Failed to load README/i)).toBeInTheDocument()
-      expect(screen.getByText(/README not found/i)).toBeInTheDocument()
+      expect(screen.getByText(/Internal server error/i)).toBeInTheDocument()
     })
   })
 

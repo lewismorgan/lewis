@@ -40,7 +40,15 @@ export function ReadmeDialog({ repoName }: ReadmeDialogProps) {
       const data = (await response.json()) as ReadmeResponse
 
       if (!response.ok) {
-        throw new Error(data.error ?? 'Failed to fetch README')
+        // Handle 404 (no README) differently from other errors
+        if (response.status === 404) {
+          setError(
+            "It doesn't seem like this project has a README. I must really be slacking.",
+          )
+        } else {
+          throw new Error(data.error ?? 'Failed to fetch README')
+        }
+        return
       }
 
       setContent(data.content)
@@ -87,7 +95,11 @@ export function ReadmeDialog({ repoName }: ReadmeDialogProps) {
           )}
           {error && (
             <div className="flex flex-col items-center justify-center py-8">
-              <div className="text-destructive mb-2">Failed to load README</div>
+              {!error.includes("doesn't seem like") && (
+                <div className="text-destructive mb-2">
+                  Failed to load README
+                </div>
+              )}
               <div className="text-muted-foreground text-sm">{error}</div>
             </div>
           )}
