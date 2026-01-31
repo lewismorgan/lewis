@@ -91,12 +91,11 @@ describe('GitCardCommit', () => {
     expect(screen.getByText('dependabot')).toBeInTheDocument()
   })
 
-  it('renders avatar for non-bot authors', () => {
+  it('does not render avatar for non-bot authors', () => {
     render(<GitCardCommit {...baseProps} />)
 
-    // Check that we have an avatar container (not a bot icon)
-    const avatarContainer = screen.getByText('LE')
-    expect(avatarContainer).toBeInTheDocument()
+    // Check that username is displayed without avatar or bot icon
+    expect(screen.getByText('Lewis')).toBeInTheDocument()
     expect(screen.queryByLabelText('Bot contributor')).not.toBeInTheDocument()
   })
 
@@ -124,8 +123,6 @@ describe('GitCardCommit', () => {
     expect(screen.getByText('Lewis')).toBeInTheDocument()
     expect(screen.getByText('copilot')).toBeInTheDocument()
     expect(screen.getByLabelText('Bot contributor')).toBeInTheDocument()
-    // Check for avatar fallback text
-    expect(screen.getByText('LE')).toBeInTheDocument()
   })
 
   it('only shows first line of multi-line commit messages', () => {

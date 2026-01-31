@@ -1,8 +1,6 @@
 'use client'
 import { Bot } from 'lucide-react'
 
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-
 import { type GitAuthor } from '~/lib/types'
 import { formatTimeRelativeToNow } from '~/lib/utils'
 
@@ -34,14 +32,6 @@ export const GitCardCommit = ({
                   className="text-muted-foreground h-4 w-4"
                   aria-label="Bot contributor"
                 />
-              )}
-              {!author.isBot && (
-                <Avatar className="h-4 w-4">
-                  <AvatarImage src={author.avatarUrl} alt={author.username} />
-                  <AvatarFallback>
-                    {author.username.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
               )}
               <a
                 href={author.profileUrl}

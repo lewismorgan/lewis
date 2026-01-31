@@ -12,7 +12,6 @@ test.describe('Commit Card Display', () => {
     })
 
     // Check that at least one commit SHA is displayed (7 characters)
-    const shaPattern = /[a-f0-9]{7}/
     const commitInfo = page.locator('text=/[a-f0-9]{7}/')
     await expect(commitInfo.first()).toBeVisible({ timeout: 10000 })
   })
@@ -114,7 +113,7 @@ test.describe('Commit Card Display', () => {
     await expect(authorLink).toHaveAttribute('rel', 'noopener noreferrer')
   })
 
-  test('should display avatar for non-bot authors', async ({ page }) => {
+  test('should not display avatars for non-bot authors', async ({ page }) => {
     await page.goto('/')
 
     // Wait for commit details to load
@@ -123,14 +122,23 @@ test.describe('Commit Card Display', () => {
     })
 
     // Look for avatar containers (rounded-full class indicates avatar)
+    // Avatars should NOT be present for non-bot authors
     const avatar = page
       .locator('[class*="rounded-full"][class*="h-4"][class*="w-4"]')
       .first()
 
-    // If avatar exists, it should be visible
+    // Avatar count should be 0 or only for theme toggle
     const avatarCount = await avatar.count()
+    // Note: If there are any avatars, they should NOT be in commit card area
     if (avatarCount > 0) {
-      await expect(avatar).toBeVisible()
+      // Verify they're not in the commit area
+      const commitArea = page
+        .locator('[class*="flex"][class*="flex-row"]')
+        .first()
+      const avatarsInCommitArea = await commitArea
+        .locator('[class*="rounded-full"][class*="h-4"][class*="w-4"]')
+        .count()
+      expect(avatarsInCommitArea).toBe(0)
     }
   })
 })
