@@ -64,7 +64,7 @@ export function ReadmeDialog({ repoName }: ReadmeDialogProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8"
+          className="h-8 w-8 hover:cursor-pointer"
           aria-label={`View README for ${repoName}`}
         >
           <FileText className="h-4 w-4" />
