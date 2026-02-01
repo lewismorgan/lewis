@@ -1,7 +1,11 @@
 import { Octokit } from '@octokit/core'
 import { type Endpoints } from '@octokit/types'
 
-import { type GitCommit, type RepositoryData } from '~/lib/types'
+import {
+  type GitAuthor,
+  type GitCommit,
+  type RepositoryData,
+} from '~/lib/types'
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -99,6 +103,128 @@ export async function getRepos(): Promise<RepositoryData[]> {
   })
 }
 
+/**
+ * Parse co-authors from commit message trailers
+ * GitHub adds co-authors in the format: "Co-authored-by: username[bot] <email>" or "Co-authored-by: username <email>"
+ */
+function parseCoAuthors(
+  message: string,
+): Array<{ username: string; email: string; isBot: boolean }> {
+  const coAuthors: Array<{ username: string; email: string; isBot: boolean }> =
+    []
+  const lines = message.split('\n')
+
+  for (const line of lines) {
+    // Match: Co-authored-by: username[bot] <email> or Co-authored-by: username <email>
+    const match = /^Co-authored-by:\s*([^<]+)\s*<([^>]+)>/.exec(line)
+    if (match) {
+      const namepart = match[1]?.trim() ?? ''
+      const email = match[2]?.trim() ?? ''
+
+      // Check if it's a bot by looking for [bot] tag in the name
+      const isBot = namepart.includes('[bot]')
+
+      // Extract username from the name (remove [bot] if present)
+      let username = namepart.replace('[bot]', '').trim()
+
+      // If we can extract username from email format like "123456+username@users.noreply.github.com"
+      const emailMatch = /(?:\d+\+)?([^@]+)@users\.noreply\.github\.com/.exec(
+        email,
+      )
+      if (emailMatch) {
+        username = emailMatch[1] ?? username
+      }
+
+      coAuthors.push({
+        username,
+        email,
+        isBot,
+      })
+    }
+  }
+
+  return coAuthors
+}
+
+/**
+ * Determine if an author is a bot based on username or email
+ */
+function isBot(username: string, email?: string): boolean {
+  // Check if username contains [bot] tag
+  if (username.includes('[bot]')) {
+    return true
+  }
+
+  // Check for common bot usernames (case-insensitive)
+  const botNames = [
+    'copilot',
+    'dependabot',
+    'renovate',
+    'github-actions',
+    'greenkeeper',
+    'snyk-bot',
+    'mergify',
+  ]
+  const lowerUsername = username.toLowerCase()
+  if (botNames.some(botName => lowerUsername.includes(botName))) {
+    return true
+  }
+
+  // Check email pattern for bots (numeric ID + username@users.noreply.github.com)
+  if (email && /^\d+\+.+@users\.noreply\.github\.com$/.test(email)) {
+    return true
+  }
+
+  return false
+}
+
+/**
+ * Fetch author details from GitHub by username
+ */
+async function getAuthorDetails(
+  name: string,
+  username?: string,
+  email?: string,
+  isBotOverride?: boolean,
+): Promise<GitAuthor> {
+  const actualUsername = username ?? name
+  const bot = isBotOverride ?? isBot(actualUsername, email)
+
+  // Clean up username (remove [bot] tag if present)
+  const cleanUsername = actualUsername.replace('[bot]', '').trim()
+
+  // If we have a username from the commit, try to get their profile
+  if (username) {
+    try {
+      const { data } = await octokit.request('GET /users/{username}', {
+        username: cleanUsername,
+      })
+      // GitHub API returns type: "Bot" for bot accounts
+      // Also check the returned login against bot patterns as an extra safety check
+      const isBotAccount =
+        data.type === 'Bot' || bot || isBot(data.login, email)
+      return {
+        username: data.login,
+        profileUrl: data.html_url,
+        isBot: isBotAccount,
+      }
+    } catch (error) {
+      // If user fetch fails, fall back to using the username directly
+      console.warn(
+        `Failed to fetch user ${cleanUsername}, using fallback`,
+        error,
+      )
+    }
+  }
+
+  // Fallback: use name directly
+  return {
+    username: cleanUsername,
+    profileUrl: `https://github.com/${cleanUsername}`,
+    isBot: bot,
+  }
+}
+
 type listGitCommitsResponse =
   Endpoints['GET /repos/{owner}/{repo}/commits']['response']
 export async function getRepoCommit({
@@ -110,25 +236,51 @@ export async function getRepoCommit({
 }): Promise<GitCommit[]> {
   const commits = await octokit.request('GET /repos/{owner}/{repo}/commits', {
     owner: 'lewismorgan',
-    committer: 'lewismorgan',
     repo: repo,
     per_page: count,
   })
 
-  const items = commits.data.map(
-    (commit: listGitCommitsResponse['data'][0]) => {
-      const { sha, commit: commitData, html_url } = commit
+  const items = await Promise.all(
+    commits.data.map(async (commit: listGitCommitsResponse['data'][0]) => {
+      const { sha, commit: commitData, html_url, author: commitAuthor } = commit
       const { date } = commitData.committer!
+
+      // Get primary author
+      const primaryAuthorName = commitData.author?.name ?? 'Unknown'
+      const primaryAuthorUsername = commitAuthor?.login
+      const primaryAuthorEmail = commitData.author?.email
+
+      const primaryAuthor = await getAuthorDetails(
+        primaryAuthorName,
+        primaryAuthorUsername,
+        primaryAuthorEmail,
+      )
+
+      // Parse co-authors from commit message
+      const coAuthors = parseCoAuthors(commitData.message)
+      const coAuthorDetails = await Promise.all(
+        coAuthors.map(async coAuthor => {
+          return getAuthorDetails(
+            coAuthor.username,
+            coAuthor.username,
+            coAuthor.email,
+            coAuthor.isBot,
+          )
+        }),
+      )
+
+      // Combine primary author and co-authors
+      const allAuthors = [primaryAuthor, ...coAuthorDetails]
 
       return {
         repo: repo,
         sha,
         date: date,
-        author: 'lewismorgan',
+        authors: allAuthors,
         message: commitData.message,
         url: html_url,
       } as GitCommit
-    },
+    }),
   )
 
   return items

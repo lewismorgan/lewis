@@ -39,11 +39,11 @@ export const Commit = async ({
     )
   }
 
-  const { author, sha, message, date: unparsedDate } = commitData
+  const { authors, sha, message, date: unparsedDate } = commitData
   const date = Date.parse(unparsedDate)
 
   return (
-    <GitCardCommit author={author} sha={sha} message={message} date={date} />
+    <GitCardCommit authors={authors} sha={sha} message={message} date={date} />
   )
 }
 
