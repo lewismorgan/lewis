@@ -38,7 +38,7 @@ export const RepositoryOverview = ({
 
   // Each card is wrapped in a suspense because each card fetches its own data
   return (
-    <div className="grid grid-cols-1 justify-items-center gap-2 md:grid-cols-2 md:*:odd:last:col-span-2">
+    <div className="grid grid-cols-1 justify-items-center gap-4 md:grid-cols-2 md:gap-5 md:*:odd:last:col-span-2">
       <Suspense fallback={repoLoadText}>
         <RepositoryCards count={count} slowMode={slowMode} />
       </Suspense>

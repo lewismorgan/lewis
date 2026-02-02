@@ -46,7 +46,7 @@ export const Spiel = ({
         </span>{' '}
         lying around
       </div>
-      <div className="mx-auto flex w-full flex-row place-content-center pt-2 align-middle">
+      <div className="mx-auto flex w-full flex-row place-content-center pt-6 align-middle md:pt-8">
         <ImageProfile avatarUrl={avatarUrl} name={imgName} />
       </div>
     </>
