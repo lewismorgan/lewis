@@ -44,9 +44,9 @@ export default function RootLayout({
           <div className="fixed right-2 bottom-20 h-fit w-fit md:top-10 md:right-10">
             <ThemeToggle />
           </div>
-          <div className="mb-5 grow">{children}</div>
+          <div className="mb-8 grow">{children}</div>
           <footer className="text-muted-foreground fixed bottom-0 flex w-full justify-center text-xs">
-            <div className="border-border rounded-tl-sm rounded-tr-sm border-t border-r border-l p-1 align-middle backdrop-blur-xs">
+            <div className="border-border rounded-tl-sm rounded-tr-sm border-t border-r border-l p-2 align-middle backdrop-blur-xs">
               Created by Lewis Morgan. Source code is available on{' '}
               <ExternalLink href="https://github.com/lewismorgan/lewis">
                 GitHub
