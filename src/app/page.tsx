@@ -11,7 +11,7 @@ const REPOSITORY_DISPLAY_COUNT = 5
 
 const Bullets = () => {
   return (
-    <div className="flex flex-col gap-1 tracking-tight md:text-lg">
+    <div className="flex flex-col gap-3 leading-relaxed tracking-tight md:text-lg">
       <div className="group flex w-full flex-row place-content-center items-center text-center align-middle hover:animate-pulse hover:cursor-default">
         <span className="mx-1 inline-flex items-baseline self-center align-bottom">
           <AcademicCap />
@@ -35,7 +35,9 @@ const Bullets = () => {
   )
 }
 
-const ContentSeperator = () => <Separator className="mx-auto my-5 w-[95%]" />
+const ContentSeperator = () => (
+  <Separator className="mx-auto my-8 w-[95%] md:my-12" />
+)
 
 export default async function HomePage({
   searchParams,
@@ -46,14 +48,14 @@ export default async function HomePage({
   const slowmode = (await searchParams).slowmode === 'true'
 
   return (
-    <main className="flex w-full flex-col gap-1 px-1">
+    <main className="flex w-full flex-col gap-4 px-4 md:gap-6 md:px-6">
       <Hero profileImage={git.avatarUrl} name={git.username} />
-      <div className="flex w-full flex-col items-center gap-4 pt-2 align-middle">
+      <div className="flex w-full flex-col items-center gap-6 pt-6 align-middle md:gap-8 md:pt-8">
         <div className="hover:cursor-default">
           <HoverCard openDelay={100} closeDelay={300}>
             <HoverCardTrigger asChild>
               <a href="https://github.com/lewismorgan" target="_blank">
-                <span className="text-2xl tracking-wide underline decoration-dashed underline-offset-8">
+                <span className="text-2xl leading-relaxed tracking-wide underline decoration-dashed underline-offset-8 md:text-3xl">
                   Software Engineer
                 </span>
               </a>
@@ -71,8 +73,8 @@ export default async function HomePage({
         <Bullets />
       </div>
       <ContentSeperator />
-      <section className="mb-5 flex min-h-40 w-full flex-row flex-wrap justify-center gap-5 align-middle">
-        <span className="flex w-full justify-center px-2 text-center align-middle font-sans font-light">
+      <section className="mb-8 flex min-h-40 w-full flex-row flex-wrap justify-center gap-5 align-middle md:mb-12">
+        <span className="flex w-full justify-center px-2 text-center align-middle font-sans leading-relaxed font-light">
           You can find most of the projects that I have launched into the
           digital universe on GitHub. These are some of my favorites! <br />
           <br />
@@ -86,7 +88,7 @@ export default async function HomePage({
               slowMode={slowmode}
             />
           </SlowModeContainer>
-          <div className="flex w-full justify-center px-2 text-center align-middle font-sans font-light">
+          <div className="flex w-full justify-center px-2 text-center align-middle font-sans leading-relaxed font-light">
             <span className="">
               Visit my GitHub profile{' '}
               <a

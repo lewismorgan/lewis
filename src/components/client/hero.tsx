@@ -82,12 +82,12 @@ export const Hero = ({
   const text = 'Hello_Internet'
 
   return (
-    <div className="flex w-full flex-col p-1 align-middle">
-      <div className="flex h-16 flex-row place-self-center py-4 font-mono text-4xl tracking-tight hover:cursor-default md:h-20 md:text-5xl lg:h-24 lg:text-7xl">
+    <div className="flex w-full flex-col p-4 align-middle md:p-6">
+      <div className="flex h-20 flex-row place-self-center py-4 font-mono text-4xl tracking-tight hover:cursor-default md:h-24 md:py-6 md:text-5xl lg:h-28 lg:text-7xl">
         <TypingAnimation finalText={text} reverse={replayQueued} />
       </div>
-      <div className="space-y-2 text-center hover:cursor-default">
-        <div className="text-lg tracking-tight">
+      <div className="space-y-4 text-center hover:cursor-default md:space-y-6">
+        <div className="text-lg leading-relaxed tracking-tight md:text-xl">
           Welcome to the digital space, domain, and realm of Lewis Morgan
         </div>
         <Spiel {...spielProps} />

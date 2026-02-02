@@ -100,7 +100,7 @@ describe('Hero Component', () => {
   it('should have proper flex layout classes', () => {
     const { container } = render(<Hero {...defaultProps} />)
     const mainDiv = container.querySelector(
-      '.flex.w-full.flex-col.p-1.align-middle',
+      '.flex.w-full.flex-col.p-4.align-middle',
     )
     expect(mainDiv).toBeInTheDocument()
   })
