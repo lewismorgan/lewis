@@ -50,7 +50,7 @@ export default async function HomePage({
   return (
     <main className="flex w-full flex-col gap-4 px-4 md:gap-6 md:px-6">
       <Hero profileImage={git.avatarUrl} name={git.username} />
-      <div className="flex w-full flex-col items-center gap-6 pt-6 align-middle md:gap-8 md:pt-8">
+      <div className="flex w-full flex-col items-center gap-6 pt-2 align-middle md:gap-8 md:pt-3">
         <div className="hover:cursor-default">
           <HoverCard openDelay={100} closeDelay={300}>
             <HoverCardTrigger asChild>
