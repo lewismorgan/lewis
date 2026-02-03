@@ -16,6 +16,7 @@ Instructions
 - Languages: TypeScript 5 with `strict` and `noUncheckedIndexedAccess`, `target` ES2022 and `module` ESNext Bundler ([tsconfig.json](../tsconfig.json)). Avoid syntax needing newer targets.
 - Frameworks/libraries: Next 16 App Router, React 19, Tailwind 4, Radix UI primitives, shadcn-style components, next-themes
 - Tooling: pnpm 10 package manager, Prettier for formatting, ESLint with `eslint-config-next` and `simple-import-sort`. Do not introduce configs incompatible with these versions.
+- Package manager: always use `pnpm` for install/build/lint/test/run commands; do not use `npm` or `npx`.
 
 ## Context Files
 
@@ -78,11 +79,13 @@ All new components that are created should be structured to facilitate future te
 Tests do not need to be added for small fixes or refactors, but any new features or significant changes should include tests. If tests are not added immediately, please note the gaps in TODOs or issues for future work. No tests are required for shadcn/ui components or simple presentational components that do not contain logic.
 
 **Structure:**
+
 - Unit tests live in colocated `__tests__` folders next to source code (e.g., `src/components/client/__tests__/hero.test.tsx`)
 - Vitest setup: `src/__tests__/setup.ts`
 - Playwright E2E tests: `test/` folder (e.g., `test/home.spec.ts`)
 
 **Guidelines:**
+
 - Do not block small fixes on missing tests; note gaps in TODOs/issues
 - When adding coverage, start with smoke/E2E for primary journeys (nav, hero, repo list) and keep fixtures lean; avoid external network in tests
 - Use React Testing Library for unit tests; Playwright for E2E

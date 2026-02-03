@@ -40,7 +40,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="flex min-h-screen min-w-full flex-col font-sans">
-        <ThemeProvider attribute="class" defaultTheme="dark">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <div className="fixed right-2 bottom-20 h-fit w-fit md:top-10 md:right-10">
             <ThemeToggle />
           </div>

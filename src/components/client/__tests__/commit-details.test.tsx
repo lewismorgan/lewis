@@ -15,6 +15,7 @@ vi.mock('~/lib/utils', async importOriginal => {
 
 describe('GitCardCommit', () => {
   const baseProps = {
+    url: 'https://github.com/lewismorgan/lewis/commit/abcdef1234567890',
     authors: [
       {
         username: 'Lewis',
@@ -36,6 +37,15 @@ describe('GitCardCommit', () => {
 
     expect(screen.getByText(/Refactor auth flow/)).toBeInTheDocument()
     expect(screen.getByText('abcdef1 • 5 mins ago')).toBeInTheDocument()
+  })
+
+  it('renders commit message as clickable link', () => {
+    render(<GitCardCommit {...baseProps} />)
+
+    const link = screen.getByRole('link', { name: /Refactor auth flow/ })
+    expect(link).toBeInTheDocument()
+    expect(link).toHaveAttribute('href', baseProps.url)
+    expect(link).toHaveAttribute('target', '_blank')
   })
 
   it('passes the date to the formatter', () => {

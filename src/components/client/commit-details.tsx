@@ -1,15 +1,19 @@
 'use client'
 import { Bot } from 'lucide-react'
 
+import { ExternalLink } from '../links'
+
 import { type GitAuthor } from '~/lib/types'
 import { formatTimeRelativeToNow } from '~/lib/utils'
 
 export const GitCardCommit = ({
+  url,
   authors,
   sha,
   message,
   date,
 }: {
+  url: string
   authors: GitAuthor[]
   sha: string
   message: string
@@ -62,8 +66,8 @@ export const GitCardCommit = ({
             </span>
           ))}
         </div>
-        <span className="truncate text-nowrap text-ellipsis hover:underline">
-          {message.split('\n')[0]}
+        <span className="truncate text-nowrap text-ellipsis">
+          <ExternalLink href={url}>{message.split('\n')[0]}</ExternalLink>
         </span>
       </div>
       <span className="text-muted-foreground text-right align-text-bottom text-xs font-thin">

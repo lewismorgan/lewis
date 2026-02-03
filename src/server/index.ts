@@ -1,12 +1,33 @@
+import { unstable_cache } from 'next/cache'
+
 import {
   type GitCommit,
   type ProgrammingLanguage,
   type RepositoryData,
   type SimpleGitUser,
 } from '../lib/types'
-import { getRepoCommit, getRepos, getUser } from './octokit'
+import { getLanguages, getRepoCommit, getRepos, getUser } from './octokit'
 
 import { sleep } from '~/lib/utils'
+
+const getCachedRepoLanguages = unstable_cache(
+  async (repo: string): Promise<ProgrammingLanguage[]> => {
+    const languagesData = await getLanguages(repo)
+
+    // sort the languages by the most used
+    const sorted = Object.entries(languagesData).sort((a, b) => b[1] - a[1])
+
+    return sorted.map(([language]) => {
+      const lang = (language as ProgrammingLanguage) ?? 'Unhandled'
+      if (lang === 'Unhandled') {
+        console.warn(`Unhandled language: ${language}`)
+      }
+      return lang
+    })
+  },
+  ['repo-languages'],
+  { revalidate: 60 * 60 },
+)
 
 const repoBlacklist = [
   'dotfiles',
@@ -59,30 +80,13 @@ export async function getLatestCommit(
   return data[0]
 }
 
-export async function getLanguages(
-  url: string,
+export async function getRepoLanguages(
+  repo: string,
   slow: boolean,
 ): Promise<ProgrammingLanguage[]> {
   if (slow) await sleep(2000)
-  const urlFetch = await fetch(url)
 
-  if (!urlFetch.ok) {
-    console.error('Failed to fetch languages:', urlFetch.statusText)
-    return []
-  }
-
-  const languagesData = (await urlFetch.json()) as Record<string, number>
-
-  // sort the languages by the most used
-  const sorted = Object.entries(languagesData).sort((a, b) => b[1] - a[1])
-
-  return sorted.map(([language]) => {
-    const lang = (language as ProgrammingLanguage) ?? 'Unhandled'
-    if (lang === 'Unhandled') {
-      console.warn(`Unhandled language: ${language}`)
-    }
-    return lang
-  })
+  return getCachedRepoLanguages(repo)
 }
 
 export async function getMyGit(): Promise<SimpleGitUser> {
