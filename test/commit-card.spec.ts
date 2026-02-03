@@ -105,4 +105,81 @@ test.describe('Commit Card Display', () => {
       .count()
     expect(avatarsInCommitArea).toBe(0)
   })
+
+  test('commit message should be clickable link', async ({ page }) => {
+    await page.goto('/')
+
+    // Wait for repository cards with commit information to load
+    await page.waitForSelector('[class*="flex"][class*="flex-col"]', {
+      timeout: 15000,
+    })
+
+    // Find the first commit message link
+    const commitMessageLink = page
+      .locator('[class*="truncate"] a[target="_blank"]')
+      .first()
+    await expect(commitMessageLink).toBeVisible({ timeout: 10000 })
+
+    // Verify the link has the correct attributes
+    const href = await commitMessageLink.getAttribute('href')
+    expect(href).toBeTruthy()
+    expect(href).toContain('github.com')
+
+    // Verify target="_blank" for external link
+    const target = await commitMessageLink.getAttribute('target')
+    expect(target).toBe('_blank')
+  })
+
+  test('author names should be clickable links to GitHub profiles', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    // Wait for commit details to load
+    await page.waitForSelector('[class*="flex"][class*="flex-row"]', {
+      timeout: 15000,
+    })
+
+    // Find author profile links (links with GitHub profile URLs)
+    const authorLinks = page.locator('a[href*="github.com"][target="_blank"]')
+    const authorLinkCount = await authorLinks.count()
+
+    // Should have at least one author link
+    expect(authorLinkCount).toBeGreaterThan(0)
+
+    // Check first author link
+    const firstAuthorLink = authorLinks.first()
+    await expect(firstAuthorLink).toBeVisible()
+
+    const href = await firstAuthorLink.getAttribute('href')
+    expect(href).toContain('github.com')
+
+    const target = await firstAuthorLink.getAttribute('target')
+    expect(target).toBe('_blank')
+  })
+
+  test('commit links should have proper styling for accessibility', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    // Wait for commit details to load
+    await page.waitForSelector('[class*="flex"][class*="flex-row"]', {
+      timeout: 15000,
+    })
+
+    // Check that commit message links have hover underline styling
+    const commitMessageLink = page
+      .locator('[class*="truncate"] a[target="_blank"]')
+      .first()
+    const commitLinkClasses = await commitMessageLink.getAttribute('class')
+    expect(commitLinkClasses).toContain('hover:underline')
+
+    // Check that author links have hover underline styling
+    const authorLink = page
+      .locator('a[href*="github.com/"][target="_blank"]')
+      .first()
+    const authorLinkClasses = await authorLink.getAttribute('class')
+    expect(authorLinkClasses).toContain('hover:underline')
+  })
 })

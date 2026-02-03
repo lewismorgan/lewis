@@ -27,6 +27,136 @@ test.describe('Home Page', () => {
   })
 })
 
+test.describe('Easter Eggs', () => {
+  test('clicking "glowsticks" should change avatar based on theme', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    // Get initial avatar src
+    const avatar = page.locator('img[alt="Lewis Morgan"]')
+    await expect(avatar).toBeVisible()
+    const initialSrc = await avatar.getAttribute('src')
+
+    // Click on glowsticks
+    const glowsticks = page.locator('text=glowsticks')
+    await glowsticks.click()
+
+    // Wait for avatar to change
+    await page.waitForTimeout(100)
+
+    // Avatar should change
+    const newSrc = await avatar.getAttribute('src')
+    expect(newSrc).not.toBe(initialSrc!)
+  })
+
+  test('clicking "space-lizards" should display lizard avatar', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    // Click on space-lizards
+    const spaceLizards = page.locator('text=space-lizards')
+    await spaceLizards.click()
+
+    // Wait for avatar to load
+    await page.waitForTimeout(100)
+
+    // Avatar should change to lizard image
+    const avatar = page.locator('img[alt="Lewis Morgan"]')
+    const src = await avatar.getAttribute('src')
+    expect(src).toMatch(/lizard/)
+  })
+
+  test('clicking "space-lizards" again should toggle back', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    // Get initial avatar
+    const avatar = page.locator('img[alt="Lewis Morgan"]')
+
+    // Click space-lizards to show lizard
+    const spaceLizards = page.locator('text=space-lizards')
+    await spaceLizards.click()
+    await page.waitForTimeout(100)
+
+    const lizardSrc = await avatar.getAttribute('src')
+    expect(lizardSrc).toMatch(/lizard/)
+
+    // Click again to toggle back
+    await spaceLizards.click()
+    await page.waitForTimeout(100)
+
+    const toggledBackSrc = await avatar.getAttribute('src')
+    expect(toggledBackSrc).not.toMatch(/lizard/)
+  })
+
+  test('clicking "code" should replay typing animation', async ({ page }) => {
+    await page.goto('/')
+
+    // Get initial typing animation state
+    const typingText = page.locator('text=Hello_Internet')
+    await expect(typingText).toBeVisible()
+
+    // Click on code
+    const code = page.locator('text=code')
+    await code.click()
+
+    // Wait for animation to restart
+    await page.waitForTimeout(100)
+
+    // Text should still be visible (animation replays)
+    await expect(typingText).toBeVisible()
+  })
+
+  test('glowsticks and space-lizards should not show together', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    // Click space-lizards first
+    const spaceLizards = page.locator('text=space-lizards')
+    await spaceLizards.click()
+    await page.waitForTimeout(100)
+
+    // Get lizard avatar
+    const avatar = page.locator('img[alt="Lewis Morgan"]')
+    let src = await avatar.getAttribute('src')
+    expect(src).toMatch(/lizard/)
+
+    // Now click glowsticks - should override and show Force avatar
+    const glowsticks = page.locator('text=glowsticks')
+    await glowsticks.click()
+    await page.waitForTimeout(100)
+
+    // Avatar should change from lizard
+    src = await avatar.getAttribute('src')
+    expect(src).not.toMatch(/lizard/)
+  })
+
+  test('easter egg clickable elements should have hover cursor pointer styling', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    // Check glowsticks
+    const glowsticks = page.locator('text=glowsticks')
+    const glowsticksClasses = await glowsticks.getAttribute('class')
+    expect(glowsticksClasses).toContain('hover:cursor-pointer')
+
+    // Check space-lizards
+    const spaceLizards = page.locator('text=space-lizards')
+    const lizardsClasses = await spaceLizards.getAttribute('class')
+    expect(lizardsClasses).toContain('hover:cursor-pointer')
+
+    // Check code
+    const code = page.locator('text=code')
+    const codeClasses = await code.getAttribute('class')
+    expect(codeClasses).toContain('hover:cursor-pointer')
+  })
+})
+
 test.describe('Repository Section', () => {
   test('should display repository section', async ({ page }) => {
     await page.goto('/')
