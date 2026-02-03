@@ -39,18 +39,28 @@ export const Commit = async ({
     )
   }
 
-  const { authors, sha, message, date: unparsedDate } = commitData
+  const {
+    authors,
+    sha,
+    message,
+    date: unparsedDate,
+    url: html_url,
+  } = commitData
   const date = Date.parse(unparsedDate)
 
   return (
-    <GitCardCommit authors={authors} sha={sha} message={message} date={date} />
+    <GitCardCommit
+      url={html_url}
+      authors={authors}
+      sha={sha}
+      message={message}
+      date={date}
+    />
   )
 }
 
 export const GitCardSkeleton = () => {
-  return (
-    <Skeleton className="h-36 w-[340px] p-3 shadow-md md:w-[375px] lg:w-[420px]" />
-  )
+  return <Skeleton className="h-36 w-85 p-3 shadow-md md:w-93.75 lg:w-105" />
 }
 
 export const GitCard = async ({
@@ -62,8 +72,9 @@ export const GitCard = async ({
 }: Props) => {
   const languageData = await getLanguages(languages_url, slowMode)
   const langBadges = <LanguageBadges languages={languageData.slice(0, 3)} />
+
   return (
-    <Card className="max-h-80 w-[340px] p-3 shadow-md md:w-[375px] lg:w-[420px]">
+    <Card className="max-h-80 w-85 p-3 shadow-md md:w-93.75 lg:w-105">
       <CardTitle className="flex items-center justify-between p-2 font-mono font-thin tracking-tighter">
         <ExternalLink href={html_url}>{name}</ExternalLink>
         <ReadmeDialog repoName={name} />

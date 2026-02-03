@@ -104,7 +104,7 @@ export function ReadmeDialog({ repoName }: ReadmeDialogProps) {
             </div>
           )}
           {content && !isLoading && !error && (
-            <pre className="bg-muted rounded-md p-4 text-sm text-wrap break-words whitespace-pre-wrap">
+            <pre className="bg-muted rounded-md p-4 text-sm text-wrap wrap-break-word whitespace-pre-wrap">
               {content}
             </pre>
           )}

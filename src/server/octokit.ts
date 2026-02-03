@@ -193,20 +193,17 @@ async function getAuthorDetails(
   // Clean up username (remove [bot] tag if present)
   const cleanUsername = actualUsername.replace('[bot]', '').trim()
 
-  // If we have a username from the commit, try to get their profile
-  if (username) {
+  // If we have a username from the commit and they are not a bot, try to get their profile
+  if (username && !bot) {
     try {
       const { data } = await octokit.request('GET /users/{username}', {
         username: cleanUsername,
       })
-      // GitHub API returns type: "Bot" for bot accounts
-      // Also check the returned login against bot patterns as an extra safety check
-      const isBotAccount =
-        data.type === 'Bot' || bot || isBot(data.login, email)
+
       return {
         username: data.login,
         profileUrl: data.html_url,
-        isBot: isBotAccount,
+        isBot: false,
       }
     } catch (error) {
       // If user fetch fails, fall back to using the username directly
