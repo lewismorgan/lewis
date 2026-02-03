@@ -1,5 +1,10 @@
 {
-	"inputs": [],
-	"servers": {
-	}
+  "servers": {
+    "docker-mcp-gateway": {
+      "type": "stdio",
+      "command": "docker",
+      "args": ["mcp", "gateway", "run"]
+    }
+  },
+  "inputs": []
 }
