@@ -8,6 +8,9 @@ import { getRepoCommit, getRepos, getUser } from './octokit'
 
 import { sleep } from '~/lib/utils'
 
+// Cache for language data to avoid duplicate API requests
+const languageCache = new Map<string, ProgrammingLanguage[]>()
+
 const repoBlacklist = [
   'dotfiles',
   'dotfiles-old',
@@ -63,6 +66,12 @@ export async function getLanguages(
   url: string,
   slow: boolean,
 ): Promise<ProgrammingLanguage[]> {
+  // Check cache first to avoid duplicate requests for the same repository
+  const cachedResult = languageCache.get(url)
+  if (cachedResult) {
+    return cachedResult
+  }
+
   if (slow) await sleep(2000)
   const urlFetch = await fetch(url)
 
@@ -76,13 +85,18 @@ export async function getLanguages(
   // sort the languages by the most used
   const sorted = Object.entries(languagesData).sort((a, b) => b[1] - a[1])
 
-  return sorted.map(([language]) => {
+  const result = sorted.map(([language]) => {
     const lang = (language as ProgrammingLanguage) ?? 'Unhandled'
     if (lang === 'Unhandled') {
       console.warn(`Unhandled language: ${language}`)
     }
     return lang
   })
+
+  // Store in cache for subsequent requests
+  languageCache.set(url, result)
+
+  return result
 }
 
 export async function getMyGit(): Promise<SimpleGitUser> {
