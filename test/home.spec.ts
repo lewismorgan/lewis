@@ -34,7 +34,7 @@ test.describe('Easter Eggs', () => {
     await page.goto('/')
 
     // Get initial avatar src
-    const avatar = page.locator('img[alt="Lewis Morgan"]')
+    const avatar = page.locator('img[alt="lewismorgan"]')
     await expect(avatar).toBeVisible()
     const initialSrc = await avatar.getAttribute('src')
 
@@ -63,7 +63,7 @@ test.describe('Easter Eggs', () => {
     await page.waitForTimeout(100)
 
     // Avatar should change to lizard image
-    const avatar = page.locator('img[alt="Lewis Morgan"]')
+    const avatar = page.locator('img[alt="lewismorgan"]')
     const src = await avatar.getAttribute('src')
     expect(src).toMatch(/lizard/)
   })
@@ -74,7 +74,7 @@ test.describe('Easter Eggs', () => {
     await page.goto('/')
 
     // Get initial avatar
-    const avatar = page.locator('img[alt="Lewis Morgan"]')
+    const avatar = page.locator('img[alt="lewismorgan"]')
 
     // Click space-lizards to show lizard
     const spaceLizards = page.locator('text=space-lizards')
@@ -99,8 +99,10 @@ test.describe('Easter Eggs', () => {
     const typingText = page.locator('text=Hello_Internet')
     await expect(typingText).toBeVisible()
 
-    // Click on code
-    const code = page.locator('text=code')
+    // Click on code (use more specific selector to avoid matching other elements)
+    const code = page.locator(
+      'span.font-mono.tracking-wider.hover\\:cursor-pointer',
+    )
     await code.click()
 
     // Wait for animation to restart
@@ -121,7 +123,7 @@ test.describe('Easter Eggs', () => {
     await page.waitForTimeout(100)
 
     // Get lizard avatar
-    const avatar = page.locator('img[alt="Lewis Morgan"]')
+    const avatar = page.locator('img[alt="lewismorgan"]')
     let src = await avatar.getAttribute('src')
     expect(src).toMatch(/lizard/)
 
@@ -140,8 +142,10 @@ test.describe('Easter Eggs', () => {
   }) => {
     await page.goto('/')
 
-    // Check glowsticks
-    const glowsticks = page.locator('text=glowsticks')
+    // Check glowsticks (within spiel - more specific)
+    const glowsticks = page.locator(
+      'span.relative:has(> span) >> text=glowsticks',
+    )
     const glowsticksClasses = await glowsticks.getAttribute('class')
     expect(glowsticksClasses).toContain('hover:cursor-pointer')
 
@@ -150,8 +154,10 @@ test.describe('Easter Eggs', () => {
     const lizardsClasses = await spaceLizards.getAttribute('class')
     expect(lizardsClasses).toContain('hover:cursor-pointer')
 
-    // Check code
-    const code = page.locator('text=code')
+    // Check code (use specific span selector)
+    const code = page.locator(
+      'span.font-mono.tracking-wider.hover\\:cursor-pointer',
+    )
     const codeClasses = await code.getAttribute('class')
     expect(codeClasses).toContain('hover:cursor-pointer')
   })

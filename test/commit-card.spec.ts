@@ -24,9 +24,9 @@ test.describe('Commit Card Display', () => {
       timeout: 15000,
     })
 
-    // Check that commit message is displayed (truncated with ellipsis)
+    // Check that commit message is displayed as a link
     const commitMessage = page
-      .locator('[class*="truncate"][class*="hover:underline"]')
+      .locator('a[target="_blank"][href*="github.com"][href*="commit"]')
       .first()
     await expect(commitMessage).toBeVisible({ timeout: 10000 })
   })
@@ -170,15 +170,15 @@ test.describe('Commit Card Display', () => {
 
     // Check that commit message links have hover underline styling
     const commitMessageLink = page
-      .locator('[class*="truncate"] a[target="_blank"]')
+      .locator('a[target="_blank"][href*="github.com"][href*="commit"]')
       .first()
     const commitLinkClasses = await commitMessageLink.getAttribute('class')
     expect(commitLinkClasses).toContain('hover:underline')
 
     // Check that author links have hover underline styling
-    const authorLink = page
-      .locator('a[href*="github.com/"][target="_blank"]')
-      .first()
+    // Get all author links that are not commit links (use font-semibold class)
+    const authorLinks = page.locator('a.font-semibold[target="_blank"]')
+    const authorLink = authorLinks.first()
     const authorLinkClasses = await authorLink.getAttribute('class')
     expect(authorLinkClasses).toContain('hover:underline')
   })
