@@ -1,3 +1,5 @@
+import { unstable_cache } from 'next/cache'
+
 import {
   type GitCommit,
   type ProgrammingLanguage,
@@ -8,8 +10,24 @@ import { getLanguages, getRepoCommit, getRepos, getUser } from './octokit'
 
 import { sleep } from '~/lib/utils'
 
-// Cache for language data to avoid duplicate API requests
-const languageCache = new Map<string, ProgrammingLanguage[]>()
+const getCachedRepoLanguages = unstable_cache(
+  async (repo: string): Promise<ProgrammingLanguage[]> => {
+    const languagesData = await getLanguages(repo)
+
+    // sort the languages by the most used
+    const sorted = Object.entries(languagesData).sort((a, b) => b[1] - a[1])
+
+    return sorted.map(([language]) => {
+      const lang = (language as ProgrammingLanguage) ?? 'Unhandled'
+      if (lang === 'Unhandled') {
+        console.warn(`Unhandled language: ${language}`)
+      }
+      return lang
+    })
+  },
+  ['repo-languages'],
+  { revalidate: 60 * 60 },
+)
 
 const repoBlacklist = [
   'dotfiles',
@@ -68,29 +86,7 @@ export async function getRepoLanguages(
 ): Promise<ProgrammingLanguage[]> {
   if (slow) await sleep(2000)
 
-  // Check cache first to avoid duplicate requests for the same repository
-  const cachedResult = languageCache.get(repo)
-  if (cachedResult) {
-    return cachedResult
-  }
-
-  const languagesData = await getLanguages(repo)
-
-  // sort the languages by the most used
-  const sorted = Object.entries(languagesData).sort((a, b) => b[1] - a[1])
-
-  const result = sorted.map(([language]) => {
-    const lang = (language as ProgrammingLanguage) ?? 'Unhandled'
-    if (lang === 'Unhandled') {
-      console.warn(`Unhandled language: ${language}`)
-    }
-    return lang
-  })
-
-  // Store in cache for subsequent requests
-  languageCache.set(repo, result)
-
-  return result
+  return getCachedRepoLanguages(repo)
 }
 
 export async function getMyGit(): Promise<SimpleGitUser> {

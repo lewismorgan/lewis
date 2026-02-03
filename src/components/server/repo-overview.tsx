@@ -27,7 +27,7 @@ const RepositoryCards = async ({
       <GitCard
         key={index}
         {...repo}
-        languages={allLanguages[index]!}
+        languages={allLanguages[index] ?? []}
         slowMode={slowMode}
       />
     </Suspense>

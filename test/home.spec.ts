@@ -42,8 +42,11 @@ test.describe('Easter Eggs', () => {
     const glowsticks = page.locator('text=glowsticks')
     await glowsticks.click()
 
-    // Wait for avatar to change
-    await page.waitForTimeout(100)
+    // Wait for avatar src attribute to change
+    await expect(avatar).toHaveAttribute(
+      'src',
+      new RegExp(`^(?!${initialSrc}).*`),
+    )
 
     // Avatar should change
     const newSrc = await avatar.getAttribute('src')
@@ -59,11 +62,10 @@ test.describe('Easter Eggs', () => {
     const spaceLizards = page.locator('text=space-lizards')
     await spaceLizards.click()
 
-    // Wait for avatar to load
-    await page.waitForTimeout(100)
-
-    // Avatar should change to lizard image
+    // Wait for avatar to change to lizard image
     const avatar = page.locator('img[alt="lewismorgan"]')
+    await expect(avatar).toHaveAttribute('src', /lizard/)
+
     const src = await avatar.getAttribute('src')
     expect(src).toMatch(/lizard/)
   })
@@ -79,14 +81,14 @@ test.describe('Easter Eggs', () => {
     // Click space-lizards to show lizard
     const spaceLizards = page.locator('text=space-lizards')
     await spaceLizards.click()
-    await page.waitForTimeout(100)
+    await expect(avatar).toHaveAttribute('src', /lizard/)
 
     const lizardSrc = await avatar.getAttribute('src')
     expect(lizardSrc).toMatch(/lizard/)
 
     // Click again to toggle back
     await spaceLizards.click()
-    await page.waitForTimeout(100)
+    await expect(avatar).not.toHaveAttribute('src', /lizard/)
 
     const toggledBackSrc = await avatar.getAttribute('src')
     expect(toggledBackSrc).not.toMatch(/lizard/)
@@ -105,9 +107,6 @@ test.describe('Easter Eggs', () => {
     )
     await code.click()
 
-    // Wait for animation to restart
-    await page.waitForTimeout(100)
-
     // Text should still be visible (animation replays)
     await expect(typingText).toBeVisible()
   })
@@ -120,7 +119,10 @@ test.describe('Easter Eggs', () => {
     // Click space-lizards first
     const spaceLizards = page.locator('text=space-lizards')
     await spaceLizards.click()
-    await page.waitForTimeout(100)
+    await expect(page.locator('img[alt="lewismorgan"]')).toHaveAttribute(
+      'src',
+      /lizard/,
+    )
 
     // Get lizard avatar
     const avatar = page.locator('img[alt="lewismorgan"]')
@@ -130,7 +132,7 @@ test.describe('Easter Eggs', () => {
     // Now click glowsticks - should override and show Force avatar
     const glowsticks = page.locator('text=glowsticks')
     await glowsticks.click()
-    await page.waitForTimeout(100)
+    await expect(avatar).not.toHaveAttribute('src', /lizard/)
 
     // Avatar should change from lizard
     src = await avatar.getAttribute('src')
