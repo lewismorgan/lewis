@@ -315,6 +315,20 @@ export async function getContributors(repo: string): Promise<GitContributor[]> {
   })
 }
 
+export async function getLanguages(
+  repo: string,
+): Promise<Record<string, number>> {
+  const { data } = await octokit.request(
+    'GET /repos/{owner}/{repo}/languages',
+    {
+      owner: 'lewismorgan',
+      repo: repo,
+    },
+  )
+
+  return data
+}
+
 export async function getReadme(repo: string): Promise<string | null> {
   try {
     const response = await octokit.request('GET /repos/{owner}/{repo}/readme', {

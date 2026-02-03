@@ -8,13 +8,14 @@ import { Card, CardContent, CardDescription, CardTitle } from '../ui/card'
 import { Skeleton } from '../ui/skeleton'
 
 import 'server-only'
-import { getLanguages, getLatestCommit } from '~/server'
+import type { ProgrammingLanguage } from '~/lib/types'
+import { getLatestCommit } from '~/server'
 
 type Props = {
   name: string
   description: string
   html_url: string
-  languages_url: string
+  languages: ProgrammingLanguage[]
   slowMode: boolean
 }
 
@@ -66,12 +67,11 @@ export const GitCardSkeleton = () => {
 export const GitCard = async ({
   name,
   description,
-  languages_url,
+  languages,
   html_url,
   slowMode,
 }: Props) => {
-  const languageData = await getLanguages(languages_url, slowMode)
-  const langBadges = <LanguageBadges languages={languageData.slice(0, 3)} />
+  const langBadges = <LanguageBadges languages={languages.slice(0, 3)} />
 
   return (
     <Card className="max-h-80 w-85 p-3 shadow-md md:w-93.75 lg:w-105">
@@ -83,7 +83,7 @@ export const GitCard = async ({
         {description}
       </CardDescription>
       <CardContent className="flex w-full flex-col p-0 pt-2">
-        {languageData.length > 0 ? (
+        {languages.length > 0 ? (
           <div className="flex w-full flex-row justify-center gap-2 pb-2">
             {langBadges}
           </div>

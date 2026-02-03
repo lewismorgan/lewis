@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import { GitCard, GitCardSkeleton } from '../server/git-card'
 
 import 'server-only'
-import { getRepositories } from '~/server'
+import { getRepoLanguages, getRepositories } from '~/server'
 
 const RepositoryCards = async ({
   count,
@@ -16,9 +16,20 @@ const RepositoryCards = async ({
 
   const repositories = repositoryData.filter(repo => !repo.fork).slice(0, count)
 
+  // Fetch all languages upfront in parallel to reduce API calls
+  const languagesPromises = repositories.map(async repo => {
+    return await getRepoLanguages(repo.name, slowMode)
+  })
+  const allLanguages = await Promise.all(languagesPromises)
+
   return repositories.map((repo, index) => (
     <Suspense key={index} fallback={<GitCardSkeleton />}>
-      <GitCard key={index} {...repo} slowMode={slowMode} />
+      <GitCard
+        key={index}
+        {...repo}
+        languages={allLanguages[index]!}
+        slowMode={slowMode}
+      />
     </Suspense>
   ))
 }
