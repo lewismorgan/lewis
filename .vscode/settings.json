@@ -2,5 +2,10 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "editor.linkedEditing": true,
   "debug.javascript.autoAttachFilter": "disabled",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "file": ".github/instructions/git-commit-messages.instructions.md"
+    }
+  ]
 }

@@ -1,8 +1,18 @@
 ---
-description: "Review mode for focused PR feedback"
-model:  Auto (copilot)
-tools: ['search/codebase','search','read/problems', 'search/changes']
+description: 'Review mode for focused PR feedback'
+model: Auto (copilot)
+tools:
+  [
+    'execute',
+    'read/problems',
+    'read/readFile',
+    'read/getTaskOutput',
+    'search',
+    'agent',
+    'docker-mcp-gateway/*',
+  ]
 ---
+
 # Review Mode
 
 - Provide concise findings: correctness, a11y, performance, and style alignment.
