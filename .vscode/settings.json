@@ -7,5 +7,6 @@
     {
       "file": ".github/instructions/git-commit-messages.instructions.md"
     }
-  ]
+  ],
+  "npm.packageManager": "pnpm"
 }
