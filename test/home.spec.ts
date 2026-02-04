@@ -1,18 +1,17 @@
 import { expect, test } from '@playwright/test'
 
 test.describe('Main Content', () => {
-  test('should display hero section with greeting', async ({ page }) => {
+  test('should display hero section with typing greeting', async ({ page }) => {
     await page.goto('/')
-    await expect(page.locator('text=Hello_Internet')).toBeVisible()
+
+    await expect(
+      page.getByRole('heading', { name: 'Hello_Internet' }),
+    ).toBeVisible()
   })
 
   test('should display welcome message', async ({ page }) => {
     await page.goto('/')
-    await expect(
-      page.locator(
-        'text=Welcome to the digital space, domain, and realm of Lewis Morgan',
-      ),
-    ).toBeVisible()
+    await expect(page.getByText('Welcome to the digital space')).toBeVisible()
   })
 
   test('should display Software Engineer link', async ({ page }) => {
@@ -35,9 +34,16 @@ test.describe('Main Content', () => {
   })
 
   test('should have theme toggle button', async ({ page }) => {
+    const themeButton = page.getByRole('button', { name: 'Toggle theme' })
+
+    await page.emulateMedia({ colorScheme: 'dark' })
     await page.goto('/')
-    const themeButton = page.locator('button').first()
+
     await expect(themeButton).toBeVisible()
+
+    await expect(page.locator('html')).toHaveAttribute('class', /dark/)
+    await themeButton.click()
+    await expect(page.locator('html')).toHaveAttribute('class', /light/)
   })
 })
 
