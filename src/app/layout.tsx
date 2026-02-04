@@ -3,7 +3,7 @@ import { Exo_2, Source_Code_Pro } from 'next/font/google'
 
 import '~/styles/globals.css'
 import { ThemeToggle } from '~/components/client/theme-toggle'
-import { ExternalLink } from '~/components/links'
+import { Footer } from '~/components/server/footer'
 import { ThemeProvider } from '~/components/utils/theme-provider'
 
 const exo_2 = Exo_2({
@@ -31,6 +31,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const commitSha = process.env.VERCEL_GIT_COMMIT_SHA
+
   // hydration warning suppression is only 1 level deep per react docs, this is to prevent the theme being put in html class errors
   // https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
   return (
@@ -45,15 +47,7 @@ export default function RootLayout({
             <ThemeToggle />
           </div>
           <div className="mb-8 grow">{children}</div>
-          <footer className="text-muted-foreground fixed bottom-0 flex w-full justify-center text-xs">
-            <div className="border-border rounded-tl-sm rounded-tr-sm border-t border-r border-l p-2 align-middle backdrop-blur-xs">
-              Created by Lewis Morgan. Source code is available on{' '}
-              <ExternalLink href="https://github.com/lewismorgan/lewis">
-                GitHub
-              </ExternalLink>
-              .
-            </div>
-          </footer>
+          <Footer commitSha={commitSha} />
         </ThemeProvider>
         <Analytics />
       </body>
