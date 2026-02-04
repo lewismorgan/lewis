@@ -46,7 +46,7 @@
   // "forwardPorts": [],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": ". ${NVM_DIR}/nvm.sh && nvm install && nvm use && corepack enable && corepack install && pnpm install && pnpm exec playwright install --with-deps"
+  "postCreateCommand": ". ${NVM_DIR}/nvm.sh && nvm install && nvm use && npm install -g pnpm@10.28.2 && pnpm install && pnpm exec playwright install --with-deps"
 
   // Configure tool-specific properties.
   // "customizations": {},
