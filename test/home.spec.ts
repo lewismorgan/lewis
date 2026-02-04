@@ -239,7 +239,9 @@ test.describe('Footer', () => {
     await expect(footerLink).toHaveText('GitHub')
   })
 
-  test('should display commit SHA link in footer', async ({ page }) => {
+  test('should display commit SHA link and text in footer', async ({
+    page,
+  }) => {
     await page.goto('/')
     const commitLink = page.locator(
       'footer a[href*="github.com"][href*="commit"]',
@@ -247,15 +249,19 @@ test.describe('Footer', () => {
     await expect(commitLink).toBeVisible()
 
     const text = await commitLink.textContent()
+    const href = await commitLink.getAttribute('href')
+
     const envSha = process.env.VERCEL_GIT_COMMIT_SHA
 
     if (envSha) {
       // In CI, verify it shows the correct short SHA from the env var
       const expectedShortSha = envSha.substring(0, 7)
       expect(text).toBe(expectedShortSha)
+      expect(href).toBe(`https://github.com/lewismorgan/lewis/commit/${envSha}`)
     } else {
       // In local dev without env var, should default to "PREVIEW"
       expect(text).toBe('PREVIEW')
+      expect(href).toBe('https://github.com/lewismorgan/lewis/commit/PREVIEW')
     }
   })
 
@@ -288,39 +294,11 @@ test.describe('Footer', () => {
     }
   })
 
-  test('footer should be present in DOM', async ({ page }) => {
-    await page.goto('/')
-    const footer = page.locator('footer')
-    // Check footer exists even though it's fixed
-    expect(await footer.count()).toBeGreaterThan(0)
-  })
-
-  test('commit SHA link should point to correct GitHub commit URL', async ({
-    page,
-  }) => {
-    await page.goto('/')
-    const commitLink = page.locator(
-      'footer a[href*="github.com"][href*="commit"]',
-    )
-    const href = await commitLink.getAttribute('href')
-
-    // Verify the URL contains the correct commit SHA
-    const envSha = process.env.VERCEL_GIT_COMMIT_SHA
-
-    if (envSha) {
-      // In CI, verify it links to the correct full SHA from the env var
-      expect(href).toBe(`https://github.com/lewismorgan/lewis/commit/${envSha}`)
-    } else {
-      // In local dev without env var, should link to PREVIEW
-      expect(href).toBe('https://github.com/lewismorgan/lewis/commit/PREVIEW')
-    }
-  })
-
   test('footer should contain proper spacing and styling', async ({ page }) => {
     await page.goto('/')
     const footerContent = page.locator('footer > div')
 
-    // Verify footer is positioned as fixed element at bottom
+    // Verify footer is positioned as fixed element at bottom so it floats through the page
     const classes = await footerContent.getAttribute('class')
     expect(classes).toContain('fixed')
     expect(classes).toContain('bottom-0')

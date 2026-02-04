@@ -5,6 +5,7 @@ import '~/styles/globals.css'
 import { ThemeToggle } from '~/components/client/theme-toggle'
 import { Footer } from '~/components/server/footer'
 import { ThemeProvider } from '~/components/utils/theme-provider'
+import { env } from '~/env'
 
 const exo_2 = Exo_2({
   subsets: ['latin'],
@@ -31,7 +32,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const commitSha = process.env.VERCEL_GIT_COMMIT_SHA
+  const commitSha = env.VERCEL_GIT_COMMIT_SHA
 
   // hydration warning suppression is only 1 level deep per react docs, this is to prevent the theme being put in html class errors
   // https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
