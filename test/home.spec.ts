@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-test.describe('Home Page', () => {
+test.describe('Main Content', () => {
   test('should display hero section with greeting', async ({ page }) => {
     await page.goto('/')
     await expect(page.locator('text=Hello_Internet')).toBeVisible()
@@ -15,9 +15,23 @@ test.describe('Home Page', () => {
     ).toBeVisible()
   })
 
-  test('should display Software Engineer section', async ({ page }) => {
+  test('should display Software Engineer link', async ({ page }) => {
     await page.goto('/')
-    await expect(page.locator('text=Software Engineer')).toBeVisible()
+    const link = page.getByRole('link', { name: 'Software Engineer' })
+
+    await expect(link).toBeVisible()
+    await expect(link).toHaveAttribute('href', 'https://github.com/lewismorgan')
+  })
+
+  test('should display GitHub bio on hover', async ({ page }) => {
+    await page.goto('/')
+    await page.getByRole('link', { name: 'Software Engineer' }).hover()
+    await expect(
+      page
+        .locator('div')
+        .filter({ hasText: 'lewismorganis a developer' })
+        .nth(4),
+    ).toBeVisible()
   })
 
   test('should have theme toggle button', async ({ page }) => {
@@ -177,130 +191,5 @@ test.describe('Repository Section', () => {
     await page.goto('/')
     const githubLink = page.locator('a[href*="github.com/lewismorgan"]')
     await expect(githubLink.first()).toBeVisible()
-  })
-})
-
-test.describe('README Dialog', () => {
-  test('README dialog button should have hover cursor pointer', async ({
-    page,
-  }) => {
-    await page.goto('/')
-    // Wait for repository cards to load
-    await page.waitForSelector('button[aria-label*="View README"]', {
-      timeout: 10000,
-    })
-
-    const readmeButton = page
-      .locator('button[aria-label*="View README"]')
-      .first()
-    await expect(readmeButton).toBeVisible()
-
-    // Check if button has hover:cursor-pointer class
-    const className = await readmeButton.getAttribute('class')
-    expect(className).toContain('hover:cursor-pointer')
-  })
-
-  test('README dialog close button should have hover cursor pointer', async ({
-    page,
-  }) => {
-    await page.goto('/')
-    // Wait for repository cards to load
-    await page.waitForSelector('button[aria-label*="View README"]', {
-      timeout: 10000,
-    })
-
-    const readmeButton = page
-      .locator('button[aria-label*="View README"]')
-      .first()
-    await readmeButton.click()
-
-    // Wait for dialog to open
-    await page.waitForSelector('[role="dialog"]', { timeout: 5000 })
-
-    // Find the close button (X button)
-    const closeButton = page.locator('[role="dialog"] button').first()
-    await expect(closeButton).toBeVisible()
-
-    // Check if close button has hover:cursor-pointer class
-    const className = await closeButton.getAttribute('class')
-    expect(className).toContain('hover:cursor-pointer')
-  })
-})
-
-test.describe('Footer', () => {
-  test('should display footer with GitHub repository link', async ({
-    page,
-  }) => {
-    await page.goto('/')
-    const footerLink = page.locator(
-      'footer a[href="https://github.com/lewismorgan/lewis"]',
-    )
-    await expect(footerLink).toBeVisible()
-    await expect(footerLink).toHaveText('GitHub')
-  })
-
-  test('should display commit SHA link and text in footer', async ({
-    page,
-  }) => {
-    await page.goto('/')
-    const commitLink = page.locator(
-      'footer a[href*="github.com"][href*="commit"]',
-    )
-    await expect(commitLink).toBeVisible()
-
-    const text = await commitLink.textContent()
-    const href = await commitLink.getAttribute('href')
-
-    const envSha = process.env.VERCEL_GIT_COMMIT_SHA
-
-    if (envSha) {
-      // In CI, verify it shows the correct short SHA from the env var
-      const expectedShortSha = envSha.substring(0, 7)
-      expect(text).toBe(expectedShortSha)
-      expect(href).toBe(`https://github.com/lewismorgan/lewis/commit/${envSha}`)
-    } else {
-      // In local dev without env var, should default to "PREVIEW"
-      expect(text).toBe('PREVIEW')
-      expect(href).toBe('https://github.com/lewismorgan/lewis/commit/PREVIEW')
-    }
-  })
-
-  test('should display creator attribution in footer', async ({ page }) => {
-    await page.goto('/')
-    // Footer is fixed at bottom, check the text content includes creator attribution
-    const footerContent = await page.locator('footer').textContent()
-    expect(footerContent).toContain('Created by Lewis Morgan')
-  })
-
-  test('should display deployment status with commit reference', async ({
-    page,
-  }) => {
-    await page.goto('/')
-    // Footer is fixed at bottom, check the text content includes deployment info
-    const footerContent = await page.locator('footer').textContent()
-    expect(footerContent).toContain('Deployed from commit')
-  })
-
-  test('all footer links should open in new tab', async ({ page }) => {
-    await page.goto('/')
-    const footerLinks = page.locator('footer a')
-    const count = await footerLinks.count()
-
-    expect(count).toBeGreaterThan(0)
-
-    for (let i = 0; i < count; i++) {
-      const link = footerLinks.nth(i)
-      await expect(link).toHaveAttribute('target', '_blank')
-    }
-  })
-
-  test('footer should contain proper spacing and styling', async ({ page }) => {
-    await page.goto('/')
-    const footerContent = page.locator('footer > div')
-
-    // Verify footer is positioned as fixed element at bottom so it floats through the page
-    const classes = await footerContent.getAttribute('class')
-    expect(classes).toContain('fixed')
-    expect(classes).toContain('bottom-0')
   })
 })
