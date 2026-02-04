@@ -9,6 +9,8 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(['development', 'test', 'production']),
     GITHUB_TOKEN: z.string(),
+    VERCEL_GIT_COMMIT_SHA: z.string().optional(),
+    VERCEL_GIT_COMMIT_REF: z.string().optional(),
   },
 
   /**
@@ -27,6 +29,8 @@ export const env = createEnv({
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     GITHUB_TOKEN: process.env.GITHUB_TOKEN,
+    VERCEL_GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA,
+    VERCEL_GIT_COMMIT_REF: process.env.VERCEL_GIT_COMMIT_REF,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

@@ -14,6 +14,7 @@ applyTo: '**/{__tests__/**,*.test.ts,*.test.tsx,test/**}'
 ## Structure
 
 - Unit tests live beside code in `__tests__` (e.g., `src/components/client/__tests__/hero.test.tsx`).
+- **Server async components** (`src/components/server/*.tsx`) should **only be tested with E2E tests** via Playwright, not Vitest. Vitest does not play well with async server components; use Playwright E2E tests in `test/` instead.
 - Use `src/__tests__/setup.ts` for shared Vitest config/mocks; avoid per-test redefinition.
 - Skip UI primitive snapshots unless behaviorful; prefer interaction/state tests for client components.
 - E2E specs live in `test/` (e.g., `test/home.spec.ts`). Keep fixtures lean and deterministic.
@@ -43,6 +44,7 @@ applyTo: '**/{__tests__/**,*.test.ts,*.test.tsx,test/**}'
 - Critical flows: hero render, theme toggle placement, repo slow-mode paths, hovercards showing Git data, footer links.
 - Data guards: empty/error states for repos/commits/languages; slow-mode delays; missing env handling stays server-side.
 - Accessibility: focusability, ARIA labels on interactive elements, keyboard navigation in hovercards/buttons.
+- **Server async components**: Test exclusively with E2E/Playwright; verify data fetching, prop rendering, and integration with layout/page contexts.
 
 ## Running & Commands
 
@@ -56,6 +58,7 @@ applyTo: '**/{__tests__/**,*.test.ts,*.test.tsx,test/**}'
 - For client components using `next-themes`, mock theme provider to control light/dark cases.
 - When testing async UI (slow mode), await screen queries with timeouts matching simulated delays.
 - Snapshot only stable markup (metadata, simple text); avoid snapshotting animated or randomized content.
+- **Server components**: Do not create Vitest unit tests for async server components in `src/components/server/`. Per [Next.js testing guidance](https://nextjs.org/docs/app/guides/testing), Vitest is incompatible with async server components. Test these exclusively via Playwright E2E tests in `test/`, verifying props, data fetching, and integration with the full page context.
 
 ## Maintenance
 
