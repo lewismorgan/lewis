@@ -246,9 +246,17 @@ test.describe('Footer', () => {
     )
     await expect(commitLink).toBeVisible()
 
-    // Verify it's a 7-character short SHA or "PREVIEW"
     const text = await commitLink.textContent()
-    expect(text).toMatch(/^([a-f0-9]{7}|PREVIEW)$/)
+    const envSha = process.env.VERCEL_GIT_COMMIT_SHA
+
+    if (envSha) {
+      // In CI, verify it shows the correct short SHA from the env var
+      const expectedShortSha = envSha.substring(0, 7)
+      expect(text).toBe(expectedShortSha)
+    } else {
+      // In local dev without env var, should default to "PREVIEW"
+      expect(text).toBe('PREVIEW')
+    }
   })
 
   test('should display creator attribution in footer', async ({ page }) => {
@@ -296,8 +304,16 @@ test.describe('Footer', () => {
     )
     const href = await commitLink.getAttribute('href')
 
-    // Verify the URL structure is correct
-    expect(href).toMatch(/^https:\/\/github\.com\/lewismorgan\/lewis\/commit\//)
+    // Verify the URL contains the correct commit SHA
+    const envSha = process.env.VERCEL_GIT_COMMIT_SHA
+
+    if (envSha) {
+      // In CI, verify it links to the correct full SHA from the env var
+      expect(href).toBe(`https://github.com/lewismorgan/lewis/commit/${envSha}`)
+    } else {
+      // In local dev without env var, should link to PREVIEW
+      expect(href).toBe('https://github.com/lewismorgan/lewis/commit/PREVIEW')
+    }
   })
 
   test('footer should contain proper spacing and styling', async ({ page }) => {
