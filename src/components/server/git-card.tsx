@@ -74,8 +74,14 @@ export const GitCard = async ({
   const langBadges = <LanguageBadges languages={languages.slice(0, 3)} />
 
   return (
-    <Card className="max-h-80 w-85 p-3 shadow-md md:w-93.75 lg:w-105">
-      <CardTitle className="flex items-center justify-between p-2 font-mono font-thin tracking-tighter">
+    <Card
+      className="max-h-80 w-85 p-3 shadow-md md:w-93.75 lg:w-105"
+      data-testid={`git-card`}
+    >
+      <CardTitle
+        className="flex items-center justify-between p-2 font-mono font-thin tracking-tighter"
+        data-testid="git-repo-title"
+      >
         <ExternalLink href={html_url}>{name}</ExternalLink>
         <ReadmeDialog repoName={name} />
       </CardTitle>

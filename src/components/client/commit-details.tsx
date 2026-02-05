@@ -37,7 +37,10 @@ export const GitCardCommit = ({
 
   return (
     <>
-      <div className="flex flex-row items-center gap-2 text-sm lg:text-sm">
+      <div
+        className="flex flex-row items-center gap-2 text-sm lg:text-sm"
+        data-testid="git-card-commit"
+      >
         <div className="flex flex-row items-center gap-1">
           {/* Show single bot icon if any bots are present */}
           {hasBots && (
@@ -67,7 +70,9 @@ export const GitCardCommit = ({
           ))}
         </div>
         <span className="truncate text-nowrap text-ellipsis">
-          <ExternalLink href={url}>{message.split('\n')[0]}</ExternalLink>
+          <ExternalLink href={url} data-testid="commit-message-link">
+            {message.split('\n')[0]}
+          </ExternalLink>
         </span>
       </div>
       <span className="text-muted-foreground text-right align-text-bottom text-xs font-thin">
