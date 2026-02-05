@@ -28,7 +28,10 @@ export const SlowModeContainer = ({
 
   return (
     <>
-      <div className="ml-auto flex items-center space-x-2 pr-4">
+      <div
+        className="ml-auto flex items-center space-x-2 pr-4"
+        data-testid="slow-mode-container"
+      >
         <Switch
           id="slow-mode"
           defaultChecked={paramSlowMode}

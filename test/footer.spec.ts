@@ -37,7 +37,7 @@ test.describe('Footer', () => {
 
     const envSha = process.env.VERCEL_GIT_COMMIT_SHA
     let shortSha = envSha
-    if (envSha) {
+    if (envSha !== undefined) {
       // In CI, verify it shows the correct short SHA from the env var
       shortSha = envSha.substring(0, 7)
     } else {
@@ -49,7 +49,7 @@ test.describe('Footer', () => {
     await expect(commitLink).toHaveText(shortSha)
     await expect(commitLink).toHaveAttribute(
       'href',
-      `https://github.com/lewismorgan/lewis/commit/${envSha}`,
+      `https://github.com/lewismorgan/lewis/commit/${shortSha}`,
     )
     await expect(commitLink).toHaveAttribute('target', '_blank')
   })

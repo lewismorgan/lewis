@@ -5,8 +5,8 @@ test.describe('Commit Card Display', () => {
     await page.goto('/')
 
     // Wait for repository cards with commit information to load
-    const gitCards = page.getByTestId('git-card').count()
-    await expect(gitCards).resolves.toBeGreaterThan(1)
+    const gitCards = page.getByTestId('git-card')
+    await expect(gitCards).toHaveCount(5, { timeout: 5000 })
   })
 
   test('should display no more than 3 language badges per repository', async ({
