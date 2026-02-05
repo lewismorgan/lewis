@@ -28,12 +28,13 @@ code .
 ```
 
 When VSCode launches, click on "Open in devcontainer" using the VSCode Development Containers extension.
-The pacakges will automatically be installed using corepack and pnpm. Corepack installs the package manager defined in `package.json`.
+The packages will automatically be installed using pnpm. The package manager version is dynamically extracted from the `packageManager` field in `package.json`.
 
 If not, perform the following:
 
 ```bash
-corepack install
+# Install pnpm version from package.json
+npm install -g pnpm@$(node -p "require('./package.json').packageManager.split('@')[1].split('+')[0]")
 pnpm install
 ```
 
