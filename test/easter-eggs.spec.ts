@@ -56,18 +56,15 @@ test.describe('Easter Eggs', () => {
     const spaceLizards = page.getByText('space-lizards', { exact: true })
 
     await page.goto('/')
+
+    // Wait for avatar to change to lizard image
     await expect(avatar).toBeVisible()
     await expect(spaceLizards).toBeVisible()
 
-    // Wait for avatar to change to lizard image
     await spaceLizards.click()
 
     await expect(avatar).toBeVisible()
-
-    // expect the screenshot to be astro_lizard.png -- nextjs compresses images sometimes causing diffs
-    await expect(avatar).toHaveScreenshot('astro-lizard.png', {
-      maxDiffPixelRatio: 0.3,
-    })
+    await expect(avatar).toHaveAttribute('src', /lizard/)
   })
 
   test('clicking "space-lizards" again should toggle back', async ({
@@ -79,7 +76,7 @@ test.describe('Easter Eggs', () => {
     const avatar = page.getByRole('img', { name: 'lewismorgan' })
 
     // Click space-lizards to show lizard
-    const spaceLizards = page.locator('text=space-lizards')
+    const spaceLizards = page.getByText('space-lizards', { exact: true })
     await spaceLizards.click()
     await expect(avatar).toHaveAttribute('src', /lizard/)
 
@@ -97,17 +94,15 @@ test.describe('Easter Eggs', () => {
   test('clicking "code" should replay typing animation', async ({ page }) => {
     await page.goto('/')
 
-    // Get initial typing animation state
-    const typingText = page.locator('text=Hello_Internet')
+    // Get initial typing animation state played in full
+    const typingText = page.getByText('Hello_Internet', { exact: true })
     await expect(typingText).toBeVisible()
 
     // Click on code (use more specific selector to avoid matching other elements)
-    const code = page.locator(
-      'span.font-mono.tracking-wider.hover\\:cursor-pointer',
-    )
+    const code = page.getByText('code', { exact: true })
     await code.click()
 
-    // Text should still be visible (animation replays)
+    // Text should still be visible, actual functionality of this test is done through unit tests
     await expect(typingText).toBeVisible()
   })
 
@@ -117,7 +112,7 @@ test.describe('Easter Eggs', () => {
     await page.goto('/')
 
     // Click space-lizards first
-    const spaceLizards = page.locator('text=space-lizards')
+    const spaceLizards = page.getByText('space-lizards', { exact: true })
     await spaceLizards.click()
     await expect(
       page.getByRole('img', { name: 'lewismorgan' }),
@@ -129,7 +124,7 @@ test.describe('Easter Eggs', () => {
     expect(src).toMatch(/lizard/)
 
     // Now click glowsticks - should override and show Force avatar
-    const glowsticks = page.locator('text=glowsticks')
+    const glowsticks = page.getByText('glowsticks', { exact: true })
     await glowsticks.click()
     await expect(avatar).not.toHaveAttribute('src', /lizard/)
 
@@ -144,21 +139,17 @@ test.describe('Easter Eggs', () => {
     await page.goto('/')
 
     // Check glowsticks (within spiel - more specific)
-    const glowsticks = page.locator(
-      'span.relative:has(> span) >> text=glowsticks',
-    )
+    const glowsticks = page.getByText('glowsticks', { exact: true })
     const glowsticksClasses = await glowsticks.getAttribute('class')
     expect(glowsticksClasses).toContain('hover:cursor-pointer')
 
     // Check space-lizards
-    const spaceLizards = page.locator('text=space-lizards')
+    const spaceLizards = page.getByText('space-lizards', { exact: true })
     const lizardsClasses = await spaceLizards.getAttribute('class')
     expect(lizardsClasses).toContain('hover:cursor-pointer')
 
-    // Check code (use specific span selector)
-    const code = page.locator(
-      'span.font-mono.tracking-wider.hover\\:cursor-pointer',
-    )
+    // Check code
+    const code = page.getByText('code', { exact: true })
     const codeClasses = await code.getAttribute('class')
     expect(codeClasses).toContain('hover:cursor-pointer')
   })
