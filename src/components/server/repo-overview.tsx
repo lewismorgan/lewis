@@ -42,7 +42,10 @@ export const RepositoryOverview = ({
   slowMode: boolean
 }) => {
   const repoLoadText = (
-    <div className="my-auto flex w-full animate-pulse text-center align-middle font-mono font-light">
+    <div
+      className="my-auto flex w-full animate-pulse text-center align-middle font-mono font-light"
+      data-testid="repos-loading-text"
+    >
       Summoning my repositories from the GitHub universe...
     </div>
   )

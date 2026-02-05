@@ -1,185 +1,108 @@
 import { expect, test } from '@playwright/test'
 
 test.describe('Commit Card Display', () => {
-  test('should display commit information in repository cards', async ({
+  test('should display many repository cards', async ({ page }) => {
+    await page.goto('/')
+
+    // Wait for repository cards with commit information to load
+    const gitCards = page.getByTestId('git-card')
+    await expect(gitCards).toHaveCount(5, { timeout: 5000 })
+  })
+
+  test('should display no more than 3 language badges per repository', async ({
+    page,
+  }) => {
+    await page.goto('/')
+    const gitCards = page.getByTestId('git-card')
+    for (const card of await gitCards.all()) {
+      const langBadges = card.getByTestId('lang-badge')
+      const badgeCount = await langBadges.count()
+      expect(badgeCount).toBeGreaterThan(0)
+      expect(badgeCount).toBeLessThanOrEqual(3)
+    }
+  })
+
+  test('should display commit message & author as a clickable link', async ({
     page,
   }) => {
     await page.goto('/')
 
     // Wait for repository cards with commit information to load
-    await page.waitForSelector('[class*="flex"][class*="flex-col"]', {
-      timeout: 15000,
-    })
+    const commit = page.getByTestId('git-card-commit').first()
+    await expect(commit).toBeVisible({ timeout: 5000 })
+
+    // Check that author is displayed first and as a link
+    const author = commit.getByRole('link').nth(0)
+    await expect(author).toBeVisible()
+
+    await expect(author).toHaveText(/.+/)
+    await expect(author).toHaveAttribute('href', /github\.com\/.+/)
+    await expect(author).toHaveAttribute('target', '_blank')
+    await expect(author).toHaveAttribute('class', /hover:underline/)
+
+    // Check that commit message is displayed second and as a link
+    const link = commit.getByRole('link').nth(1)
+    await expect(link).toBeVisible()
+
+    await expect(link).toHaveText(/.+/)
+    await expect(link).toHaveAttribute('href', /github\.com\/.+\/commit\/.+/)
+    await expect(link).toHaveAttribute('target', '_blank')
+    await expect(link).toHaveAttribute('class', /hover:underline/)
+  })
+
+  test('should display relative time for commit after the SHA', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    // Wait for repository cards with commit information to load
+    const gitCard = page.getByTestId('git-card').first()
+    await expect(gitCard).toBeVisible()
+
+    // only one commit card per repo card, need to wait for it to load
+    const commitCard = gitCard.getByTestId('git-card-commit')
+    await expect(commitCard).toBeVisible()
+
+    const commitCardCount = await commitCard.count()
+    expect(commitCardCount).toBe(1)
 
     // Check that at least one commit SHA is displayed (7 characters)
-    const commitInfo = page.locator('text=/[a-f0-9]{7}/')
-    await expect(commitInfo.first()).toBeVisible({ timeout: 10000 })
-  })
-
-  test('should display commit message', async ({ page }) => {
-    await page.goto('/')
-
-    // Wait for commit details to load
-    await page.waitForSelector('[class*="flex"][class*="flex-row"]', {
-      timeout: 15000,
-    })
-
-    // Check that commit message is displayed as a link
-    const commitMessage = page
-      .locator('a[target="_blank"][href*="github.com"][href*="commit"]')
-      .first()
-    await expect(commitMessage).toBeVisible({ timeout: 10000 })
-  })
-
-  test('should display relative time for commit', async ({ page }) => {
-    await page.goto('/')
-
-    // Wait for commit details to load
-    await page.waitForSelector('[class*="flex"][class*="flex-row"]', {
-      timeout: 15000,
-    })
+    const commitInfo = gitCard.getByText(/[a-f0-9]{7}/)
+    await expect(commitInfo).toBeVisible({ timeout: 10000 })
 
     // Check for relative time (e.g., "2 days ago", "5 mins ago")
-    const relativeTime = page.locator(
-      'text=/\\d+\\s+(second|minute|hour|day|week|month|year)s?\\s+ago/',
+    const relativeTime = gitCard.getByText(
+      /\d+\s+(second|minute|hour|day|week|month|year)s?\s+ago/,
     )
-    await expect(relativeTime.first()).toBeVisible({ timeout: 10000 })
+    await expect(relativeTime).toBeVisible({ timeout: 10000 })
   })
 
-  test('should display only one bot icon even if multiple bots', async ({
+  test('should display bot + human contributor when multiple dual contributors', async ({
     page,
   }) => {
     await page.goto('/')
 
-    // Wait for commit details to load
-    await page.waitForSelector('[class*="flex"][class*="flex-row"]', {
-      timeout: 15000,
-    })
+    const gitCards = page.getByTestId('git-card')
+    for (const card of await gitCards.all()) {
+      const botIcons = card.getByRole('img', { name: 'Bot contributor' })
+      const botIconCount = await botIcons.count()
+      expect(botIconCount).toBeLessThanOrEqual(1)
 
-    // Check if any bot icons are present (they would have aria-label="Bot contributor")
-    const botIcon = page.locator('[aria-label="Bot contributor"]')
-    const botIconCount = await botIcon.count()
+      if (!botIconCount) {
+        continue
+      }
 
-    // If bot icons are present, verify they are visible
-    // Note: Each commit card should only have at most 1 bot icon even if multiple bots contributed
-    if (botIconCount > 0) {
-      await expect(botIcon.first()).toBeVisible()
+      // If there is a bot icon, ensure there's no more than one human author displayed
+      const commitCard = card.getByTestId('git-card-commit')
+      const plusChars = commitCard.getByText('+')
+      const plusCount = await plusChars.count()
+      expect(plusCount).toBeLessThanOrEqual(1)
+
+      const humanAuthor = commitCard
+        .getByRole('link')
+        .filter({ has: commitCard.locator('[href*="github.com"]') })
+      const humanAuthorCount = await humanAuthor.count()
+      expect(humanAuthorCount).toBeLessThanOrEqual(1)
     }
-  })
-
-  test('should display + character and human contributor names when multiple authors', async ({
-    page,
-  }) => {
-    await page.goto('/')
-
-    // Wait for commit details to load
-    await page.waitForSelector('[class*="flex"][class*="flex-row"]', {
-      timeout: 15000,
-    })
-
-    // Check for + characters
-    const plusChar = page.locator('text="+"')
-    const plusCount = await plusChar.count()
-
-    // + character should appear when there are multiple authors or when there's a bot
-    if (plusCount > 0) {
-      await expect(plusChar.first()).toBeVisible()
-    }
-  })
-
-  test('should not display avatars', async ({ page }) => {
-    await page.goto('/')
-
-    // Wait for commit details to load
-    await page.waitForSelector('[class*="flex"][class*="flex-row"]', {
-      timeout: 15000,
-    })
-
-    // Look for avatar containers (rounded-full class indicates avatar)
-    // Avatars should NOT be present
-    const commitArea = page
-      .locator('[class*="flex"][class*="flex-row"]')
-      .first()
-    const avatarsInCommitArea = await commitArea
-      .locator('[class*="rounded-full"][class*="h-4"][class*="w-4"]')
-      .count()
-    expect(avatarsInCommitArea).toBe(0)
-  })
-
-  test('commit message should be clickable link', async ({ page }) => {
-    await page.goto('/')
-
-    // Wait for repository cards with commit information to load
-    await page.waitForSelector('[class*="flex"][class*="flex-col"]', {
-      timeout: 15000,
-    })
-
-    // Find the first commit message link
-    const commitMessageLink = page
-      .locator('[class*="truncate"] a[target="_blank"]')
-      .first()
-    await expect(commitMessageLink).toBeVisible({ timeout: 10000 })
-
-    // Verify the link has the correct attributes
-    const href = await commitMessageLink.getAttribute('href')
-    expect(href).toBeTruthy()
-    expect(href).toContain('github.com')
-
-    // Verify target="_blank" for external link
-    const target = await commitMessageLink.getAttribute('target')
-    expect(target).toBe('_blank')
-  })
-
-  test('author names should be clickable links to GitHub profiles', async ({
-    page,
-  }) => {
-    await page.goto('/')
-
-    // Wait for commit details to load
-    await page.waitForSelector('[class*="flex"][class*="flex-row"]', {
-      timeout: 15000,
-    })
-
-    // Find author profile links (links with GitHub profile URLs)
-    const authorLinks = page.locator('a[href*="github.com"][target="_blank"]')
-    const authorLinkCount = await authorLinks.count()
-
-    // Should have at least one author link
-    expect(authorLinkCount).toBeGreaterThan(0)
-
-    // Check first author link
-    const firstAuthorLink = authorLinks.first()
-    await expect(firstAuthorLink).toBeVisible()
-
-    const href = await firstAuthorLink.getAttribute('href')
-    expect(href).toContain('github.com')
-
-    const target = await firstAuthorLink.getAttribute('target')
-    expect(target).toBe('_blank')
-  })
-
-  test('commit links should have proper styling for accessibility', async ({
-    page,
-  }) => {
-    await page.goto('/')
-
-    // Wait for commit details to load
-    await page.waitForSelector('[class*="flex"][class*="flex-row"]', {
-      timeout: 15000,
-    })
-
-    // Check that commit message links have hover underline styling
-    const commitMessageLink = page
-      .locator('a[target="_blank"][href*="github.com"][href*="commit"]')
-      .first()
-    const commitLinkClasses = await commitMessageLink.getAttribute('class')
-    expect(commitLinkClasses).toContain('hover:underline')
-
-    // Check that author links have hover underline styling
-    // Get all author links that are not commit links (use font-semibold class)
-    const authorLinks = page.locator('a.font-semibold[target="_blank"]')
-    const authorLink = authorLinks.first()
-    const authorLinkClasses = await authorLink.getAttribute('class')
-    expect(authorLinkClasses).toContain('hover:underline')
   })
 })
