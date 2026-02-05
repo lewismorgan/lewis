@@ -52,10 +52,10 @@ test.describe('Easter Eggs', () => {
   test('clicking "space-lizards" should display lizard avatar', async ({
     page,
   }) => {
+    await page.goto('/')
+
     const avatar = page.getByRole('img', { name: 'lewismorgan' })
     const spaceLizards = page.getByText('space-lizards', { exact: true })
-
-    await page.goto('/')
 
     // Wait for avatar to change to lizard image
     await expect(avatar).toBeVisible()

@@ -20,25 +20,36 @@ test.describe('Main Content', () => {
 
     await expect(link).toBeVisible()
     await expect(link).toHaveAttribute('href', 'https://github.com/lewismorgan')
+    await expect(link).toHaveAttribute('target', '_blank')
   })
 
-  test('should display GitHub bio on hover', async ({ page }) => {
+  test('should display my GitHub bio on hover', async ({ page }) => {
     await page.goto('/')
     await page.getByRole('link', { name: 'Software Engineer' }).hover()
+
+    const hovercard = page.getByTestId('lewis-hovercard')
+
+    // Avatar + name as a link to my profile
     await expect(
-      page
-        .locator('div')
-        .filter({ hasText: 'lewismorganis a developer' })
-        .nth(4),
+      hovercard.getByRole('img', { name: 'lewismorgan' }),
     ).toBeVisible()
+
+    const link = hovercard.getByRole('link', { name: 'lewismorgan' })
+    await expect(link).toBeVisible()
+    await expect(link).toHaveAttribute('href', 'https://github.com/lewismorgan')
+
+    // Bio section
+    await expect(hovercard.getByText('is a ', { exact: false })).toBeVisible()
+
+    await expect(hovercard.getByText('Public Repos')).toBeVisible()
+    await expect(hovercard.getByText('Private Repos')).toBeVisible()
   })
 
   test('should have theme toggle button', async ({ page }) => {
-    const themeButton = page.getByRole('button', { name: 'Toggle theme' })
-
     await page.emulateMedia({ colorScheme: 'dark' })
     await page.goto('/')
 
+    const themeButton = page.getByRole('button', { name: 'Toggle theme' })
     await expect(themeButton).toBeVisible()
 
     await expect(page.locator('html')).toHaveAttribute('class', /dark/)

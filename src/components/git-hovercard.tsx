@@ -20,7 +20,10 @@ export const LewisHovercard = ({
 }: Props) => {
   const adjustedBio = bio.charAt(0).toLowerCase() + bio.slice(1)
   return (
-    <HoverCardContent className="flex w-96 flex-col justify-between align-middle">
+    <HoverCardContent
+      className="flex w-96 flex-col justify-between align-middle"
+      data-testid="lewis-hovercard"
+    >
       <p className="p-1">
         <span className="inline-flex items-baseline self-center align-bottom">
           <Avatar className="h-6 w-6 self-center">
