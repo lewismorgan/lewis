@@ -11,7 +11,7 @@ type TypingAnimationProps = {
   onCompleted?: (reversed: boolean) => void
 }
 
-const mockUseTheme = vi.fn<[], { theme: string | undefined }>()
+const mockUseTheme = vi.fn(() => ({}) as { theme: string | undefined })
 
 vi.mock('next-themes', () => ({
   useTheme: () => mockUseTheme(),
