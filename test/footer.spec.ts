@@ -36,14 +36,16 @@ test.describe('Footer', () => {
     await expect(commitLink).toBeVisible()
 
     // In CI, verify it shows the correct short SHA from the env var
-    const sha = process.env.VERCEL_GIT_COMMIT_SHA ?? 'PREVIEW'
-    const shortSha = sha?.substring(0, 7) ?? 'PREVIEW'
+    const sha =
+      process.env.VERCEL_GIT_COMMIT_SHA ??
+      '5dddcb5fdfeb49f34f92e9d763a10da0105bd1a8'
+    const shortSha = sha.substring(0, 7)
 
     // opens commit link in new tab labeled as short sha
     await expect(commitLink).toHaveText(shortSha)
     await expect(commitLink).toHaveAttribute(
       'href',
-      `https://github.com/lewismorgan/lewis/commit/${shortSha}`,
+      `https://github.com/lewismorgan/lewis/commit/${sha}`,
     )
     await expect(commitLink).toHaveAttribute('target', '_blank')
   })

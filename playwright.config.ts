@@ -35,6 +35,9 @@ export default defineConfig({
     env: {
       ...process.env,
       SKIP_ENV_VALIDATION: 'false',
+      VERCEL_GIT_COMMIT_SHA:
+        process.env.VERCEL_GIT_COMMIT_SHA ??
+        '5dddcb5fdfeb49f34f92e9d763a10da0105bd1a8',
     },
   },
 })
