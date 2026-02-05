@@ -35,21 +35,22 @@ test.describe('Footer', () => {
     const commitLink = deploymentText.getByRole('link')
     await expect(commitLink).toBeVisible()
 
-    let envSha = process.env.VERCEL_GIT_COMMIT_SHA
+    const envSha = process.env.VERCEL_GIT_COMMIT_SHA
+    let shortSha = envSha
     if (envSha) {
       // In CI, verify it shows the correct short SHA from the env var
-      envSha = envSha.substring(0, 7)
+      shortSha = envSha.substring(0, 7)
     } else {
       // In local dev without env var, should default to "PREVIEW"
-      envSha = 'PREVIEW'
+      shortSha = 'PREVIEW'
     }
 
-    await expect(commitLink).toHaveText(envSha)
+    // opens commit link in new tab labeled as short sha
+    await expect(commitLink).toHaveText(shortSha)
     await expect(commitLink).toHaveAttribute(
       'href',
       `https://github.com/lewismorgan/lewis/commit/${envSha}`,
     )
-    // opens in new tab
     await expect(commitLink).toHaveAttribute('target', '_blank')
   })
 
