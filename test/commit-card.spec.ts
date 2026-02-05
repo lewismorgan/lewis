@@ -9,6 +9,19 @@ test.describe('Commit Card Display', () => {
     await expect(gitCards).resolves.toBeGreaterThan(1)
   })
 
+  test('should display no more than 3 language badges per repository', async ({
+    page,
+  }) => {
+    await page.goto('/')
+    const gitCards = page.getByTestId('git-card')
+    for (const card of await gitCards.all()) {
+      const langBadges = card.getByTestId('lang-badge')
+      const badgeCount = await langBadges.count()
+      expect(badgeCount).toBeGreaterThan(0)
+      expect(badgeCount).toBeLessThanOrEqual(3)
+    }
+  })
+
   test('should display commit message & author as a clickable link', async ({
     page,
   }) => {
