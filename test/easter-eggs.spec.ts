@@ -5,29 +5,45 @@ type ColorScheme = null | 'light' | 'dark' | 'no-preference'
 test.describe('Easter Eggs', () => {
   ;[
     { colorScheme: 'dark' as ColorScheme, expected: 'anakin.png' },
-    { colorScheme: 'light' as ColorScheme, expected: 'grogu.png' },
+    { colorScheme: 'light' as ColorScheme, expected: 'grogu.jpg' },
   ].forEach(({ colorScheme, expected }) => {
     test(`clicking "glowsticks" should change to proper force avatar in ${colorScheme} mode`, async ({
       page,
     }) => {
-      // When in color scheme, avatar should change accordingly
-      await page.emulateMedia({ colorScheme: colorScheme })
       await page.goto('/')
-      await page.reload() // hydration can sometimes cause issues
 
-      // theme swap is hydrated from system, so wait for correct theme to be applied
+      // Get the theme toggle button
       const themeButton = page.getByRole('button', { name: 'Toggle theme' })
       await expect(themeButton).toBeVisible()
 
+      // Click the theme button until we get the desired theme (site forces to dark mode by default)
+      // Check current theme by looking at the html class
+      const currentClass = await page.locator('html').getAttribute('class')
+      const needsToggle =
+        (colorScheme === 'light' && currentClass?.includes('dark')) ??
+        (colorScheme === 'dark' && currentClass?.includes('light'))
+
+      if (needsToggle) {
+        await themeButton.click()
+        // Wait for theme to be applied
+        // make the type checker happy and ensure always running the locator
+        expect(colorScheme).not.toBeNull()
+        if (colorScheme !== null) {
+          await expect(page.locator('html')).toHaveAttribute(
+            'class',
+            new RegExp(colorScheme),
+          )
+        }
+      }
+
       // avatar should change to force avatar based on the theme
-      await expect(
-        page.getByRole('img', { name: 'lewismorgan' }).first(),
-      ).toBeVisible()
+      const avatar = page.getByRole('img', { name: 'lewismorgan' })
       const glowsticks = page.getByText('glowsticks', { exact: true }).first()
+
+      await expect(avatar).toBeVisible()
       await expect(glowsticks).toBeVisible()
       await glowsticks.click()
 
-      const avatar = page.getByRole('img', { name: 'lewismorgan' })
       await expect(avatar).toBeVisible()
       await expect(avatar).toHaveAttribute('src', new RegExp(`.*${expected}`))
     })
