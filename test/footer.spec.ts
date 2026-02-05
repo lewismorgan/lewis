@@ -49,7 +49,7 @@ test.describe('Footer', () => {
     await expect(commitLink).toHaveText(shortSha)
     await expect(commitLink).toHaveAttribute(
       'href',
-      `https://github.com/lewismorgan/lewis/commit/${shortSha}`,
+      `https://github.com/lewismorgan/lewis/commit/${envSha}`,
     )
     await expect(commitLink).toHaveAttribute('target', '_blank')
   })

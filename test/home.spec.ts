@@ -101,7 +101,7 @@ test.describe('Repository Section', () => {
   test('should summon repositories more slowly in slow mode', async ({
     page,
   }) => {
-    // Start in slow mode
+    // Start in slow mode and start tests as soon as we start loading
     await page.goto('/?slowmode=true', { waitUntil: 'commit' })
 
     const overviewLoadingText = page.getByTestId('repos-loading-text')
@@ -113,9 +113,10 @@ test.describe('Repository Section', () => {
     await expect(gitCards).toHaveCount(5)
 
     // loading finished now make sure we got lang and the commit info
+    await page.waitForLoadState('load')
     for (let i = 0; i < 5; i++) {
       const card = gitCards.nth(i)
-      await expect(card.getByTestId('lang-badge')).toBeVisible()
+      await expect(card.getByTestId('lang-badge').first()).toBeVisible()
       await expect(card.getByTestId('git-card-commit')).toBeVisible()
     }
 
