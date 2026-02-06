@@ -194,9 +194,19 @@ test.describe('Repository Section', () => {
     const initialBadgeCount = await langBadges.count()
     expect(initialBadgeCount).toBeGreaterThan(0)
 
+    // Get the current theme state
+    const htmlElement = page.locator('html')
+    const initialTheme = await htmlElement.getAttribute('class')
+
     // Switch theme
     await themeButton.click()
-    await page.waitForTimeout(500) // Wait for theme transition
+
+    // Wait for theme to actually change by checking the html class
+    if (initialTheme?.includes('dark')) {
+      await expect(htmlElement).not.toHaveClass(/dark/)
+    } else {
+      await expect(htmlElement).toHaveClass(/dark/)
+    }
 
     // Verify badges are still visible after theme change
     await expect(langBadges.first()).toBeVisible()
