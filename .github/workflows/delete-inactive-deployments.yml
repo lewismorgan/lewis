@@ -103,12 +103,12 @@ jobs:
           DELETED_COUNT=0
           for DEPLOYMENT_ID in "${INACTIVE_DEPLOYMENTS[@]}"; do
             echo "Deleting inactive deployment: $DEPLOYMENT_ID"
-            gh api repos/$REPO/deployments/$DEPLOYMENT_ID -X DELETE || {
+            if gh api repos/$REPO/deployments/$DEPLOYMENT_ID -X DELETE --silent; then
+              echo "  Successfully deleted deployment $DEPLOYMENT_ID"
+              DELETED_COUNT=$((DELETED_COUNT + 1))
+            else
               echo "  Failed to delete deployment $DEPLOYMENT_ID"
-              continue
-            }
-            echo "  Successfully deleted deployment $DEPLOYMENT_ID"
-            ((DELETED_COUNT++))
+            fi
           done
 
           echo "Deleted $DELETED_COUNT inactive deployments"
