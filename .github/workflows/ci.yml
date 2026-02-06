@@ -27,6 +27,7 @@ jobs:
       pull-requests: read
     outputs:
       docs_only: ${{ steps.filter.outputs.docs_only }}
+      cleanup_only: ${{ steps.filter.outputs.cleanup_only }}
     steps:
       - name: Check for docs-only changes
         uses: dorny/paths-filter@v3
@@ -37,6 +38,9 @@ jobs:
               - '**.md'
               - 'docs/**'
               - '.github/**.md'
+            cleanup_only:
+              - '.github/workflows/cleanup-deployments.yml'
+              - '.github/workflows/delete-inactive-deployments.yml'
           base: ${{ github.base_ref }}
           ref: ${{ github.head_ref }}
 
@@ -98,7 +102,7 @@ jobs:
         run: pnpm type-check
 
   unit-tests:
-    if: needs.changes.outputs.docs_only != 'true'
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.cleanup_only != 'true'
     needs: [changes]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -138,7 +142,7 @@ jobs:
 
   # Build depends on lint, types, and unit tests. E2E tests run after build succeeds
   build:
-    if: needs.changes.outputs.docs_only != 'true'
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.cleanup_only != 'true'
     needs: [changes, lint, type-check, unit-tests]
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -169,7 +173,7 @@ jobs:
         run: pnpm build
 
   e2e-tests:
-    if: needs.changes.outputs.docs_only != 'true'
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.cleanup_only != 'true'
     needs: [changes, build]
     runs-on: ubuntu-latest
     timeout-minutes: 10

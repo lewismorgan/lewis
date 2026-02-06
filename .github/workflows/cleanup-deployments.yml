@@ -1,4 +1,4 @@
-name: Cleanup Deployments
+name: Mark Deployments Inactive
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       debug:
-        description: 'List deletions only (no delete) when true'
+        description: 'List changes only (no changes) when true'
         required: false
         default: 'true'
 
@@ -20,13 +20,13 @@ permissions:
   deployments: write
 
 jobs:
-  cleanup:
+  mark-inactive:
     runs-on: ubuntu-latest
-    name: Delete stale deployments
+    name: Mark stale deployments as inactive
     env:
       DEBUG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug || 'false' }}
     steps:
-      - name: Delete stale preview deployments (>14 days)
+      - name: Mark stale preview deployments as inactive (>14 days)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -35,7 +35,7 @@ jobs:
         run: |
           set -e
 
-          echo "Cleaning up $ENVIRONMENT deployments older than $DAYS_OLD days..."
+          echo "Marking $ENVIRONMENT deployments older than $DAYS_OLD days as inactive..."
 
           # Calculate cutoff date (14 days ago in ISO 8601 format)
           CUTOFF_DATE=$(date -u -d "$DAYS_OLD days ago" '+%Y-%m-%dT%H:%M:%SZ')
@@ -66,29 +66,33 @@ jobs:
           fi
 
           if [ "$DEBUG" = "true" ]; then
-            echo "Debug mode enabled. The following deployments would be deleted:"
+            echo "Debug mode enabled. The following deployments would be marked inactive:"
             echo "id\tcreated_at\tref\tsha\tenvironment\turl"
             echo "$DEPLOYMENT_LIST"
             exit 0
           fi
 
-          DELETED_COUNT=0
+          MARKED_COUNT=0
           while IFS= read -r DEPLOYMENT_ID; do
             if [ -z "$DEPLOYMENT_ID" ]; then
               continue
             fi
             
-            echo "Deleting deployment: $DEPLOYMENT_ID"
-            gh api repos/$REPO/deployments/$DEPLOYMENT_ID -X DELETE || {
-              echo "Failed to delete deployment $DEPLOYMENT_ID"
+            echo "Marking deployment $DEPLOYMENT_ID as inactive..."
+            gh api repos/$REPO/deployments/$DEPLOYMENT_ID/statuses \
+              -f state=inactive \
+              -f description="Marked inactive by cleanup workflow" || {
+              echo "  Failed to mark deployment $DEPLOYMENT_ID as inactive"
               continue
             }
-            ((DELETED_COUNT++))
+            
+            echo "  Successfully marked deployment $DEPLOYMENT_ID as inactive"
+            ((MARKED_COUNT++))
           done <<< "$DEPLOYMENTS"
 
-          echo "Deleted $DELETED_COUNT $ENVIRONMENT deployments"
+          echo "Marked $MARKED_COUNT $ENVIRONMENT deployments as inactive"
 
-      - name: Delete stale production deployments (>90 days)
+      - name: Mark stale production deployments as inactive (>90 days)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -97,7 +101,7 @@ jobs:
         run: |
           set -e
 
-          echo "Cleaning up $ENVIRONMENT deployments older than $DAYS_OLD days..."
+          echo "Marking $ENVIRONMENT deployments older than $DAYS_OLD days as inactive..."
 
           # Calculate cutoff date (90 days ago in ISO 8601 format)
           CUTOFF_DATE=$(date -u -d "$DAYS_OLD days ago" '+%Y-%m-%dT%H:%M:%SZ')
@@ -128,24 +132,28 @@ jobs:
           fi
 
           if [ "$DEBUG" = "true" ]; then
-            echo "Debug mode enabled. The following deployments would be deleted:"
+            echo "Debug mode enabled. The following deployments would be marked inactive:"
             echo "id\tcreated_at\tref\tsha\tenvironment\turl"
             echo "$DEPLOYMENT_LIST"
             exit 0
           fi
 
-          DELETED_COUNT=0
+          MARKED_COUNT=0
           while IFS= read -r DEPLOYMENT_ID; do
             if [ -z "$DEPLOYMENT_ID" ]; then
               continue
             fi
             
-            echo "Deleting deployment: $DEPLOYMENT_ID"
-            gh api repos/$REPO/deployments/$DEPLOYMENT_ID -X DELETE || {
-              echo "Failed to delete deployment $DEPLOYMENT_ID"
+            echo "Marking deployment $DEPLOYMENT_ID as inactive..."
+            gh api repos/$REPO/deployments/$DEPLOYMENT_ID/statuses \
+              -f state=inactive \
+              -f description="Marked inactive by cleanup workflow" || {
+              echo "  Failed to mark deployment $DEPLOYMENT_ID as inactive"
               continue
             }
-            ((DELETED_COUNT++))
+            
+            echo "  Successfully marked deployment $DEPLOYMENT_ID as inactive"
+            ((MARKED_COUNT++))
           done <<< "$DEPLOYMENTS"
 
-          echo "Deleted $DELETED_COUNT $ENVIRONMENT deployments"
+          echo "Marked $MARKED_COUNT $ENVIRONMENT deployments as inactive"
