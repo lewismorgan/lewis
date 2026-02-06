@@ -202,4 +202,27 @@ describe('GitCardCommit', () => {
     expect(screen.getByText(/First line/)).toBeInTheDocument()
     expect(screen.queryByText(/Second line/)).not.toBeInTheDocument()
   })
+
+  it('renders human author without bot icon for squash merge commits', () => {
+    // Test case for squash merge commits which have noreply email format
+    // but are authored by humans (not bots)
+    const squashMergeProps = {
+      ...baseProps,
+      authors: [
+        {
+          username: 'Lewis',
+          profileUrl: 'https://github.com/Lewis',
+          isBot: false, // Human user despite noreply email
+        },
+      ],
+    }
+
+    render(<GitCardCommit {...squashMergeProps} />)
+
+    // Should NOT have bot icon for human authors
+    expect(screen.queryByLabelText('Bot contributor')).not.toBeInTheDocument()
+    // Should have human name without + (single author)
+    expect(screen.queryByText('+')).not.toBeInTheDocument()
+    expect(screen.getByText('Lewis')).toBeInTheDocument()
+  })
 })

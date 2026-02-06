@@ -147,9 +147,13 @@ function parseCoAuthors(
 }
 
 /**
- * Determine if an author is a bot based on username or email
+ * Determine if an author is a bot based on username
+ *
+ * Note: We don't use email patterns for bot detection because GitHub's noreply email format
+ * (e.g., "123456+username@users.noreply.github.com") is used for both bots and humans when
+ * PRs are squashed and merged. This would incorrectly flag human contributors as bots.
  */
-function isBot(username: string, email?: string): boolean {
+function isBot(username: string): boolean {
   // Check if username contains [bot] tag
   if (username.includes('[bot]')) {
     return true
@@ -170,11 +174,6 @@ function isBot(username: string, email?: string): boolean {
     return true
   }
 
-  // Check email pattern for bots (numeric ID + username@users.noreply.github.com)
-  if (email && /^\d+\+.+@users\.noreply\.github\.com$/.test(email)) {
-    return true
-  }
-
   return false
 }
 
@@ -188,7 +187,7 @@ async function getAuthorDetails(
   isBotOverride?: boolean,
 ): Promise<GitAuthor> {
   const actualUsername = username ?? name
-  const bot = isBotOverride ?? isBot(actualUsername, email)
+  const bot = isBotOverride ?? isBot(actualUsername)
 
   // Clean up username (remove [bot] tag if present)
   const cleanUsername = actualUsername.replace('[bot]', '').trim()
