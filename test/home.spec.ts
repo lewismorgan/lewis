@@ -137,11 +137,24 @@ test.describe('Repository Section', () => {
   test('should display language badges with appropriate colors in light mode', async ({
     page,
   }) => {
-    await page.emulateMedia({ colorScheme: 'light' })
     await page.goto('/')
 
+    // Clear localStorage to ensure no theme preference is stored
+    await page.evaluate(() => localStorage.clear())
+
+    // Set the color scheme preference and reload
+    await page.emulateMedia({ colorScheme: 'light' })
+    await page.reload()
+
     // Wait for the page to load completely
-    await page.waitForLoadState('load')
+    await page.waitForLoadState()
+
+    // Click theme toggle to ensure light mode (since default is dark)
+    const themeToggle = page.getByRole('button', { name: /toggle theme/i })
+    await themeToggle.click()
+
+    // Wait for theme to apply
+    await page.waitForTimeout(100)
 
     // Get the first repository card with language badges
     const gitCards = page.getByTestId('git-card')
@@ -158,11 +171,17 @@ test.describe('Repository Section', () => {
   test('should display language badges with appropriate colors in dark mode', async ({
     page,
   }) => {
-    await page.emulateMedia({ colorScheme: 'dark' })
     await page.goto('/')
 
+    // Clear localStorage to ensure no theme preference is stored
+    await page.evaluate(() => localStorage.clear())
+
+    // Set the color scheme preference and reload
+    await page.emulateMedia({ colorScheme: 'dark' })
+    await page.reload()
+
     // Wait for the page to load completely
-    await page.waitForLoadState('load')
+    await page.waitForLoadState()
 
     // Get the first repository card with language badges
     const gitCards = page.getByTestId('git-card')
