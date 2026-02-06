@@ -3,97 +3,42 @@
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/lewismorgan/lewis/ci.yml)
 ![GitHub deployments](https://img.shields.io/github/deployments/lewismorgan/lewis/Production?logo=vercel&label=Vercel&link=https%3A%2F%2Flewismorgan.dev)
 
-Personal landing page for me made using NextJS, TailwindCSS, and deployed using Vercel.
+Personal landing page built with Next.js App Router and Tailwind CSS, deployed on Vercel. It pulls GitHub profile and repository data via Octokit.
 
-- Displays some info about myself and shows some data from my GitHub repositories.
-- Optimized mobile-first with a friendly experience on desktop.
+## Setup
 
-## Installation
-
-Before starting, make sure to create a .env file and specify a `GITHUB_TOKEN` variable with a GitHub token that has access to the repositories and user scopes. See `.env.example` for an example.
+1. Copy [.env.example](.env.example) to [.env](.env) and set `GITHUB_TOKEN` (schema in [src/env.js](src/env.js)).
+2. `pnpm install`
 
 ```bash
 git clone https://github.com/lewismorgan/lewis.git
-pnpm install
-pnpm dev
 ```
 
-### VSCode
+## Run
 
-If using VSCode then you can do the following:
+- `pnpm dev` - local dev with Turbopack
+- `pnpm preview` - production build + start
 
-```bash
-git clone https://github.com/lewismorgan/lewis.git
-code .
-```
+## Lint + typecheck
 
-When VSCode launches, click on "Open in devcontainer" using the VSCode Development Containers extension.
-The packages will automatically be installed using pnpm. The package manager version is dynamically extracted from the `packageManager` field in `package.json`.
+- `pnpm check` - lint + TypeScript
+- `pnpm lint` - lint only
+- `pnpm format:check` - formatting check
 
-If not, perform the following:
+## Tests
 
-```bash
-# Install pnpm version from package.json
-npm install -g pnpm@$(node -p "require('./package.json').packageManager.split('@')[1].split('+')[0]")
-pnpm install
-```
+- `pnpm test`, `pnpm test:watch`, `pnpm test:coverage`
+- `pnpm test:e2e`, `pnpm test:e2e:ui`
+- Details in [TESTING.md](TESTING.md)
 
-Visit the deployed website using your web browser
+## API routes
 
-## Testing
+- `GET /api/git/repos` - repository summaries for the overview UI. See [src/app/api/git/repos/route.ts](src/app/api/git/repos/route.ts).
+- `GET /api/git/readme/[repo]` - README content for a repository. See [src/app/api/git/readme/[repo]/route.ts](src/app/api/git/readme/[repo]/route.ts).
 
-The project includes unit tests (Jest + React Testing Library) and E2E tests (Playwright).
+## Deploy (Vercel)
 
-### Unit Tests
-
-Run unit tests in watch mode during development:
-
-```bash
-pnpm test:watch
-```
-
-Run all unit tests once:
-
-```bash
-pnpm test
-```
-
-### E2E Tests
-
-Run end-to-end tests:
-
-```bash
-pnpm test:e2e
-```
-
-Run E2E tests with the Playwright UI:
-
-```bash
-pnpm test:e2e:ui
-```
-
-Tests are located in:
-- `src/**/*.test.tsx` - Unit tests for components
-- `e2e/**/*.spec.ts` - End-to-end tests
-
-## Structure
-
-- `src/app` - Pages that are rendered by NextJS
-  - `api` - API requests if data is needed to be called clientside
-    - Not used in this project as all data components are fetched and rendered serverside
-- `src/components` - Reusable components used throughout the site
-  - `client` - Components that can only be rendered on the client side, such as the hero interactivity
-  - `server` - Components that can only be rendered on the server side, such as the cards displayed with git information
-  - `ui` - Client only components that are used from shadcn library
-  - `utils` - Utility components such as theme provider and icons
-- `src/lib` - Library of common type definitions between server and client, as well as some utility functions
-- `src/server` - Server side functions that are used to fetch my personal data from the GitHub API and can be called from either the /api route or the React Server Components
-- `src/styles` - TailwindCSS configuration (single globals.css file setup for shadcn)
-- `public` - Static assets
-
-## CI/CD
-
-The project also makes use of GitHub Actions to report any lint, type or build time errors. As such, the site is automatically deployed to Vercel on push to the main branch, handled outside the `ci` action through a direct connection with Vercel using GitHub Deployment Environments. Each commit will display status badges of the `ci` action, and the deployment status of the site from Vercel.
+Connect the repo in Vercel and set env vars from [src/env.js](src/env.js) (at minimum `GITHUB_TOKEN`). Vercel will run `pnpm build` and `pnpm start`.
 
 ## License
 
