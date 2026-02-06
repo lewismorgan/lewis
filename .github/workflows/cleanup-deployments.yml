@@ -5,6 +5,11 @@ on:
     # Runs weekly on Monday at 2 AM UTC
     - cron: '0 2 * * 1'
   workflow_dispatch:
+    inputs:
+      debug:
+        description: 'List deletions only (no delete) when true'
+        required: false
+        default: 'true'
 
 concurrency:
   group: ${{ github.workflow }}
@@ -18,6 +23,8 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     name: Delete stale deployments
+    env:
+      DEBUG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug || 'false' }}
     steps:
       - name: Delete stale preview deployments (>14 days)
         env:
@@ -28,20 +35,39 @@ jobs:
         run: |
           set -e
 
-          echo "🧹 Cleaning up $ENVIRONMENT deployments older than $DAYS_OLD days..."
+          echo "Cleaning up $ENVIRONMENT deployments older than $DAYS_OLD days..."
 
           # Calculate cutoff date (14 days ago in ISO 8601 format)
           CUTOFF_DATE=$(date -u -d "$DAYS_OLD days ago" '+%Y-%m-%dT%H:%M:%SZ')
           echo "Cutoff date: $CUTOFF_DATE"
 
           # Fetch deployments for the environment
-          DEPLOYMENTS=$(gh api repos/$REPO/deployments \
+          DEPLOYMENTS_JSON=$(gh api repos/$REPO/deployments \
             --paginate \
-            -f environment="$ENVIRONMENT" \
-            -q '.[] | select(.created_at < "'$CUTOFF_DATE'") | .id' || true)
+            -f environment="$ENVIRONMENT" || true)
+
+          if [ -z "$DEPLOYMENTS_JSON" ]; then
+            echo "No deployments returned for $ENVIRONMENT."
+            exit 0
+          fi
+
+          DEPLOYMENT_LIST=$(echo "$DEPLOYMENTS_JSON" | jq -r \
+            --arg cutoff "$CUTOFF_DATE" \
+            '.[] | select(.created_at < $cutoff) | [.id, .created_at, .ref, .sha, .environment, .url] | @tsv')
+
+          DEPLOYMENTS=$(echo "$DEPLOYMENTS_JSON" | jq -r \
+            --arg cutoff "$CUTOFF_DATE" \
+            '.[] | select(.created_at < $cutoff) | .id')
 
           if [ -z "$DEPLOYMENTS" ]; then
-            echo "✅ No $ENVIRONMENT deployments older than $DAYS_OLD days found."
+            echo "No $ENVIRONMENT deployments older than $DAYS_OLD days found."
+            exit 0
+          fi
+
+          if [ "$DEBUG" = "true" ]; then
+            echo "Debug mode enabled. The following deployments would be deleted:"
+            echo "id\tcreated_at\tref\tsha\tenvironment\turl"
+            echo "$DEPLOYMENT_LIST"
             exit 0
           fi
 
@@ -53,13 +79,13 @@ jobs:
             
             echo "Deleting deployment: $DEPLOYMENT_ID"
             gh api repos/$REPO/deployments/$DEPLOYMENT_ID -X DELETE || {
-              echo "⚠️  Failed to delete deployment $DEPLOYMENT_ID"
+              echo "Failed to delete deployment $DEPLOYMENT_ID"
               continue
             }
             ((DELETED_COUNT++))
           done <<< "$DEPLOYMENTS"
 
-          echo "✅ Deleted $DELETED_COUNT $ENVIRONMENT deployments"
+          echo "Deleted $DELETED_COUNT $ENVIRONMENT deployments"
 
       - name: Delete stale production deployments (>90 days)
         env:
@@ -70,20 +96,39 @@ jobs:
         run: |
           set -e
 
-          echo "🧹 Cleaning up $ENVIRONMENT deployments older than $DAYS_OLD days..."
+          echo "Cleaning up $ENVIRONMENT deployments older than $DAYS_OLD days..."
 
           # Calculate cutoff date (90 days ago in ISO 8601 format)
           CUTOFF_DATE=$(date -u -d "$DAYS_OLD days ago" '+%Y-%m-%dT%H:%M:%SZ')
           echo "Cutoff date: $CUTOFF_DATE"
 
           # Fetch deployments for the environment
-          DEPLOYMENTS=$(gh api repos/$REPO/deployments \
+          DEPLOYMENTS_JSON=$(gh api repos/$REPO/deployments \
             --paginate \
-            -f environment="$ENVIRONMENT" \
-            -q '.[] | select(.created_at < "'$CUTOFF_DATE'") | .id' || true)
+            -f environment="$ENVIRONMENT" || true)
+
+          if [ -z "$DEPLOYMENTS_JSON" ]; then
+            echo "No deployments returned for $ENVIRONMENT."
+            exit 0
+          fi
+
+          DEPLOYMENT_LIST=$(echo "$DEPLOYMENTS_JSON" | jq -r \
+            --arg cutoff "$CUTOFF_DATE" \
+            '.[] | select(.created_at < $cutoff) | [.id, .created_at, .ref, .sha, .environment, .url] | @tsv')
+
+          DEPLOYMENTS=$(echo "$DEPLOYMENTS_JSON" | jq -r \
+            --arg cutoff "$CUTOFF_DATE" \
+            '.[] | select(.created_at < $cutoff) | .id')
 
           if [ -z "$DEPLOYMENTS" ]; then
-            echo "✅ No $ENVIRONMENT deployments older than $DAYS_OLD days found."
+            echo "No $ENVIRONMENT deployments older than $DAYS_OLD days found."
+            exit 0
+          fi
+
+          if [ "$DEBUG" = "true" ]; then
+            echo "Debug mode enabled. The following deployments would be deleted:"
+            echo "id\tcreated_at\tref\tsha\tenvironment\turl"
+            echo "$DEPLOYMENT_LIST"
             exit 0
           fi
 
@@ -95,10 +140,10 @@ jobs:
             
             echo "Deleting deployment: $DEPLOYMENT_ID"
             gh api repos/$REPO/deployments/$DEPLOYMENT_ID -X DELETE || {
-              echo "⚠️  Failed to delete deployment $DEPLOYMENT_ID"
+              echo "Failed to delete deployment $DEPLOYMENT_ID"
               continue
             }
             ((DELETED_COUNT++))
           done <<< "$DEPLOYMENTS"
 
-          echo "✅ Deleted $DELETED_COUNT $ENVIRONMENT deployments"
+          echo "Deleted $DELETED_COUNT $ENVIRONMENT deployments"
