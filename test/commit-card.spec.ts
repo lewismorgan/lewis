@@ -70,9 +70,9 @@ test.describe('Commit Card Display', () => {
     const commitInfo = gitCard.getByText(/[a-f0-9]{7}/)
     await expect(commitInfo).toBeVisible({ timeout: 10000 })
 
-    // Check for relative time (e.g., "2 days ago", "5 mins ago")
+    // Check for relative time (e.g., "Just now", "1 min ago", "2 mins ago", "1 day ago", "2 days ago")
     const relativeTime = gitCard.getByText(
-      /\d+\s+(second|minute|hour|day|week|month|year)s?\s+ago/,
+      /(Just now|\d+\s+(mins?|hours?|days?|months?|years?)\s+ago)/,
     )
     await expect(relativeTime).toBeVisible({ timeout: 10000 })
   })
