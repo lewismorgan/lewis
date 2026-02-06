@@ -79,15 +79,15 @@ jobs:
             fi
             
             echo "Marking deployment $DEPLOYMENT_ID as inactive..."
-            gh api repos/$REPO/deployments/$DEPLOYMENT_ID/statuses \
+            if gh api repos/$REPO/deployments/$DEPLOYMENT_ID/statuses \
               -f state=inactive \
-              -f description="Marked inactive by cleanup workflow" || {
+              -f description="Marked inactive by cleanup workflow" \
+              --silent; then
+              echo "  Successfully marked deployment $DEPLOYMENT_ID as inactive"
+              MARKED_COUNT=$((MARKED_COUNT + 1))
+            else
               echo "  Failed to mark deployment $DEPLOYMENT_ID as inactive"
-              continue
-            }
-            
-            echo "  Successfully marked deployment $DEPLOYMENT_ID as inactive"
-            ((MARKED_COUNT++))
+            fi
           done <<< "$DEPLOYMENTS"
 
           echo "Marked $MARKED_COUNT $ENVIRONMENT deployments as inactive"
@@ -145,15 +145,15 @@ jobs:
             fi
             
             echo "Marking deployment $DEPLOYMENT_ID as inactive..."
-            gh api repos/$REPO/deployments/$DEPLOYMENT_ID/statuses \
+            if gh api repos/$REPO/deployments/$DEPLOYMENT_ID/statuses \
               -f state=inactive \
-              -f description="Marked inactive by cleanup workflow" || {
+              -f description="Marked inactive by cleanup workflow" \
+              --silent; then
+              echo "  Successfully marked deployment $DEPLOYMENT_ID as inactive"
+              MARKED_COUNT=$((MARKED_COUNT + 1))
+            else
               echo "  Failed to mark deployment $DEPLOYMENT_ID as inactive"
-              continue
-            }
-            
-            echo "  Successfully marked deployment $DEPLOYMENT_ID as inactive"
-            ((MARKED_COUNT++))
+            fi
           done <<< "$DEPLOYMENTS"
 
           echo "Marked $MARKED_COUNT $ENVIRONMENT deployments as inactive"
