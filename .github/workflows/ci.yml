@@ -1,8 +1,11 @@
 name: CI
 
+# TODO: Update the e2e tests to run on push to main which will run using the deployed server from vercel instead of the test server
 on:
   pull_request:
     branches: ['main']
+    paths-ignore:
+      - '**.md' # Ignore markdown file changes for CI runs
   workflow_dispatch:
 
 concurrency:

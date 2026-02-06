@@ -18,7 +18,7 @@ Instructions
 - Key utilities: Octokit 7 for GitHub API, Zod 4 for validation (@t3-oss/env-nextjs for env schema), lucide-react for icons, class-variance-authority + tailwind-merge for styling
 - Testing: Vitest 4 + React Testing Library for unit tests, Playwright 1 for E2E
 - Tooling: pnpm 10 package manager, Prettier 3 for formatting, ESLint 9 with `eslint-config-next` and `simple-import-sort`. Do not introduce configs incompatible with these versions.
-- Package manager: always use `pnpm` for install/build/lint/test/run commands; never use `npm` or `npx`.
+- Package manager: always use `pnpm` for install/build/lint/test/run commands; never use `npm` or `npx`. That means you should never have a package-lock.json, a pnpm-lock.yaml file will exist in the project instead; always use pnpm commands for any package management tasks.
 
 ## Context Files
 
