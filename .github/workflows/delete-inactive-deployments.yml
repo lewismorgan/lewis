@@ -1,0 +1,114 @@
+name: Delete Inactive Deployments
+
+on:
+  schedule:
+    # Runs weekly on Saturday at 10 AM UTC
+    - cron: '0 10 * * 6'
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: 'List deletions only (no delete) when true'
+        required: false
+        default: 'true'
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  delete-inactive:
+    runs-on: ubuntu-latest
+    name: Delete inactive deployments
+    env:
+      DEBUG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug || 'false' }}
+    steps:
+      - name: Delete inactive deployments (>14 days old)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          DAYS_OLD: 14
+        run: |
+          set -e
+
+          echo "Deleting inactive deployments older than $DAYS_OLD days..."
+
+          # Calculate cutoff date (14 days ago in ISO 8601 format)
+          CUTOFF_DATE=$(date -u -d "$DAYS_OLD days ago" '+%Y-%m-%dT%H:%M:%SZ')
+          echo "Cutoff date: $CUTOFF_DATE"
+
+          # Fetch ALL deployments
+          DEPLOYMENTS_JSON=$(gh api repos/$REPO/deployments \
+            --paginate || echo "[]")
+
+          # Validate JSON response
+          if ! echo "$DEPLOYMENTS_JSON" | jq empty 2>/dev/null; then
+            echo "Error: Failed to fetch deployments. API returned:"
+            echo "$DEPLOYMENTS_JSON"
+            exit 1
+          fi
+
+          # For each deployment, check if it has an inactive status
+          # Get deployment IDs that are older than cutoff
+          DEPLOYMENT_IDS=$(echo "$DEPLOYMENTS_JSON" | jq -r \
+            --arg cutoff "$CUTOFF_DATE" \
+            '.[] | select(.created_at < $cutoff) | .id')
+
+          if [ -z "$DEPLOYMENT_IDS" ]; then
+            echo "No deployments older than $DAYS_OLD days found."
+            exit 0
+          fi
+
+          INACTIVE_DEPLOYMENTS=()
+          INACTIVE_DETAILS=()
+
+          # Check each deployment's status to see if it's inactive
+          while IFS= read -r DEPLOYMENT_ID; do
+            if [ -z "$DEPLOYMENT_ID" ]; then
+              continue
+            fi
+
+            # Get the latest status for this deployment
+            STATUS_JSON=$(gh api repos/$REPO/deployments/$DEPLOYMENT_ID/statuses?per_page=1 || echo "[]")
+            LATEST_STATE=$(echo "$STATUS_JSON" | jq -r '.[0].state // "unknown"')
+
+            if [ "$LATEST_STATE" = "inactive" ]; then
+              INACTIVE_DEPLOYMENTS+=("$DEPLOYMENT_ID")
+              
+              # Get deployment details for debug output
+              DEPLOYMENT_INFO=$(echo "$DEPLOYMENTS_JSON" | jq -r \
+                --arg id "$DEPLOYMENT_ID" \
+                '.[] | select(.id == ($id | tonumber)) | [.id, .created_at, .ref, .sha, .environment, .url] | @tsv')
+              INACTIVE_DETAILS+=("$DEPLOYMENT_INFO")
+            fi
+          done <<< "$DEPLOYMENT_IDS"
+
+          if [ ${#INACTIVE_DEPLOYMENTS[@]} -eq 0 ]; then
+            echo "No inactive deployments older than $DAYS_OLD days found."
+            exit 0
+          fi
+
+          if [ "$DEBUG" = "true" ]; then
+            echo "Debug mode enabled. The following inactive deployments would be deleted:"
+            echo "id\tcreated_at\tref\tsha\tenvironment\turl"
+            for detail in "${INACTIVE_DETAILS[@]}"; do
+              echo "$detail"
+            done
+            exit 0
+          fi
+
+          DELETED_COUNT=0
+          for DEPLOYMENT_ID in "${INACTIVE_DEPLOYMENTS[@]}"; do
+            echo "Deleting inactive deployment: $DEPLOYMENT_ID"
+            gh api repos/$REPO/deployments/$DEPLOYMENT_ID -X DELETE || {
+              echo "  Failed to delete deployment $DEPLOYMENT_ID"
+              continue
+            }
+            echo "  Successfully deleted deployment $DEPLOYMENT_ID"
+            ((DELETED_COUNT++))
+          done
+
+          echo "Deleted $DELETED_COUNT inactive deployments"
