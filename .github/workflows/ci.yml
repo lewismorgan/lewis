@@ -4,8 +4,6 @@ name: CI
 on:
   pull_request:
     branches: ['main']
-    paths-ignore:
-      - '**.md' # Ignore markdown file changes for CI runs
   workflow_dispatch:
 
 concurrency:
@@ -21,6 +19,27 @@ env:
   NODE_VERSION: '24.x'
 
 jobs:
+  # Detect if this PR only changes documentation
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      docs_only: ${{ steps.filter.outputs.docs_only }}
+    steps:
+      - name: Check for docs-only changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            docs_only:
+              - '**.md'
+              - 'docs/**'
+              - '.github/**.md'
+          base: ${{ github.base_ref }}
+          ref: ${{ github.head_ref }}
+
   # Lint, type-check, and unit tests run in parallel (no dependencies)
   lint:
     runs-on: ubuntu-latest
@@ -79,6 +98,8 @@ jobs:
         run: pnpm type-check
 
   unit-tests:
+    if: needs.changes.outputs.docs_only != 'true'
+    needs: [changes]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -117,7 +138,8 @@ jobs:
 
   # Build depends on lint, types, and unit tests. E2E tests run after build succeeds
   build:
-    needs: [lint, type-check, unit-tests]
+    if: needs.changes.outputs.docs_only != 'true'
+    needs: [changes, lint, type-check, unit-tests]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -147,7 +169,8 @@ jobs:
         run: pnpm build
 
   e2e-tests:
-    needs: [build]
+    if: needs.changes.outputs.docs_only != 'true'
+    needs: [changes, build]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
