@@ -1,0 +1,104 @@
+name: Cleanup Deployments
+
+on:
+  schedule:
+    # Runs weekly on Monday at 2 AM UTC
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    name: Delete stale deployments
+    steps:
+      - name: Delete stale preview deployments (>14 days)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          ENVIRONMENT: Preview
+          DAYS_OLD: 14
+        run: |
+          set -e
+
+          echo "🧹 Cleaning up $ENVIRONMENT deployments older than $DAYS_OLD days..."
+
+          # Calculate cutoff date (14 days ago in ISO 8601 format)
+          CUTOFF_DATE=$(date -u -d "$DAYS_OLD days ago" '+%Y-%m-%dT%H:%M:%SZ')
+          echo "Cutoff date: $CUTOFF_DATE"
+
+          # Fetch deployments for the environment
+          DEPLOYMENTS=$(gh api repos/$REPO/deployments \
+            --paginate \
+            -f environment="$ENVIRONMENT" \
+            -q '.[] | select(.created_at < "'$CUTOFF_DATE'") | .id' || true)
+
+          if [ -z "$DEPLOYMENTS" ]; then
+            echo "✅ No $ENVIRONMENT deployments older than $DAYS_OLD days found."
+            exit 0
+          fi
+
+          DELETED_COUNT=0
+          while IFS= read -r DEPLOYMENT_ID; do
+            if [ -z "$DEPLOYMENT_ID" ]; then
+              continue
+            fi
+            
+            echo "Deleting deployment: $DEPLOYMENT_ID"
+            gh api repos/$REPO/deployments/$DEPLOYMENT_ID -X DELETE || {
+              echo "⚠️  Failed to delete deployment $DEPLOYMENT_ID"
+              continue
+            }
+            ((DELETED_COUNT++))
+          done <<< "$DEPLOYMENTS"
+
+          echo "✅ Deleted $DELETED_COUNT $ENVIRONMENT deployments"
+
+      - name: Delete stale production deployments (>90 days)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          ENVIRONMENT: Production
+          DAYS_OLD: 90
+        run: |
+          set -e
+
+          echo "🧹 Cleaning up $ENVIRONMENT deployments older than $DAYS_OLD days..."
+
+          # Calculate cutoff date (90 days ago in ISO 8601 format)
+          CUTOFF_DATE=$(date -u -d "$DAYS_OLD days ago" '+%Y-%m-%dT%H:%M:%SZ')
+          echo "Cutoff date: $CUTOFF_DATE"
+
+          # Fetch deployments for the environment
+          DEPLOYMENTS=$(gh api repos/$REPO/deployments \
+            --paginate \
+            -f environment="$ENVIRONMENT" \
+            -q '.[] | select(.created_at < "'$CUTOFF_DATE'") | .id' || true)
+
+          if [ -z "$DEPLOYMENTS" ]; then
+            echo "✅ No $ENVIRONMENT deployments older than $DAYS_OLD days found."
+            exit 0
+          fi
+
+          DELETED_COUNT=0
+          while IFS= read -r DEPLOYMENT_ID; do
+            if [ -z "$DEPLOYMENT_ID" ]; then
+              continue
+            fi
+            
+            echo "Deleting deployment: $DEPLOYMENT_ID"
+            gh api repos/$REPO/deployments/$DEPLOYMENT_ID -X DELETE || {
+              echo "⚠️  Failed to delete deployment $DEPLOYMENT_ID"
+              continue
+            }
+            ((DELETED_COUNT++))
+          done <<< "$DEPLOYMENTS"
+
+          echo "✅ Deleted $DELETED_COUNT $ENVIRONMENT deployments"
