@@ -42,13 +42,14 @@ jobs:
           echo "Cutoff date: $CUTOFF_DATE"
 
           # Fetch deployments for the environment
-          DEPLOYMENTS_JSON=$(gh api repos/$REPO/deployments \
-            --paginate \
-            -f environment="$ENVIRONMENT" || true)
+          DEPLOYMENTS_JSON=$(gh api repos/$REPO/deployments?environment=$ENVIRONMENT \
+            --paginate || echo "[]")
 
-          if [ -z "$DEPLOYMENTS_JSON" ]; then
-            echo "No deployments returned for $ENVIRONMENT."
-            exit 0
+          # Validate JSON response
+          if ! echo "$DEPLOYMENTS_JSON" | jq empty 2>/dev/null; then
+            echo "Error: Failed to fetch deployments. API returned:"
+            echo "$DEPLOYMENTS_JSON"
+            exit 1
           fi
 
           DEPLOYMENT_LIST=$(echo "$DEPLOYMENTS_JSON" | jq -r \
@@ -103,13 +104,14 @@ jobs:
           echo "Cutoff date: $CUTOFF_DATE"
 
           # Fetch deployments for the environment
-          DEPLOYMENTS_JSON=$(gh api repos/$REPO/deployments \
-            --paginate \
-            -f environment="$ENVIRONMENT" || true)
+          DEPLOYMENTS_JSON=$(gh api repos/$REPO/deployments?environment=$ENVIRONMENT \
+            --paginate || echo "[]")
 
-          if [ -z "$DEPLOYMENTS_JSON" ]; then
-            echo "No deployments returned for $ENVIRONMENT."
-            exit 0
+          # Validate JSON response
+          if ! echo "$DEPLOYMENTS_JSON" | jq empty 2>/dev/null; then
+            echo "Error: Failed to fetch deployments. API returned:"
+            echo "$DEPLOYMENTS_JSON"
+            exit 1
           fi
 
           DEPLOYMENT_LIST=$(echo "$DEPLOYMENTS_JSON" | jq -r \
