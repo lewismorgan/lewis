@@ -133,4 +133,103 @@ test.describe('Repository Section', () => {
 
     await expect(overviewLoadingText).not.toBeAttached()
   })
+
+  test('should display language badges with appropriate colors in light mode', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    // Clear localStorage to ensure no theme preference is stored
+    await page.evaluate(() => localStorage.clear())
+
+    // Set the color scheme preference and reload
+    await page.emulateMedia({ colorScheme: 'light' })
+    await page.reload()
+
+    // Wait for the page to load completely
+    await page.waitForLoadState()
+
+    // Click theme toggle to ensure light mode (since default is dark)
+    const themeToggle = page.getByRole('button', { name: /toggle theme/i })
+    await themeToggle.click()
+
+    // Wait for theme to apply
+    await page.waitForTimeout(100)
+
+    // Get the first repository card with language badges
+    const gitCards = page.getByTestId('git-card')
+    await expect(gitCards.first()).toBeVisible()
+
+    // Check that language badges are visible
+    const langBadges = page.getByTestId('lang-badge')
+    await expect(langBadges.first()).toBeVisible()
+
+    // Verify that the HTML element has light mode class
+    await expect(page.locator('html')).not.toHaveClass(/dark/)
+  })
+
+  test('should display language badges with appropriate colors in dark mode', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    // Clear localStorage to ensure no theme preference is stored
+    await page.evaluate(() => localStorage.clear())
+
+    // Set the color scheme preference and reload
+    await page.emulateMedia({ colorScheme: 'dark' })
+    await page.reload()
+
+    // Wait for the page to load completely
+    await page.waitForLoadState()
+
+    // Get the first repository card with language badges
+    const gitCards = page.getByTestId('git-card')
+    await expect(gitCards.first()).toBeVisible()
+
+    // Check that language badges are visible
+    const langBadges = page.getByTestId('lang-badge')
+    await expect(langBadges.first()).toBeVisible()
+
+    // Verify that the HTML element has dark mode class
+    await expect(page.locator('html')).toHaveClass(/dark/)
+  })
+
+  test('should maintain badge readability when switching between themes', async ({
+    page,
+  }) => {
+    await page.goto('/')
+    await page.waitForLoadState('load')
+
+    // Get the theme toggle button
+    const themeButton = page.getByRole('button', { name: 'Toggle theme' })
+    await expect(themeButton).toBeVisible()
+
+    // Get language badges
+    const langBadges = page.getByTestId('lang-badge')
+    await expect(langBadges.first()).toBeVisible()
+
+    // Verify badges are visible in initial theme
+    const initialBadgeCount = await langBadges.count()
+    expect(initialBadgeCount).toBeGreaterThan(0)
+
+    // Get the current theme state
+    const htmlElement = page.locator('html')
+    const initialTheme = await htmlElement.getAttribute('class')
+
+    // Switch theme
+    await themeButton.click()
+
+    // Wait for theme to actually change by checking the html class
+    if (initialTheme?.includes('dark')) {
+      await expect(htmlElement).not.toHaveClass(/dark/)
+    } else {
+      await expect(htmlElement).toHaveClass(/dark/)
+    }
+
+    // Verify badges are still visible after theme change
+    await expect(langBadges.first()).toBeVisible()
+    const afterToggleBadgeCount = await langBadges.count()
+    expect(afterToggleBadgeCount).toBe(initialBadgeCount)
+  })
 })

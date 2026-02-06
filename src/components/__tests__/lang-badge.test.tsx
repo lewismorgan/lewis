@@ -61,7 +61,8 @@ describe('LanguageBadges Component', () => {
 
     const badge = screen.getByTestId('badge')
     expect(badge.className).toContain('bg-[#F7DF1E]')
-    expect(badge.className).toContain('hover:bg-[#D7DF1E]')
+    expect(badge.className).toContain('hover:bg-[#E7CF0E]')
+    expect(badge.className).toContain('text-black')
   })
 
   it('applies correct color class for TypeScript', () => {
@@ -69,7 +70,8 @@ describe('LanguageBadges Component', () => {
 
     const badge = screen.getByTestId('badge')
     expect(badge.className).toContain('bg-[#3178C6]')
-    expect(badge.className).toContain('hover:bg-[#007ACC]')
+    expect(badge.className).toContain('hover:bg-[#2868B6]')
+    expect(badge.className).toContain('text-white')
   })
 
   it('applies correct color class for Python', () => {
@@ -77,7 +79,8 @@ describe('LanguageBadges Component', () => {
 
     const badge = screen.getByTestId('badge')
     expect(badge.className).toContain('bg-[#3572A5]')
-    expect(badge.className).toContain('hover:bg-[#0572A5]')
+    expect(badge.className).toContain('hover:bg-[#2862A5]')
+    expect(badge.className).toContain('text-white')
   })
 
   it('applies correct color class for Java', () => {
@@ -85,6 +88,7 @@ describe('LanguageBadges Component', () => {
 
     const badge = screen.getByTestId('badge')
     expect(badge.className).toContain('bg-[#b07219]')
+    expect(badge.className).toContain('text-white')
   })
 
   it('applies correct color class for CSS', () => {
@@ -92,6 +96,7 @@ describe('LanguageBadges Component', () => {
 
     const badge = screen.getByTestId('badge')
     expect(badge.className).toContain('bg-[#563d7c]')
+    expect(badge.className).toContain('text-white')
   })
 
   it('applies correct color class for HTML', () => {
@@ -99,6 +104,7 @@ describe('LanguageBadges Component', () => {
 
     const badge = screen.getByTestId('badge')
     expect(badge.className).toContain('bg-[#e34c26]')
+    expect(badge.className).toContain('text-white')
   })
 
   it('applies correct color class for Shell', () => {
@@ -106,6 +112,7 @@ describe('LanguageBadges Component', () => {
 
     const badge = screen.getByTestId('badge')
     expect(badge.className).toContain('bg-[#89e051]')
+    expect(badge.className).toContain('text-black')
   })
 
   it('applies correct color class for C++', () => {
@@ -113,6 +120,7 @@ describe('LanguageBadges Component', () => {
 
     const badge = screen.getByTestId('badge')
     expect(badge.className).toContain('bg-[#f34b7d]')
+    expect(badge.className).toContain('text-white')
   })
 
   it('applies correct color class for Swift', () => {
@@ -120,6 +128,7 @@ describe('LanguageBadges Component', () => {
 
     const badge = screen.getByTestId('badge')
     expect(badge.className).toContain('bg-[#ffac45]')
+    expect(badge.className).toContain('text-black')
   })
 
   it('applies correct color class for Ruby', () => {
@@ -127,6 +136,7 @@ describe('LanguageBadges Component', () => {
 
     const badge = screen.getByTestId('badge')
     expect(badge.className).toContain('bg-[#701516]')
+    expect(badge.className).toContain('text-white')
   })
 
   it('applies correct color class for Kotlin', () => {
@@ -134,6 +144,7 @@ describe('LanguageBadges Component', () => {
 
     const badge = screen.getByTestId('badge')
     expect(badge.className).toContain('bg-[#F18E33]')
+    expect(badge.className).toContain('text-black')
   })
 
   it('applies correct color class for Makefile', () => {
@@ -141,6 +152,7 @@ describe('LanguageBadges Component', () => {
 
     const badge = screen.getByTestId('badge')
     expect(badge.className).toContain('bg-[#427819]')
+    expect(badge.className).toContain('text-white')
   })
 
   it('applies correct color class for Unhandled language', () => {
@@ -156,7 +168,6 @@ describe('LanguageBadges Component', () => {
 
     const badges = screen.getAllByTestId('badge')
     badges.forEach(badge => {
-      expect(badge.className).toContain('text-white')
       expect(badge.className).toContain('hover:ring-background')
       expect(badge.className).toContain('hover:animate-pulse')
       expect(badge.className).toContain('hover:cursor-default')
@@ -183,5 +194,32 @@ describe('LanguageBadges Component', () => {
     expect(badges).toHaveLength(2)
     expect(badges[0]).toHaveTextContent('JavaScript')
     expect(badges[1]).toHaveTextContent('JavaScript')
+  })
+
+  it('includes dark mode variants for all languages', () => {
+    render(
+      <LanguageBadges
+        languages={[
+          'JavaScript',
+          'TypeScript',
+          'Python',
+          'Java',
+          'CSS',
+          'HTML',
+          'Shell',
+          'C++',
+          'Swift',
+          'Ruby',
+          'Kotlin',
+          'Makefile',
+        ]}
+      />,
+    )
+
+    const badges = screen.getAllByTestId('badge')
+    badges.forEach(badge => {
+      expect(badge.className).toContain('dark:bg-')
+      expect(badge.className).toContain('dark:text-')
+    })
   })
 })
