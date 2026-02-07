@@ -1,5 +1,6 @@
 import { Hero } from '~/components/client/hero'
 import { SlowModeContainer } from '~/components/client/repo-container'
+import { ThemeToggle } from '~/components/client/theme-toggle'
 import { LewisHovercard } from '~/components/git-hovercard'
 import { RepositoryOverview } from '~/components/server/repo-overview'
 import { HoverCard, HoverCardTrigger } from '~/components/ui/hover-card'
@@ -49,6 +50,9 @@ export default async function HomePage({
 
   return (
     <main className="flex w-full flex-col gap-4 px-4 md:gap-6 md:px-6">
+      <div className="fixed right-2 bottom-20 h-fit w-fit md:top-10 md:right-10">
+        <ThemeToggle />
+      </div>
       <Hero profileImage={git.avatarUrl} name={git.username} />
       <div className="flex w-full flex-col items-center gap-6 pt-2 align-middle md:gap-8 md:pt-3">
         <div className="hover:cursor-default">

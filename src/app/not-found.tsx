@@ -1,7 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-
-import { Button } from '~/components/ui/button'
 
 export const revalidate = 604800 // 7 days in seconds
 
@@ -40,9 +37,6 @@ export default function NotFound() {
         <p className="text-muted-foreground">
           The page you&apos;re looking for doesn&apos;t exist.
         </p>
-        <Button asChild size="lg">
-          <Link href="/">Go Home</Link>
-        </Button>
       </div>
     </main>
   )

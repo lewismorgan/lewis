@@ -2,7 +2,6 @@ import { Analytics } from '@vercel/analytics/react'
 import { Exo_2, Source_Code_Pro } from 'next/font/google'
 
 import '~/styles/globals.css'
-import { ThemeToggle } from '~/components/client/theme-toggle'
 import { Footer } from '~/components/server/footer'
 import { ThemeProvider } from '~/components/utils/theme-provider'
 import { env } from '~/env'
@@ -44,9 +43,6 @@ export default function RootLayout({
     >
       <body className="flex min-h-screen min-w-full flex-col place-content-center place-items-center font-sans">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <div className="fixed right-2 bottom-20 h-fit w-fit md:top-10 md:right-10">
-            <ThemeToggle />
-          </div>
           {children}
           <Footer commitSha={commitSha} />
         </ThemeProvider>
