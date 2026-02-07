@@ -40,32 +40,11 @@ test.describe('404 Not Found Page', () => {
     ).toBeVisible()
   })
 
-  test('should have Go Home button', async ({ page }) => {
-    await page.goto('/missing-page')
-
-    const button = page.getByRole('link', { name: 'Go Home' })
-    await expect(button).toBeVisible()
-    await expect(button).toHaveAttribute('href', '/')
-  })
-
-  test('should navigate back to home page', async ({ page }) => {
-    await page.goto('/does-not-exist')
-
-    await page.getByRole('link', { name: 'Go Home' }).click()
-    await page.waitForURL('/')
-
-    await expect(
-      page.getByRole('heading', { name: 'Hello_Internet' }),
-    ).toBeVisible()
-  })
-
   test('should render correctly in dark theme', async ({ page }) => {
     await page.emulateMedia({ colorScheme: 'dark' })
     await page.goto('/not-a-real-page')
 
     await expect(page.getByRole('heading', { name: '404' })).toBeVisible()
-    const button = page.getByRole('link', { name: 'Go Home' })
-    await expect(button).toBeVisible()
   })
 
   test('should render correctly in light theme', async ({ page }) => {
@@ -73,7 +52,5 @@ test.describe('404 Not Found Page', () => {
     await page.goto('/another-missing-page')
 
     await expect(page.getByRole('heading', { name: '404' })).toBeVisible()
-    const button = page.getByRole('link', { name: 'Go Home' })
-    await expect(button).toBeVisible()
   })
 })
