@@ -41,7 +41,7 @@ export default function RootLayout({
       className={`${source_code_pro.variable} ${exo_2.variable}`}
       suppressHydrationWarning
     >
-      <body className="flex min-h-screen min-w-full flex-col place-content-center place-items-center font-sans">
+      <body className="flex min-h-screen min-w-full flex-col items-center justify-start font-sans">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           {children}
           <Footer commitSha={commitSha} />

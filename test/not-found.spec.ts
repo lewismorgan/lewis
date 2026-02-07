@@ -14,6 +14,9 @@ test.describe('404 Not Found Page', () => {
     await page.goto('/this-route-does-not-exist')
 
     await expect(page.getByRole('heading', { name: '404' })).toBeVisible()
+
+    const themeToggle = page.getByRole('button', { name: /toggle theme/i })
+    await expect(themeToggle).not.toBeVisible()
   })
 
   test('should display Star Wars quote', async ({ page }) => {

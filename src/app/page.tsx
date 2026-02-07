@@ -50,7 +50,7 @@ export default async function HomePage({
 
   return (
     <main className="flex w-full flex-col gap-4 px-4 md:gap-6 md:px-6">
-      <div className="fixed right-2 bottom-20 h-fit w-fit md:top-10 md:right-10">
+      <div className="fixed right-2 bottom-20 h-fit w-fit md:top-10 md:right-10 md:bottom-auto">
         <ThemeToggle />
       </div>
       <Hero profileImage={git.avatarUrl} name={git.username} />
