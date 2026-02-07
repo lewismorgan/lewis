@@ -13,11 +13,7 @@ const starWarsQuotes = [
   'Perhaps the archives are incomplete.',
   'Failed, I have. Into exile, I must go.',
   "In my experience, there's no such thing as luck.",
-  'Do or do not. There is no try.',
-  'Your focus determines your reality.',
-  'The Force will be with you. Always.',
   'I have a bad feeling about this.',
-  'This is not the page you were looking for.',
 ]
 
 // Select quote at module evaluation time for ISR
