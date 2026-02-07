@@ -141,6 +141,8 @@ export default async function HomePage({
           <br />
           Use the Slow Mode toggle to see what happens on a slower network
           connection.
+          <br />
+          Repository data provided by the GitHub API.
         </span>
         <div className="flex flex-col space-y-4">
           <SlowModeContainer>
@@ -150,7 +152,7 @@ export default async function HomePage({
             />
           </SlowModeContainer>
           <div className="flex w-full justify-center px-2 text-center align-middle font-sans leading-relaxed font-light">
-            <span className="">
+            <span className="mb-4">
               Visit my GitHub profile{' '}
               <a
                 href="https://github.com/lewismorgan"
