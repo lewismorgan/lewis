@@ -1,4 +1,5 @@
 import { Analytics } from '@vercel/analytics/react'
+import { type Metadata } from 'next'
 import { Exo_2, Source_Code_Pro } from 'next/font/google'
 
 import '~/styles/globals.css'
@@ -18,12 +19,12 @@ const source_code_pro = Source_Code_Pro({
   variable: '--font-source-code-pro',
 })
 
-// TODO: Title should update if glowsticks, spacelizards
-
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Lewis Morgan',
-  description: 'Personal website for Lewis Morgan',
+  description:
+    'Software Engineer. Space enthusiast. Builder of things on the internet.',
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
+  creator: 'Lewis Morgan',
 }
 
 export default function RootLayout({
