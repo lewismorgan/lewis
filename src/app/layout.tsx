@@ -20,11 +20,33 @@ const source_code_pro = Source_Code_Pro({
 })
 
 export const metadata: Metadata = {
-  title: 'Lewis Morgan',
+  title: {
+    default: 'Lewis Morgan',
+    template: '%s | Lewis Morgan',
+  },
   description:
     'Software Engineer. Space enthusiast. Builder of things on the internet.',
-  icons: [{ rel: 'icon', url: '/favicon.ico' }],
+  applicationName: 'lewismorgan.dev',
+  keywords: [
+    'Lewis Morgan',
+    'Software Engineer',
+    'Developer',
+    'Portfolio',
+    'GitHub',
+  ],
+  authors: [{ name: 'Lewis Morgan', url: 'https://lewismorgan.dev' }],
   creator: 'Lewis Morgan',
+  publisher: 'Lewis Morgan',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
 }
 
 export default function RootLayout({
