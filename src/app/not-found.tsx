@@ -31,7 +31,7 @@ const selectedQuote = getRandomQuote()
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-4 py-16">
+    <main className="flex h-full w-full flex-col items-center justify-center px-4 py-16">
       <div className="flex max-w-2xl flex-col items-center gap-6 text-center">
         <h1 className="text-6xl font-bold tracking-tight md:text-8xl">404</h1>
         <blockquote className="text-muted-foreground font-mono text-lg italic md:text-xl">
