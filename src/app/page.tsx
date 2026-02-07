@@ -1,3 +1,5 @@
+import { type Metadata } from 'next'
+
 import { Hero } from '~/components/client/hero'
 import { SlowModeContainer } from '~/components/client/repo-container'
 import { ThemeToggle } from '~/components/client/theme-toggle'
@@ -9,6 +11,61 @@ import { AcademicCap, RocketLaunch } from '~/components/utils/icons'
 import { getMyGit } from '~/server'
 
 const REPOSITORY_DISPLAY_COUNT = 5
+
+export const metadata: Metadata = {
+  title: 'Lewis Morgan - Software Engineer & Space Enthusiast',
+  description:
+    'Software Engineer building the future of space exploration. Alumni of the University of South Florida. Explore my open-source projects and contributions on GitHub.',
+  keywords: [
+    'Lewis Morgan',
+    'Software Engineer',
+    'Space Enthusiast',
+    'USF Alumni',
+    'University of South Florida',
+    'Next.js',
+    'React',
+    'TypeScript',
+    'GitHub',
+    'Open Source',
+    'Web Development',
+    'Full Stack Developer',
+  ],
+  authors: [{ name: 'Lewis Morgan', url: 'https://lewismorgan.dev' }],
+  creator: 'Lewis Morgan',
+  publisher: 'Lewis Morgan',
+  metadataBase: new URL('https://lewismorgan.dev'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://lewismorgan.dev',
+    siteName: 'Lewis Morgan',
+    title: 'Lewis Morgan - Software Engineer & Space Enthusiast',
+    description:
+      'Software Engineer building the future of space exploration. Alumni of USF. Check out my projects on GitHub.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Lewis Morgan - Software Engineer',
+      },
+    ],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+}
 
 const Bullets = () => {
   return (
@@ -84,6 +141,8 @@ export default async function HomePage({
           <br />
           Use the Slow Mode toggle to see what happens on a slower network
           connection.
+          <br />
+          Repository data provided by the GitHub API.
         </span>
         <div className="flex flex-col space-y-4">
           <SlowModeContainer>
@@ -93,7 +152,7 @@ export default async function HomePage({
             />
           </SlowModeContainer>
           <div className="flex w-full justify-center px-2 text-center align-middle font-sans leading-relaxed font-light">
-            <span className="">
+            <span className="mb-4">
               Visit my GitHub profile{' '}
               <a
                 href="https://github.com/lewismorgan"
