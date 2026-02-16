@@ -12,11 +12,15 @@ updates:
       interval: weekly
   - package-ecosystem: 'npm'
     directory: '/'
-    open-pull-requests-limit: 2
+    open-pull-requests-limit: 5
     schedule:
       interval: weekly
-      day: 'sunday'
+      day: 'monday'
       time: '08:00'
     ignore:
       - dependency-name: '*'
         update-types: ['version-update:semver-major']
+    assignees:
+      - lewismorgan
+    reviewers:
+      - lewismorgan
