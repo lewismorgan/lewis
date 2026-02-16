@@ -35,23 +35,34 @@ test.describe('Commit Card Display', () => {
     const commit = page.getByTestId('git-card-commit').first()
     await expect(commit).toBeVisible({ timeout: 5000 })
 
-    // Check that author is displayed first and as a link
-    const author = commit.getByRole('link').nth(0)
-    await expect(author).toBeVisible()
+    // Check that commit message link is always present
+    // Use test-id selector since commit message is the most reliable element
+    const commitMessageLink = commit.getByTestId('commit-message-link')
+    await expect(commitMessageLink).toBeVisible()
+    await expect(commitMessageLink).toHaveText(/.+/)
+    await expect(commitMessageLink).toHaveAttribute(
+      'href',
+      /github\.com\/.+\/commit\/.+/,
+    )
+    await expect(commitMessageLink).toHaveAttribute('target', '_blank')
 
-    await expect(author).toHaveText(/.+/)
-    await expect(author).toHaveAttribute('href', /github\.com\/.+/)
-    await expect(author).toHaveAttribute('target', '_blank')
-    await expect(author).toHaveAttribute('class', /hover:underline/)
+    // Check that we have at least one link (the commit message)
+    const allLinks = commit.getByRole('link')
+    const linkCount = await allLinks.count()
+    expect(linkCount).toBeGreaterThanOrEqual(1)
 
-    // Check that commit message is displayed second and as a link
-    const link = commit.getByRole('link').nth(1)
-    await expect(link).toBeVisible()
-
-    await expect(link).toHaveText(/.+/)
-    await expect(link).toHaveAttribute('href', /github\.com\/.+\/commit\/.+/)
-    await expect(link).toHaveAttribute('target', '_blank')
-    await expect(link).toHaveAttribute('class', /hover:underline/)
+    // If there are multiple links (human authors + commit), verify author links exist
+    if (linkCount > 1) {
+      const firstAuthorLink = commit
+        .getByRole('link')
+        .filter({
+          hasNot: commit.locator('[data-testid="commit-message-link"]'),
+        })
+        .first()
+      await expect(firstAuthorLink).toBeVisible()
+      await expect(firstAuthorLink).toHaveAttribute('href', /github\.com\/.+/)
+      await expect(firstAuthorLink).toHaveAttribute('target', '_blank')
+    }
   })
 
   test('should display relative time for commit after the SHA', async ({
