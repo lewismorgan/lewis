@@ -1,11 +1,12 @@
 import eslint from '@eslint/js'
+import { defineConfig } from 'eslint/config'
 import nextVitals from 'eslint-config-next/core-web-vitals'
 import prettier from 'eslint-config-prettier'
 import prettierPlugin from 'eslint-plugin-prettier'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import tseslint from 'typescript-eslint'
 
-const config = [
+const eslintConfig = defineConfig(
   eslint.configs.recommended,
   ...nextVitals,
   ...tseslint.configs.recommendedTypeChecked,
@@ -73,6 +74,6 @@ const config = [
       },
     },
   },
-]
+)
 
-export default config
+export default eslintConfig
