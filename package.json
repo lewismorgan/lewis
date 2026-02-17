@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
-    "@eslint/js": "^10.0.1",
+    "@eslint/js": "^9.18.0",
     "@octokit/types": "^16.0.0",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.1.18",
@@ -59,7 +59,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
     "@vitest/coverage-v8": "4.0.18",
-    "eslint": "^10.0.0",
+    "eslint": "^9.18.0",
     "eslint-config-next": "^16.1.6",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
