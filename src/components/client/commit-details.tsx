@@ -75,7 +75,7 @@ export const GitCardCommit = ({
           </ExternalLink>
         </span>
       </div>
-      <span className="text-muted-foreground text-right align-text-bottom text-xs font-thin">
+      <span className="text-card-foreground text-right align-text-bottom text-xs font-thin">
         {sha.slice(0, 7)} • {formattedDate}
       </span>
     </>
