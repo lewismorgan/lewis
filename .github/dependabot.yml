@@ -18,7 +18,11 @@ updates:
       day: 'monday'
       time: '08:00'
     ignore:
-      - dependency-name: '*'
+      - dependency-name: 'eslint'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@eslint/js'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@vitejs/plugin-react'
         update-types: ['version-update:semver-major']
     assignees:
       - lewismorgan

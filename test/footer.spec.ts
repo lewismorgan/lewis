@@ -54,7 +54,7 @@ test.describe('Footer', () => {
     page,
   }) => {
     await page.goto('/')
-    const footerContent = page.locator('footer > div')
+    const footerContent = page.locator('footer > div.fixed.bottom-0')
 
     // Verify footer is positioned as fixed element at bottom so it floats through the page
     const classes = await footerContent.getAttribute('class')

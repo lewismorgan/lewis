@@ -38,6 +38,7 @@ const repoBlacklist = [
   'ISM4300_TechProj2b',
   'ISM4300_TechProj2',
   'ISM4300_HelloWorld',
+  'lewismorgan',
   'lewis-webapp',
 ].map(repo => repo.toLowerCase())
 
