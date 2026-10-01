@@ -7,7 +7,7 @@ import { describe, expect, it, vi } from 'vitest'
 describe('SlowModeContainer', () => {
   it('renders label and associates with the switch', async () => {
     vi.resetModules()
-    vi.mock('next/navigation', () => ({
+    vi.doMock('next/navigation', () => ({
       useSearchParams: () => new URLSearchParams('slowmode=false'),
     }))
 
@@ -33,7 +33,7 @@ describe('SlowModeContainer', () => {
 
   it('defaults to checked when slowmode=true and toggles to false on click', async () => {
     vi.resetModules()
-    vi.mock('next/navigation', () => ({
+    vi.doMock('next/navigation', () => ({
       useSearchParams: () => new URLSearchParams('slowmode=true'),
     }))
 
@@ -66,7 +66,7 @@ describe('SlowModeContainer', () => {
 
   it('defaults to unchecked when slowmode=false and toggles to true on click', async () => {
     vi.resetModules()
-    vi.mock('next/navigation', () => ({
+    vi.doMock('next/navigation', () => ({
       useSearchParams: () => new URLSearchParams('slowmode=false'),
     }))
 
