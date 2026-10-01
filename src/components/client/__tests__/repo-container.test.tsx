@@ -1,15 +1,20 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-// Each test customizes the next/navigation mock, so reset modules per test
+const { searchParams } = vi.hoisted(() => ({ searchParams: { value: '' } }))
+
+vi.mock('next/navigation', () => ({
+  useSearchParams: () => new URLSearchParams(searchParams.value),
+}))
 
 describe('SlowModeContainer', () => {
+  beforeEach(() => {
+    searchParams.value = 'slowmode=false'
+  })
+
   it('renders label and associates with the switch', async () => {
     vi.resetModules()
-    vi.mock('next/navigation', () => ({
-      useSearchParams: () => new URLSearchParams('slowmode=false'),
-    }))
 
     const { SlowModeContainer } =
       await import('~/components/client/repo-container')
@@ -33,9 +38,7 @@ describe('SlowModeContainer', () => {
 
   it('defaults to checked when slowmode=true and toggles to false on click', async () => {
     vi.resetModules()
-    vi.mock('next/navigation', () => ({
-      useSearchParams: () => new URLSearchParams('slowmode=true'),
-    }))
+    searchParams.value = 'slowmode=true'
 
     const { SlowModeContainer } =
       await import('~/components/client/repo-container')
@@ -66,9 +69,6 @@ describe('SlowModeContainer', () => {
 
   it('defaults to unchecked when slowmode=false and toggles to true on click', async () => {
     vi.resetModules()
-    vi.mock('next/navigation', () => ({
-      useSearchParams: () => new URLSearchParams('slowmode=false'),
-    }))
 
     const { SlowModeContainer } =
       await import('~/components/client/repo-container')

@@ -52,7 +52,7 @@ export async function getUser(): Promise<User> {
   } = data
   return {
     login,
-    id,
+    id: Number(id),
     avatar_url,
     html_url,
     url,
