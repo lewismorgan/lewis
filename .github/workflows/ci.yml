@@ -26,21 +26,30 @@ jobs:
       contents: read
       pull-requests: read
     outputs:
-      docs_only: ${{ steps.filter.outputs.docs_only }}
-      cleanup_only: ${{ steps.filter.outputs.cleanup_only }}
+      docs_only: ${{ steps.filter.outputs.docs == 'true' && steps.filter.outputs.non_docs != 'true' }}
+      cleanup_only: ${{ steps.filter.outputs.cleanup == 'true' && steps.filter.outputs.non_cleanup != 'true' }}
     steps:
       - name: Check for docs-only changes
         uses: dorny/paths-filter@v4
         id: filter
         with:
+          predicate-quantifier: 'some-with-excludes'
           filters: |
-            docs_only:
+            docs:
               - '**.md'
               - 'docs/**'
               - '.github/**.md'
-            cleanup_only:
+            non_docs:
+              - '**'
+              - '!**.md'
+              - '!docs/**'
+            cleanup:
               - '.github/workflows/cleanup-deployments.yml'
               - '.github/workflows/delete-inactive-deployments.yml'
+            non_cleanup:
+              - '**'
+              - '!.github/workflows/cleanup-deployments.yml'
+              - '!.github/workflows/delete-inactive-deployments.yml'
           base: ${{ github.base_ref }}
           ref: ${{ github.head_ref }}
 
