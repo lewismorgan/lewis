@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { recordAnimations } from './utils/animations'
+
 test.describe('Main Content', () => {
   test('should display hero section with typing greeting', async ({ page }) => {
     await page.goto('/')
@@ -43,6 +45,34 @@ test.describe('Main Content', () => {
 
     await expect(hovercard.getByText('Public Repos')).toBeVisible()
     await expect(hovercard.getByText('Private Repos')).toBeVisible()
+  })
+
+  test('should animate the GitHub bio hover card in and out', async ({
+    page,
+  }) => {
+    await page.goto('/')
+    const animations = await recordAnimations(page)
+
+    await page.getByRole('link', { name: 'Software Engineer' }).hover()
+    const hovercard = page.getByTestId('lewis-hovercard')
+    await expect(hovercard).toBeVisible()
+    await expect.poll(animations).toContainEqual(
+      expect.objectContaining({
+        name: 'enter',
+        testId: 'lewis-hovercard',
+        state: 'open',
+      }),
+    )
+
+    await page.mouse.move(0, 0)
+    await expect(hovercard).toBeHidden()
+    await expect.poll(animations).toContainEqual(
+      expect.objectContaining({
+        name: 'exit',
+        testId: 'lewis-hovercard',
+        state: 'closed',
+      }),
+    )
   })
 
   test('should have theme toggle button', async ({ page }) => {

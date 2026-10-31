@@ -1,6 +1,39 @@
 import { expect, test } from '@playwright/test'
 
+import { recordAnimations } from './utils/animations'
+
 test.describe('README Dialog', () => {
+  test('README dialog should animate open and closed', async ({ page }) => {
+    await page.goto('/')
+    const readmeButton = page
+      .getByRole('button', { name: /View README/ })
+      .first()
+    await expect(readmeButton).toBeVisible({ timeout: 10000 })
+
+    const animations = await recordAnimations(page)
+
+    await readmeButton.click()
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await expect.poll(animations).toContainEqual(
+      expect.objectContaining({
+        name: 'enter',
+        role: 'dialog',
+        state: 'open',
+      }),
+    )
+
+    await page.keyboard.press('Escape')
+    await expect(dialog).toBeHidden()
+    await expect.poll(animations).toContainEqual(
+      expect.objectContaining({
+        name: 'exit',
+        role: 'dialog',
+        state: 'closed',
+      }),
+    )
+  })
+
   test('README dialog button should have hover cursor pointer', async ({
     page,
   }) => {
