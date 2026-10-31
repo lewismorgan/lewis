@@ -27,6 +27,7 @@
 - Lint + typecheck: `pnpm check`
 - Unit tests (Vitest): `pnpm test`
 - E2E (Playwright): `pnpm test:e2e`
+- CI path filter: when adding a top-level folder or file that isn't part of the deployed site (docs, showcase/demo content, tooling config), add a `'!<path>/**'` exclude to the `app` filter in [ci.yml](workflows/ci.yml). Otherwise it triggers the full build + e2e suite.
 
 ## Project Conventions
 

@@ -48,6 +48,10 @@ Single-page Next.js (App Router) site deployed on Vercel at lewismorgan.dev. The
 - `SKIP_ENV_VALIDATION=true` skips validation (CI uses it).
 - Remote images are allowlisted in `next.config.js`; use `next/image`.
 
+## CI
+
+- `.github/workflows/ci.yml` has a `changes` job with a path filter. Unknown paths count as app changes and run the full build + e2e suite. When adding a top-level folder or file that isn't part of the deployed site (docs, showcase/demo content, tooling config), add a matching `'!<path>/**'` exclude to the `app` filter.
+
 ## Git
 
 - `main` is protected: work on a branch and merge by PR.

@@ -1,0 +1,139 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik?namespace=profile-us"
+    }
+  },
+  "id": 217979083,
+  "name": "Morrik",
+  "gender": {
+    "type": "MALE",
+    "name": "Male"
+  },
+  "faction": {
+    "type": "HORDE",
+    "name": "Horde"
+  },
+  "race": {
+    "key": {
+      "href": "https://us.api.blizzard.com/data/wow/playable-race/9?namespace=static-11.2.7_64397-us"
+    },
+    "name": "Goblin",
+    "id": 9
+  },
+  "character_class": {
+    "key": {
+      "href": "https://us.api.blizzard.com/data/wow/playable-class/9?namespace=static-11.2.7_64397-us"
+    },
+    "name": "Warlock",
+    "id": 9
+  },
+  "active_spec": {
+    "key": {
+      "href": "https://us.api.blizzard.com/data/wow/playable-specialization/266?namespace=static-11.2.7_64397-us"
+    },
+    "name": "Demonology",
+    "id": 266
+  },
+  "realm": {
+    "key": {
+      "href": "https://us.api.blizzard.com/data/wow/realm/57?namespace=dynamic-us"
+    },
+    "name": "Illidan",
+    "id": 57,
+    "slug": "illidan"
+  },
+  "guild": {
+    "key": {
+      "href": "https://us.api.blizzard.com/data/wow/guild/tichondrius/sigmatism?namespace=profile-us"
+    },
+    "name": "Sigmatism",
+    "id": 106799080,
+    "realm": {
+      "key": {
+        "href": "https://us.api.blizzard.com/data/wow/realm/11?namespace=dynamic-us"
+      },
+      "name": "Tichondrius",
+      "id": 11,
+      "slug": "tichondrius"
+    },
+    "faction": {
+      "type": "HORDE",
+      "name": "Horde"
+    }
+  },
+  "level": 80,
+  "experience": 0,
+  "achievement_points": 13250,
+  "achievements": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/achievements?namespace=profile-us"
+  },
+  "titles": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/titles?namespace=profile-us"
+  },
+  "pvp_summary": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/pvp-summary?namespace=profile-us"
+  },
+  "encounters": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/encounters?namespace=profile-us"
+  },
+  "media": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/character-media?namespace=profile-us"
+  },
+  "last_login_timestamp": 1768789639000,
+  "average_item_level": 622,
+  "equipped_item_level": 622,
+  "specializations": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/specializations?namespace=profile-us"
+  },
+  "statistics": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/statistics?namespace=profile-us"
+  },
+  "mythic_keystone_profile": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/mythic-keystone-profile?namespace=profile-us"
+  },
+  "equipment": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/equipment?namespace=profile-us"
+  },
+  "appearance": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/appearance?namespace=profile-us"
+  },
+  "collections": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/collections?namespace=profile-us"
+  },
+  "active_title": {
+    "key": {
+      "href": "https://us.api.blizzard.com/data/wow/title/471?namespace=static-11.2.7_64397-us"
+    },
+    "name": "Soupervisor",
+    "id": 471,
+    "display_string": "Soupervisor {name}"
+  },
+  "reputations": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/reputations?namespace=profile-us"
+  },
+  "quests": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/quests?namespace=profile-us"
+  },
+  "achievements_statistics": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/achievements/statistics?namespace=profile-us"
+  },
+  "professions": {
+    "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/professions?namespace=profile-us"
+  },
+  "covenant_progress": {
+    "chosen_covenant": {
+      "key": {
+        "href": "https://us.api.blizzard.com/data/wow/covenant/4?namespace=static-11.2.7_64397-us"
+      },
+      "name": "Necrolord",
+      "id": 4
+    },
+    "renown_level": 80,
+    "soulbinds": {
+      "href": "https://us.api.blizzard.com/profile/wow/character/illidan/morrik/soulbinds?namespace=profile-us"
+    }
+  },
+  "is_remix": false,
+  "name_search": "Morrik"
+}
