@@ -39,6 +39,7 @@ jobs:
               - '**'
               - '!**.md'
               - '!docs/**'
+              - '!showcase/**'
               - '!LICENSE'
               - '!.github/**'
               - '!.claude/**'
