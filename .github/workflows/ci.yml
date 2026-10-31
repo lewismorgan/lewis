@@ -19,37 +19,33 @@ env:
   NODE_VERSION: '24.x'
 
 jobs:
-  # Detect if this PR only changes documentation
+  # Detect whether this PR touches anything that can affect the app build/tests.
+  # Unknown/new paths count as app changes, so tests run unless a file is explicitly excluded here.
   changes:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: read
     outputs:
-      docs_only: ${{ steps.filter.outputs.docs == 'true' && steps.filter.outputs.non_docs != 'true' }}
-      cleanup_only: ${{ steps.filter.outputs.cleanup == 'true' && steps.filter.outputs.non_cleanup != 'true' }}
+      app: ${{ steps.filter.outputs.app == 'true' || steps.filter.outputs.ci == 'true' }}
     steps:
-      - name: Check for docs-only changes
+      - name: Check for app-affecting changes
         uses: dorny/paths-filter@v4
         id: filter
         with:
           predicate-quantifier: 'some-with-excludes'
           filters: |
-            docs:
-              - '**.md'
-              - 'docs/**'
-              - '.github/**.md'
-            non_docs:
+            app:
               - '**'
               - '!**.md'
               - '!docs/**'
-            cleanup:
-              - '.github/workflows/cleanup-deployments.yml'
-              - '.github/workflows/delete-inactive-deployments.yml'
-            non_cleanup:
-              - '**'
-              - '!.github/workflows/cleanup-deployments.yml'
-              - '!.github/workflows/delete-inactive-deployments.yml'
+              - '!LICENSE'
+              - '!.github/**'
+              - '!.claude/**'
+              - '!.devcontainer/**'
+              - '!.vscode/**'
+            ci:
+              - '.github/workflows/ci.yml'
           base: ${{ github.base_ref }}
           ref: ${{ github.head_ref }}
 
@@ -111,7 +107,7 @@ jobs:
         run: pnpm type-check
 
   unit-tests:
-    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.cleanup_only != 'true'
+    if: needs.changes.outputs.app == 'true'
     needs: [changes]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -151,7 +147,7 @@ jobs:
 
   # Build depends on lint, types, and unit tests. E2E tests run after build succeeds
   build:
-    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.cleanup_only != 'true'
+    if: needs.changes.outputs.app == 'true'
     needs: [changes, lint, type-check, unit-tests]
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -182,7 +178,7 @@ jobs:
         run: pnpm build
 
   e2e-tests:
-    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.cleanup_only != 'true'
+    if: needs.changes.outputs.app == 'true'
     needs: [changes, build]
     runs-on: ubuntu-latest
     timeout-minutes: 10
