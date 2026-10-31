@@ -1,6 +1,7 @@
 import { Octokit } from '@octokit/core'
 import { type Endpoints } from '@octokit/types'
 
+import { isBotName, parseCoAuthors } from '~/lib/co-authors'
 import {
   type GitAuthor,
   type GitCommit,
@@ -104,90 +105,15 @@ export async function getRepos(): Promise<RepositoryData[]> {
 }
 
 /**
- * Parse co-authors from commit message trailers
- * GitHub adds co-authors in the format: "Co-authored-by: username[bot] <email>" or "Co-authored-by: username <email>"
- */
-function parseCoAuthors(
-  message: string,
-): Array<{ username: string; email: string; isBot: boolean }> {
-  const coAuthors: Array<{ username: string; email: string; isBot: boolean }> =
-    []
-  const lines = message.split('\n')
-
-  for (const line of lines) {
-    // Match: Co-authored-by: username[bot] <email> or Co-authored-by: username <email>
-    const match = /^Co-authored-by:\s*([^<]+)\s*<([^>]+)>/.exec(line)
-    if (match) {
-      const namepart = match[1]?.trim() ?? ''
-      const email = match[2]?.trim() ?? ''
-
-      // Check if it's a bot by looking for [bot] tag in the name
-      const isBot = namepart.includes('[bot]')
-
-      // Extract username from the name (remove [bot] if present)
-      let username = namepart.replace('[bot]', '').trim()
-
-      // If we can extract username from email format like "123456+username@users.noreply.github.com"
-      const emailMatch = /(?:\d+\+)?([^@]+)@users\.noreply\.github\.com/.exec(
-        email,
-      )
-      if (emailMatch) {
-        username = emailMatch[1] ?? username
-      }
-
-      coAuthors.push({
-        username,
-        email,
-        isBot,
-      })
-    }
-  }
-
-  return coAuthors
-}
-
-/**
- * Determine if an author is a bot based on username
- *
- * Note: We don't use email patterns for bot detection because GitHub's noreply email format
- * (e.g., "123456+username@users.noreply.github.com") is used for both bots and humans when
- * PRs are squashed and merged. This would incorrectly flag human contributors as bots.
- */
-function isBot(username: string): boolean {
-  // Check if username contains [bot] tag
-  if (username.includes('[bot]')) {
-    return true
-  }
-
-  // Check for common bot usernames (case-insensitive)
-  const botNames = [
-    'copilot',
-    'dependabot',
-    'renovate',
-    'github-actions',
-    'greenkeeper',
-    'snyk-bot',
-    'mergify',
-  ]
-  const lowerUsername = username.toLowerCase()
-  if (botNames.some(botName => lowerUsername.includes(botName))) {
-    return true
-  }
-
-  return false
-}
-
-/**
  * Fetch author details from GitHub by username
  */
 async function getAuthorDetails(
   name: string,
   username?: string,
-  email?: string,
   isBotOverride?: boolean,
 ): Promise<GitAuthor> {
   const actualUsername = username ?? name
-  const bot = isBotOverride ?? isBot(actualUsername)
+  const bot = isBotOverride ?? isBotName(actualUsername)
 
   // Clean up username (remove [bot] tag if present)
   const cleanUsername = actualUsername.replace('[bot]', '').trim()
@@ -244,24 +170,23 @@ export async function getRepoCommit({
       // Get primary author
       const primaryAuthorName = commitData.author?.name ?? 'Unknown'
       const primaryAuthorUsername = commitAuthor?.login
-      const primaryAuthorEmail = commitData.author?.email
 
       const primaryAuthor = await getAuthorDetails(
         primaryAuthorName,
         primaryAuthorUsername,
-        primaryAuthorEmail,
       )
 
-      // Parse co-authors from commit message
+      // Parse co-authors from commit message trailers
       const coAuthors = parseCoAuthors(commitData.message)
       const coAuthorDetails = await Promise.all(
-        coAuthors.map(async coAuthor => {
-          return getAuthorDetails(
-            coAuthor.username,
-            coAuthor.username,
-            coAuthor.email,
-            coAuthor.isBot,
-          )
+        coAuthors.map(async (coAuthor): Promise<GitAuthor> => {
+          // Bots render as a single icon; no profile lookup needed
+          if (coAuthor.isBot) return { username: coAuthor.name, isBot: true }
+          // No resolvable GitHub login (e.g. "Jane Doe <jane@example.com>"): show the name unlinked
+          if (!coAuthor.username) {
+            return { username: coAuthor.name, isBot: false }
+          }
+          return getAuthorDetails(coAuthor.name, coAuthor.username, false)
         }),
       )
 

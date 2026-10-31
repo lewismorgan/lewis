@@ -19,7 +19,8 @@ export type SimpleGitUser = {
 
 export type GitAuthor = {
   username: string
-  profileUrl: string
+  /** GitHub profile URL; absent when the author has no resolvable GitHub login */
+  profileUrl?: string
   isBot: boolean
 }
 

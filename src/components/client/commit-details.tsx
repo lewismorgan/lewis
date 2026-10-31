@@ -58,14 +58,18 @@ export const GitCardCommit = ({
               {(humans.length > 1 || hasBots) && (
                 <span className="text-muted-foreground">+</span>
               )}
-              <a
-                href={human.profileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold hover:underline"
-              >
-                {human.username}
-              </a>
+              {human.profileUrl ? (
+                <a
+                  href={human.profileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold hover:underline"
+                >
+                  {human.username}
+                </a>
+              ) : (
+                <span className="font-semibold">{human.username}</span>
+              )}
             </span>
           ))}
         </div>
