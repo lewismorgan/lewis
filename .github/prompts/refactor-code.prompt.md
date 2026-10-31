@@ -1,7 +1,6 @@
 ---
 agent: 'agent'
-model: GPT-4.1 (copilot)
-tools: ['codebase','search']
+tools: ['search/codebase','search']
 description: 'Plan and execute small refactors safely'
 ---
 Provide a minimal refactor plan and changes.

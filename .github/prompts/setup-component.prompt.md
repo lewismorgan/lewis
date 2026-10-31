@@ -1,7 +1,6 @@
 ---
 agent: 'agent'
-model: GPT-4.1 (copilot)
-tools: ['codebase','search']
+tools: ['search/codebase','search']
 description: 'Create a new UI component for the Next.js + TypeScript site'
 ---
 You are helping create a new React component in this Next.js project.

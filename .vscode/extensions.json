@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "dbaeumer.vscode-eslint",
+    "anthropic.claude-code",
     "github.copilot",
     "esbenp.prettier-vscode",
     "vitest.explorer"

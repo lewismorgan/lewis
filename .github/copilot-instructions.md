@@ -1,5 +1,12 @@
 # Project Guidelines
 
+> Claude Code is the primary agent for this repo and reads [CLAUDE.md](../CLAUDE.md); keep the two in sync when conventions change.
+
+## Next.js Docs
+
+- This repo runs a recent Next.js whose APIs may differ from training data. Read the bundled docs in `node_modules/next/dist/docs/` before writing Next.js code, and heed deprecation notices.
+- `pnpm build` does not catch type errors (`ignoreBuildErrors: true` in [next.config.js](../next.config.js)); always run `pnpm check`.
+
 ## Code Style
 
 - TypeScript is strict and ES2022 with bundler resolution; keep explicit return types on exports and use the `~/*` alias (see [tsconfig.json](../tsconfig.json)).

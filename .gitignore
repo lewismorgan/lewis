@@ -45,3 +45,6 @@ yarn-error.log*
 # playwright
 /test-results/
 /playwright-report/
+
+# claude code (personal, uncommitted)
+.claude/settings.local.json

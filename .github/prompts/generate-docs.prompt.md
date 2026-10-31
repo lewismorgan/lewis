@@ -1,6 +1,5 @@
 ---
 agent: 'agent'
-model: Auto (copilot)
 tools: ['search/codebase', 'search']
 description: 'Generate or update minimal docs for this site'
 ---
