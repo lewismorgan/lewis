@@ -11,3 +11,10 @@ peerDependencyRules:
     eslint-plugin-import>eslint: '10'
     eslint-plugin-jsx-a11y>eslint: '10'
     eslint-plugin-react>eslint: '10'
+
+# GitHub's dependency graph only reads the first YAML document of pnpm-lock.yaml,
+# so pnpm 12's env (boot) document hid every app dependency from Dependabot alerts.
+# `ignore` stops pnpm writing that document. The pnpm version stays pinned via
+# `packageManager` in package.json (read by pnpm/action-setup in CI).
+# Revisit once GitHub supports split lockfiles: https://github.com/dependabot/dependabot-core/issues/15904
+pmOnFail: ignore
