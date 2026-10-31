@@ -78,6 +78,21 @@ describe('GitCardCommit', () => {
     expect(screen.getByText('Alice')).toBeInTheDocument()
   })
 
+  it('renders an author without a profile URL as plain text, not a link', () => {
+    render(
+      <GitCardCommit
+        {...baseProps}
+        authors={[...baseProps.authors, { username: 'Jane Doe', isBot: false }]}
+      />,
+    )
+
+    expect(screen.getByText('Jane Doe')).toBeInTheDocument()
+    expect(
+      screen.queryByRole('link', { name: 'Jane Doe' }),
+    ).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Lewis' })).toBeInTheDocument()
+  })
+
   it('does not render + character when there is only one author', () => {
     render(<GitCardCommit {...baseProps} />)
 
