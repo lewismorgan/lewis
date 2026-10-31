@@ -26,134 +26,14 @@ jobs:
     env:
       DEBUG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug || 'false' }}
     steps:
-      - name: Mark stale preview deployments as inactive (>14 days)
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github/scripts
+
+      # Production: mark only deployments Vercel has deleted (URL 404/410); live ones stay active.
+      # Preview: also mark anything older than 14 days. See the script header for the rules.
+      - name: Mark stale deployments as inactive
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
-          ENVIRONMENT: Preview
-          DAYS_OLD: 14
-        run: |
-          set -e
-
-          echo "Marking $ENVIRONMENT deployments older than $DAYS_OLD days as inactive..."
-
-          # Calculate cutoff date (14 days ago in ISO 8601 format)
-          CUTOFF_DATE=$(date -u -d "$DAYS_OLD days ago" '+%Y-%m-%dT%H:%M:%SZ')
-          echo "Cutoff date: $CUTOFF_DATE"
-
-          # Fetch deployments for the environment
-          DEPLOYMENTS_JSON=$(gh api repos/$REPO/deployments?environment=$ENVIRONMENT \
-            --paginate || echo "[]")
-
-          # Validate JSON response
-          if ! echo "$DEPLOYMENTS_JSON" | jq empty 2>/dev/null; then
-            echo "Error: Failed to fetch deployments. API returned:"
-            echo "$DEPLOYMENTS_JSON"
-            exit 1
-          fi
-
-          DEPLOYMENT_LIST=$(echo "$DEPLOYMENTS_JSON" | jq -r \
-            --arg cutoff "$CUTOFF_DATE" \
-            '.[] | select(.created_at < $cutoff) | [.id, .created_at, .ref, .sha, .environment, .url] | @tsv')
-
-          DEPLOYMENTS=$(echo "$DEPLOYMENTS_JSON" | jq -r \
-            --arg cutoff "$CUTOFF_DATE" \
-            '.[] | select(.created_at < $cutoff) | .id')
-
-          if [ -z "$DEPLOYMENTS" ]; then
-            echo "No $ENVIRONMENT deployments older than $DAYS_OLD days found."
-            exit 0
-          fi
-
-          if [ "$DEBUG" = "true" ]; then
-            echo "Debug mode enabled. The following deployments would be marked inactive:"
-            echo "id\tcreated_at\tref\tsha\tenvironment\turl"
-            echo "$DEPLOYMENT_LIST"
-            exit 0
-          fi
-
-          MARKED_COUNT=0
-          while IFS= read -r DEPLOYMENT_ID; do
-            if [ -z "$DEPLOYMENT_ID" ]; then
-              continue
-            fi
-            
-            echo "Marking deployment $DEPLOYMENT_ID as inactive..."
-            if gh api repos/$REPO/deployments/$DEPLOYMENT_ID/statuses \
-              -f state=inactive \
-              -f description="Marked inactive by cleanup workflow" \
-              --silent; then
-              echo "  Successfully marked deployment $DEPLOYMENT_ID as inactive"
-              MARKED_COUNT=$((MARKED_COUNT + 1))
-            else
-              echo "  Failed to mark deployment $DEPLOYMENT_ID as inactive"
-            fi
-          done <<< "$DEPLOYMENTS"
-
-          echo "Marked $MARKED_COUNT $ENVIRONMENT deployments as inactive"
-
-      - name: Mark stale production deployments as inactive (>90 days)
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          ENVIRONMENT: Production
-          DAYS_OLD: 90
-        run: |
-          set -e
-
-          echo "Marking $ENVIRONMENT deployments older than $DAYS_OLD days as inactive..."
-
-          # Calculate cutoff date (90 days ago in ISO 8601 format)
-          CUTOFF_DATE=$(date -u -d "$DAYS_OLD days ago" '+%Y-%m-%dT%H:%M:%SZ')
-          echo "Cutoff date: $CUTOFF_DATE"
-
-          # Fetch deployments for the environment
-          DEPLOYMENTS_JSON=$(gh api repos/$REPO/deployments?environment=$ENVIRONMENT \
-            --paginate || echo "[]")
-
-          # Validate JSON response
-          if ! echo "$DEPLOYMENTS_JSON" | jq empty 2>/dev/null; then
-            echo "Error: Failed to fetch deployments. API returned:"
-            echo "$DEPLOYMENTS_JSON"
-            exit 1
-          fi
-
-          DEPLOYMENT_LIST=$(echo "$DEPLOYMENTS_JSON" | jq -r \
-            --arg cutoff "$CUTOFF_DATE" \
-            '.[] | select(.created_at < $cutoff) | [.id, .created_at, .ref, .sha, .environment, .url] | @tsv')
-
-          DEPLOYMENTS=$(echo "$DEPLOYMENTS_JSON" | jq -r \
-            --arg cutoff "$CUTOFF_DATE" \
-            '.[] | select(.created_at < $cutoff) | .id')
-
-          if [ -z "$DEPLOYMENTS" ]; then
-            echo "No $ENVIRONMENT deployments older than $DAYS_OLD days found."
-            exit 0
-          fi
-
-          if [ "$DEBUG" = "true" ]; then
-            echo "Debug mode enabled. The following deployments would be marked inactive:"
-            echo "id\tcreated_at\tref\tsha\tenvironment\turl"
-            echo "$DEPLOYMENT_LIST"
-            exit 0
-          fi
-
-          MARKED_COUNT=0
-          while IFS= read -r DEPLOYMENT_ID; do
-            if [ -z "$DEPLOYMENT_ID" ]; then
-              continue
-            fi
-            
-            echo "Marking deployment $DEPLOYMENT_ID as inactive..."
-            if gh api repos/$REPO/deployments/$DEPLOYMENT_ID/statuses \
-              -f state=inactive \
-              -f description="Marked inactive by cleanup workflow" \
-              --silent; then
-              echo "  Successfully marked deployment $DEPLOYMENT_ID as inactive"
-              MARKED_COUNT=$((MARKED_COUNT + 1))
-            else
-              echo "  Failed to mark deployment $DEPLOYMENT_ID as inactive"
-            fi
-          done <<< "$DEPLOYMENTS"
-
-          echo "Marked $MARKED_COUNT $ENVIRONMENT deployments as inactive"
+        run: bash .github/scripts/mark-stale-deployments.sh "Production:0" "Preview:14"
