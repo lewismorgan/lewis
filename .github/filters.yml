@@ -1,0 +1,18 @@
+# Shared dorny/paths-filter config for ci.yml and e2e.yml.
+# Unknown/new paths count as app changes, so tests run unless a path is explicitly excluded here.
+app:
+  - '**'
+  - '!**.md'
+  - '!docs/**'
+  - '!showcase/**'
+  - '!LICENSE'
+  - '!.github/**'
+  - '!.claude/**'
+  - '!.devcontainer/**'
+  - '!.vscode/**'
+ci:
+  - '.github/workflows/ci.yml'
+  - '.github/filters.yml'
+e2e:
+  - '.github/workflows/e2e.yml'
+  - '.github/filters.yml'
