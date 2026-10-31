@@ -184,4 +184,41 @@ describe('ReadmeDialog Component', () => {
       expect(screen.getByText(/Network error/i)).toBeInTheDocument()
     })
   })
+  it('should request the README in slow mode when enabled', async () => {
+    const user = userEvent.setup()
+    ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ content: '# Slow README' }),
+    })
+
+    render(<ReadmeDialog repoName="test-repo" slowMode />)
+
+    await user.click(
+      screen.getByRole('button', { name: /View README for test-repo/i }),
+    )
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        '/api/git/readme/test-repo?slowmode=true',
+      )
+    })
+  })
+
+  it('should request the README normally when slow mode is off', async () => {
+    const user = userEvent.setup()
+    ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ content: '# README' }),
+    })
+
+    render(<ReadmeDialog repoName="test-repo" />)
+
+    await user.click(
+      screen.getByRole('button', { name: /View README for test-repo/i }),
+    )
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith('/api/git/readme/test-repo')
+    })
+  })
 })

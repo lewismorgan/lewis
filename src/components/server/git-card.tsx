@@ -83,7 +83,7 @@ export const GitCard = async ({
         data-testid="git-repo-title"
       >
         <ExternalLink href={html_url}>{name}</ExternalLink>
-        <ReadmeDialog repoName={name} />
+        <ReadmeDialog repoName={name} slowMode={slowMode} />
       </CardTitle>
       <CardDescription className="w-full p-2 text-left align-middle leading-relaxed">
         {description}

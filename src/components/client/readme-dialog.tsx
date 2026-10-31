@@ -16,6 +16,7 @@ import {
 
 type ReadmeDialogProps = {
   repoName: string
+  slowMode?: boolean
 }
 
 type ReadmeResponse = {
@@ -23,20 +24,26 @@ type ReadmeResponse = {
   error?: string
 }
 
-export function ReadmeDialog({ repoName }: ReadmeDialogProps) {
+export function ReadmeDialog({
+  repoName,
+  slowMode = false,
+}: ReadmeDialogProps): React.JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
   const [content, setContent] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const fetchReadme = async () => {
-    if (content) return // Already loaded
+    // Already loaded: reopening stays instant, even in slow mode, like the
+    // rest of the page once its data has arrived
+    if (content) return
 
     setIsLoading(true)
     setError(null)
 
     try {
-      const response = await fetch(`/api/git/readme/${repoName}`)
+      const query = slowMode ? '?slowmode=true' : ''
+      const response = await fetch(`/api/git/readme/${repoName}${query}`)
       const data = (await response.json()) as ReadmeResponse
 
       if (!response.ok) {
@@ -90,7 +97,9 @@ export function ReadmeDialog({ repoName }: ReadmeDialogProps) {
         <div className="max-h-[60vh] overflow-y-auto px-1">
           {isLoading && (
             <div className="flex items-center justify-center py-8">
-              <div className="text-muted-foreground">Loading README...</div>
+              <div className="text-muted-foreground animate-pulse font-mono">
+                Loading README...
+              </div>
             </div>
           )}
           {error && (
