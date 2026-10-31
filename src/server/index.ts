@@ -6,7 +6,13 @@ import {
   type RepositoryData,
   type SimpleGitUser,
 } from '../lib/types'
-import { getLanguages, getRepoCommit, getRepos, getUser } from './octokit'
+import {
+  getLanguages,
+  getReadme as fetchReadme,
+  getRepoCommit,
+  getRepos,
+  getUser,
+} from './octokit'
 
 import { sleep } from '~/lib/utils'
 
@@ -88,6 +94,16 @@ export async function getRepoLanguages(
   if (slow) await sleep(2000)
 
   return getCachedRepoLanguages(repo)
+}
+
+export async function getReadme(
+  repo: string,
+  slow: boolean,
+): Promise<string | null> {
+  // The slow mode allows simulating a slow connection
+  if (slow) await sleep(2000)
+
+  return fetchReadme(repo)
 }
 
 export async function getMyGit(): Promise<SimpleGitUser> {

@@ -78,4 +78,23 @@ test.describe('README Dialog', () => {
     const className = await closeButton.getAttribute('class')
     expect(className).toContain('hover:cursor-pointer')
   })
+  test('README dialog should show loading state in slow mode', async ({
+    page,
+  }) => {
+    await page.goto('/?slowmode=true')
+    const readmeButton = page
+      .getByRole('button', { name: /View README/ })
+      .first()
+    await expect(readmeButton).toBeVisible({ timeout: 30000 })
+
+    await readmeButton.click()
+    const dialog = page.getByRole('dialog')
+    await expect(dialog.getByText('Loading README...')).toBeVisible()
+
+    // Slow mode delays the README by ~2s, then the content replaces it
+    await expect(dialog.getByText('Loading README...')).toBeHidden({
+      timeout: 15000,
+    })
+    await expect(dialog.locator('pre')).toBeVisible()
+  })
 })

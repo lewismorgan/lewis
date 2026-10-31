@@ -1,9 +1,9 @@
 import type { NextRequest } from 'next/server'
 
-import { getReadme } from '~/server/octokit'
+import { getReadme } from '~/server'
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ repo: string }> },
 ) {
   const { repo } = await params
@@ -15,7 +15,8 @@ export async function GET(
     )
   }
 
-  const readme = await getReadme(repo)
+  const slowMode = request.nextUrl.searchParams.get('slowmode') === 'true'
+  const readme = await getReadme(repo, slowMode)
 
   if (!readme) {
     return Response.json({ error: 'README not found' }, { status: 404 })
