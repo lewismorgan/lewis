@@ -1,0 +1,3 @@
+# Showcase content (incl. Rust templates) is reference material, not app code.
+# Keep it out of GitHub's language stats so CodeQL default setup doesn't scan it as Rust.
+showcase/** linguist-documentation

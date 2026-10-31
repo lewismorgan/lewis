@@ -6,6 +6,7 @@ app:
   - '!docs/**'
   - '!showcase/**'
   - '!LICENSE'
+  - '!.gitattributes'
   - '!.github/**'
   - '!.claude/**'
   - '!.devcontainer/**'
