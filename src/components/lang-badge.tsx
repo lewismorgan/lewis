@@ -1,61 +1,65 @@
+import { type CSSProperties } from 'react'
+
 import { Badge } from './ui/badge'
 
 import { type ProgrammingLanguage } from '~/lib/types'
 
-function getLangColorVariants(language: ProgrammingLanguage) {
-  switch (language) {
-    case 'JavaScript':
-      return 'bg-[#F7DF1E] hover:bg-[#E7CF0E] dark:bg-[#F7DF1E] dark:hover:bg-[#E7CF0E] text-black dark:text-black'
-    case 'TypeScript':
-      return 'bg-[#3178C6] hover:bg-[#2868B6] dark:bg-[#3178C6] dark:hover:bg-[#2868B6] text-white dark:text-white'
-    case 'Python':
-      return 'bg-[#3572A5] hover:bg-[#2862A5] dark:bg-[#4B8BBE] dark:hover:bg-[#3B7BAE] text-white dark:text-white'
-    case 'Java':
-      return 'bg-[#b07219] hover:bg-[#a06219] dark:bg-[#f89820] dark:hover:bg-[#e88810] text-white dark:text-black'
-    case 'CSS':
-      return 'bg-[#563d7c] hover:bg-[#462d6c] dark:bg-[#744CBC] dark:hover:bg-[#643CAC] text-white dark:text-white'
-    case 'HTML':
-      return 'bg-[#e34c26] hover:bg-[#d33c16] dark:bg-[#e44d26] dark:hover:bg-[#d43d16] text-white dark:text-white'
-    case 'Shell':
-      return 'bg-[#89e051] hover:bg-[#79d041] dark:bg-[#89e051] dark:hover:bg-[#79d041] text-black dark:text-black'
-    case 'C++':
-      return 'bg-[#f34b7d] hover:bg-[#e33b6d] dark:bg-[#f34b7d] dark:hover:bg-[#e33b6d] text-white dark:text-white'
-    case 'Swift':
-      return 'bg-[#ffac45] hover:bg-[#ef9c35] dark:bg-[#ffac45] dark:hover:bg-[#ef9c35] text-black dark:text-black'
-    case 'Ruby':
-      return 'bg-[#701516] hover:bg-[#601516] dark:bg-[#CC342D] dark:hover:bg-[#BC241D] text-white dark:text-white'
-    case 'Kotlin':
-      return 'bg-[#F18E33] hover:bg-[#E17E23] dark:bg-[#F18E33] dark:hover:bg-[#E17E23] text-black dark:text-black'
-    case 'Makefile':
-      return 'bg-[#427819] hover:bg-[#326809] dark:bg-[#6D9E32] dark:hover:bg-[#5D8E22] text-white dark:text-white'
-    default:
-      return '' // Default color if language is not found
-  }
+type LanguageTint = {
+  /** OKLCH hue (0-360) for the language's spot on the spectrum */
+  h: number
+  /** Chroma multiplier; 0 renders a neutral grey pill */
+  c?: number
+}
+
+/**
+ * Each language owns a single hue. Lightness and chroma come from the theme
+ * tokens in globals.css, so every pill has the same weight and contrast in
+ * both light and dark mode.
+ */
+export const LANGUAGE_TINTS: Record<ProgrammingLanguage, LanguageTint> = {
+  'C++': { h: 0 },
+  Ruby: { h: 22 },
+  HTML: { h: 38 },
+  Rust: { h: 48 },
+  Kotlin: { h: 60 },
+  Swift: { h: 74 },
+  Java: { h: 88 },
+  JavaScript: { h: 102 },
+  Makefile: { h: 128 },
+  Shell: { h: 145 },
+  'C#': { h: 170 },
+  'Objective-C': { h: 205 },
+  Python: { h: 228 },
+  TypeScript: { h: 258 },
+  'Visual Basic': { h: 280 },
+  CSS: { h: 305 },
+  Unhandled: { h: 0, c: 0 },
+}
+
+const tintStyle = (language: ProgrammingLanguage): CSSProperties => {
+  const { h, c = 1 } = LANGUAGE_TINTS[language] ?? LANGUAGE_TINTS.Unhandled
+  return { '--lang-h': h, '--lang-c': c } as CSSProperties
 }
 
 export const LanguageBadges = ({
   languages,
 }: {
   languages: ProgrammingLanguage[]
-}) => {
-  const langComponents = languages
-    .map(language => [language.toString(), getLangColorVariants(language)])
-    .map((language, index) => {
-      const [name, color] = language
-      return (
+}): React.JSX.Element => {
+  return (
+    <>
+      {languages.map((language, index) => (
         <Badge
-          key={`${name}-${index}`}
-          className={`${color} hover:ring-background hover:animate-pulse hover:cursor-default hover:ring-1 hover:ring-offset-2`}
-          data-testid={`lang-badge`}
+          key={`${language}-${index}`}
+          variant="outline"
+          className="lang-pill gap-1.5 font-mono text-[11px] font-medium tracking-tight hover:cursor-default"
+          style={tintStyle(language)}
+          data-testid="lang-badge"
         >
-          <div className="font-outline-1 relative">
-            {name}
-            <span className="font-outline-0 absolute left-0" aria-hidden="true">
-              {name}
-            </span>
-          </div>
+          <span className="lang-pill-dot" aria-hidden="true" />
+          {language}
         </Badge>
-      )
-    })
-  return <>{langComponents}</>
+      ))}
+    </>
+  )
 }
