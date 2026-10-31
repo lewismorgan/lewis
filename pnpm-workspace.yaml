@@ -1,5 +1,8 @@
-onlyBuiltDependencies:
-  - esbuild
+allowBuilds:
+  unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - lucide-react@1.66.0
 
 # eslint-config-next@16.4 supports ESLint 10, but these transitive plugins
 # haven't widened their peer ranges yet. Verified working under ESLint 10.
