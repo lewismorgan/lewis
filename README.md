@@ -45,6 +45,10 @@ git clone https://github.com/lewismorgan/lewis.git
 
 Connect the repo in Vercel and set env vars from [src/env.js](src/env.js) (at minimum `GITHUB_TOKEN`). Vercel will run `pnpm build` and `pnpm start`.
 
+## Showcase
+
+[showcase/](showcase) holds example work that's outside the scope of developing this website, such as AI skills and agents I built for other projects. None of it is used by this repo's tooling.
+
 ## License
 
 MIT License
