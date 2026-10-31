@@ -6,6 +6,8 @@ await import('./src/env.js')
 
 /** @type {import("next").NextConfig} */
 const config = {
+  // CLAUDE.md already carries these instructions; don't regenerate AGENTS.md on `next dev`
+  agentRules: false,
   images: {
     remotePatterns: [
       {
