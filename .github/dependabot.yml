@@ -1,15 +1,10 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for more information:
-# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
-# https://containers.dev/guide/dependabot
+# Dependabot version updates: production dependencies only.
+# Dev dependencies (tooling, types, test runners) get updated manually when work resumes.
+# Security updates are enabled separately in the repo settings (Code security > Dependabot security updates).
+# https://docs.github.com/code-security/dependabot/working-with-dependabot/dependabot-options-reference
 
 version: 2
 updates:
-  - package-ecosystem: 'devcontainers'
-    directory: '/'
-    schedule:
-      interval: weekly
   - package-ecosystem: 'npm'
     directory: '/'
     open-pull-requests-limit: 5
@@ -17,13 +12,13 @@ updates:
       interval: weekly
       day: 'monday'
       time: '08:00'
-    ignore:
-      - dependency-name: 'eslint'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@eslint/js'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@vitejs/plugin-react'
-        update-types: ['version-update:semver-major']
+    allow:
+      - dependency-type: 'production'
+    groups:
+      # Batch routine minor/patch bumps into one PR; majors stay separate for review
+      production-minor-patch:
+        dependency-type: 'production'
+        update-types: ['minor', 'patch']
     assignees:
       - lewismorgan
     reviewers:
