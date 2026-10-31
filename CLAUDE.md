@@ -18,7 +18,7 @@ Single-page Next.js (App Router) site deployed on Vercel at lewismorgan.dev. The
 - `pnpm check` — ESLint + `tsc --noEmit`. **`pnpm build` does NOT catch type errors** (`ignoreBuildErrors: true` in `next.config.js`), so always use `check`.
 - `pnpm lint:fix` — ESLint autofix incl. Prettier formatting and import sorting
 - `pnpm test` — Vitest unit tests; `pnpm test -- <path>` for one file
-- `pnpm test:e2e` — Playwright (starts `pnpm dev` itself; needs a real `GITHUB_TOKEN` in `.env`)
+- `pnpm test:e2e` — Playwright (starts `pnpm dev` itself; needs a real `GITHUB_TOKEN` in `.env`). Set `PLAYWRIGHT_BASE_URL` to test a deployed site instead (see `TESTING.md`)
 
 ## Before finishing a change
 
@@ -50,7 +50,8 @@ Single-page Next.js (App Router) site deployed on Vercel at lewismorgan.dev. The
 
 ## CI
 
-- `.github/workflows/ci.yml` has a `changes` job with a path filter. Unknown paths count as app changes and run the full build + e2e suite. When adding a top-level folder or file that isn't part of the deployed site (docs, showcase/demo content, tooling config), add a matching `'!<path>/**'` exclude to the `app` filter.
+- `.github/filters.yml` holds the path filter shared by `ci.yml` and `e2e.yml` (both have a `changes` job). Unknown paths count as app changes and run the full build. When adding a top-level folder or file that isn't part of the deployed site (docs, showcase/demo content, tooling config), add a matching `'!<path>/**'` exclude to the `app` filter in `.github/filters.yml`.
+- `.github/workflows/e2e.yml` runs Playwright against real Vercel deployments (`deployment_status`): previews per PR, the live domain after each production deploy, and monthly. Live-site failures open/update an `e2e-prod` issue. Keep `test/` specs deployment-agnostic (no local-only mocks or env).
 
 ## Git
 

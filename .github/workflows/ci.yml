@@ -1,6 +1,5 @@
 name: CI
 
-# TODO: Update the e2e tests to run on push to main which will run using the deployed server from vercel instead of the test server
 on:
   pull_request:
     branches: ['main']
@@ -20,7 +19,7 @@ env:
 
 jobs:
   # Detect whether this PR touches anything that can affect the app build/tests.
-  # Unknown/new paths count as app changes, so tests run unless a file is explicitly excluded here.
+  # Filters live in .github/filters.yml (shared with e2e.yml).
   changes:
     runs-on: ubuntu-latest
     permissions:
@@ -29,24 +28,18 @@ jobs:
     outputs:
       app: ${{ steps.filter.outputs.app == 'true' || steps.filter.outputs.ci == 'true' }}
     steps:
+      # Needed so paths-filter can read the shared filter file
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
       - name: Check for app-affecting changes
         uses: dorny/paths-filter@v4
         id: filter
         with:
           predicate-quantifier: 'some-with-excludes'
-          filters: |
-            app:
-              - '**'
-              - '!**.md'
-              - '!docs/**'
-              - '!showcase/**'
-              - '!LICENSE'
-              - '!.github/**'
-              - '!.claude/**'
-              - '!.devcontainer/**'
-              - '!.vscode/**'
-            ci:
-              - '.github/workflows/ci.yml'
+          filters: .github/filters.yml
           base: ${{ github.base_ref }}
           ref: ${{ github.head_ref }}
 
@@ -146,7 +139,8 @@ jobs:
           path: coverage/
           retention-days: 7
 
-  # Build depends on lint, types, and unit tests. E2E tests run after build succeeds
+  # Build depends on lint, types, and unit tests.
+  # E2E tests run in e2e.yml against the Vercel deployment, not here.
   build:
     if: needs.changes.outputs.app == 'true'
     needs: [changes, lint, type-check, unit-tests]
@@ -177,40 +171,3 @@ jobs:
           SKIP_ENV_VALIDATION: 'true'
           GITHUB_TOKEN: ${{ secrets.API_KEY }}
         run: pnpm build
-
-  e2e-tests:
-    if: needs.changes.outputs.app == 'true'
-    needs: [changes, build]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 1
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v5
-
-      - name: Setup Node.js with pnpm cache
-        uses: actions/setup-node@v7
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Install Playwright browsers with system dependencies
-        run: pnpm exec playwright install --with-deps
-
-      # I don't need the playwright reports it'll be in the action log
-      - name: Run Playwright E2E tests
-        env:
-          SKIP_ENV_VALIDATION: 'true'
-          GITHUB_TOKEN: ${{ secrets.API_KEY }}
-          # Make sure the e2e tests use the same SHA that Vercel was deployed with
-          VERCEL_GIT_COMMIT_SHA: ${{ github.sha }}
-        run: pnpm test:e2e
