@@ -50,15 +50,39 @@ test.describe('Footer', () => {
     await expect(commitLink).toHaveAttribute('target', '_blank')
   })
 
-  test('footer should be fixed and floating as you scroll', async ({
+  test('footer should be static at the end of the page content', async ({
     page,
   }) => {
     await page.goto('/')
-    const footerContent = page.locator('footer > div.fixed.bottom-0')
+    const footer = page.getByRole('contentinfo')
+    await expect(footer).toBeVisible()
 
-    // Verify footer is positioned as fixed element at bottom so it floats through the page
-    const classes = await footerContent.getAttribute('class')
-    expect(classes).toContain('fixed')
-    expect(classes).toContain('bottom-0')
+    // Footer sits in normal flow (not floating) so it can't clash with
+    // mobile browser toolbars
+    const positions = await footer.evaluate(el =>
+      [el, ...Array.from(el.querySelectorAll('*'))].map(
+        node => getComputedStyle(node).position,
+      ),
+    )
+    expect(positions).not.toContain('fixed')
+
+    const mainBox = await page.getByRole('main').boundingBox()
+    const footerBox = await footer.boundingBox()
+    expect(mainBox).not.toBeNull()
+    expect(footerBox).not.toBeNull()
+    expect(footerBox!.y).toBeGreaterThanOrEqual(mainBox!.y + mainBox!.height)
+  })
+
+  test('footer should stay at the bottom of short pages', async ({ page }) => {
+    await page.goto('/this-page-does-not-exist')
+    const viewport = page.viewportSize()
+    const footer = page.getByRole('contentinfo')
+    await expect(footer).toBeVisible()
+    const footerBox = await footer.boundingBox()
+    expect(viewport).not.toBeNull()
+    expect(footerBox).not.toBeNull()
+    expect(Math.round(footerBox!.y + footerBox!.height)).toBeGreaterThanOrEqual(
+      viewport!.height - 1,
+    )
   })
 })

@@ -106,8 +106,8 @@ export default async function HomePage({
   const slowmode = (await searchParams).slowmode === 'true'
 
   return (
-    <main className="flex w-full flex-col gap-4 px-4 md:gap-6 md:px-6">
-      <div className="fixed right-2 bottom-20 h-fit w-fit md:top-10 md:right-10 md:bottom-auto">
+    <main className="flex w-full flex-col gap-4 px-4 pt-6 md:gap-6 md:px-6 md:pt-0">
+      <div className="absolute top-3 right-3 h-fit w-fit md:fixed md:top-10 md:right-10">
         <ThemeToggle />
       </div>
       <Hero profileImage={git.avatarUrl} name={git.username} />

@@ -86,6 +86,29 @@ test.describe('Main Content', () => {
     await themeButton.click()
     await expect(page.locator('html')).toHaveAttribute('class', /light/)
   })
+
+  test('theme toggle should not cover page text on phones', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 400, height: 800 })
+    await page.goto('/')
+
+    const themeButton = page.getByRole('button', { name: 'Toggle theme' })
+    await expect(themeButton).toBeVisible()
+
+    // Scrolls with the page instead of floating over content
+    const position = await themeButton.evaluate(
+      el => getComputedStyle(el.parentElement ?? el).position,
+    )
+    expect(position).not.toBe('fixed')
+
+    const closing = page.getByText('to check out the source code', {
+      exact: false,
+    })
+    await closing.scrollIntoViewIfNeeded()
+    await expect(closing).toBeInViewport()
+    await expect(themeButton).not.toBeInViewport()
+  })
 })
 
 test.describe('Repository Section', () => {
