@@ -123,3 +123,84 @@
     @apply bg-background text-foreground;
   }
 }
+
+/*
+ * Language "code pills": one hue per language (set inline as --lang-h and
+ * --lang-c), with lightness/chroma owned by the theme so every pill keeps
+ * the same contrast. Unlayered on purpose so it wins over the Badge
+ * variant utilities.
+ */
+:root {
+  --pill-bg-l: 0.965;
+  --pill-bg-c: 0.03;
+  --pill-bg-a: 1;
+  --pill-border-l: 0.84;
+  --pill-border-c: 0.07;
+  --pill-border-a: 1;
+  --pill-fg-l: 0.42;
+  --pill-fg-c: 0.11;
+  --pill-dot-l: 0.64;
+  --pill-dot-c: 0.19;
+  --pill-glow: 0px;
+  --pill-glow-hover: 3px;
+}
+
+.dark {
+  --pill-bg-l: 0.75;
+  --pill-bg-c: 0.12;
+  --pill-bg-a: 0.12;
+  --pill-border-l: 0.75;
+  --pill-border-c: 0.12;
+  --pill-border-a: 0.35;
+  --pill-fg-l: 0.89;
+  --pill-fg-c: 0.08;
+  --pill-dot-l: 0.78;
+  --pill-dot-c: 0.17;
+  --pill-glow: 5px;
+  --pill-glow-hover: 9px;
+}
+
+.lang-pill {
+  --pill-dot: oklch(
+    var(--pill-dot-l) calc(var(--pill-dot-c) * var(--lang-c, 1))
+      var(--lang-h, 0)
+  );
+  background-color: oklch(
+    var(--pill-bg-l) calc(var(--pill-bg-c) * var(--lang-c, 1)) var(--lang-h, 0) /
+      var(--pill-bg-a)
+  );
+  border-color: oklch(
+    var(--pill-border-l) calc(var(--pill-border-c) * var(--lang-c, 1))
+      var(--lang-h, 0) / var(--pill-border-a)
+  );
+  color: oklch(
+    var(--pill-fg-l) calc(var(--pill-fg-c) * var(--lang-c, 1)) var(--lang-h, 0)
+  );
+  transition: border-color 150ms ease;
+}
+
+.lang-pill:hover {
+  border-color: var(--pill-dot);
+}
+
+.lang-pill-dot {
+  display: inline-block;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  flex: none;
+  border-radius: 9999px;
+  background-color: var(--pill-dot);
+  box-shadow: 0 0 var(--pill-glow) var(--pill-dot);
+  transition: box-shadow 150ms ease;
+}
+
+.lang-pill:hover .lang-pill-dot {
+  box-shadow: 0 0 var(--pill-glow-hover) var(--pill-dot);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lang-pill,
+  .lang-pill-dot {
+    transition: none;
+  }
+}

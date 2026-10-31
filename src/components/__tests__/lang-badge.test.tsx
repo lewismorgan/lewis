@@ -1,225 +1,110 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
-import { LanguageBadges } from '~/components/lang-badge'
+import { LANGUAGE_TINTS, LanguageBadges } from '~/components/lang-badge'
 import { type ProgrammingLanguage } from '~/lib/types'
 
-vi.mock('~/components/ui/badge', () => ({
-  Badge: ({
-    children,
-    className,
-  }: {
-    children: React.ReactNode
-    className?: string
-  }) => (
-    <span data-testid="badge" className={className}>
-      {children}
-    </span>
-  ),
-}))
+const ALL_LANGUAGES = Object.keys(LANGUAGE_TINTS) as ProgrammingLanguage[]
+
+const badges = (): HTMLElement[] => screen.queryAllByTestId('lang-badge')
+
+const tintOf = (badge: HTMLElement): { h: string; c: string } => ({
+  h: badge.style.getPropertyValue('--lang-h'),
+  c: badge.style.getPropertyValue('--lang-c'),
+})
 
 describe('LanguageBadges Component', () => {
-  it('renders badges for all provided languages', () => {
-    const languages: ProgrammingLanguage[] = [
-      'JavaScript',
-      'TypeScript',
-      'Python',
-    ]
-    render(<LanguageBadges languages={languages} />)
+  it('renders a badge for every provided language', () => {
+    render(
+      <LanguageBadges languages={['JavaScript', 'TypeScript', 'Python']} />,
+    )
 
-    const badges = screen.getAllByTestId('badge')
-    expect(badges).toHaveLength(3)
+    expect(badges()).toHaveLength(3)
   })
 
   it('renders nothing when languages array is empty', () => {
     render(<LanguageBadges languages={[]} />)
 
-    const badges = screen.queryAllByTestId('badge')
-    expect(badges).toHaveLength(0)
+    expect(badges()).toHaveLength(0)
   })
 
-  it('renders correct text for JavaScript badge', () => {
-    render(<LanguageBadges languages={['JavaScript']} />)
-
-    expect(screen.getAllByText('JavaScript')).toHaveLength(2)
-  })
-
-  it('renders correct text for TypeScript badge', () => {
+  it('renders each language name exactly once', () => {
     render(<LanguageBadges languages={['TypeScript']} />)
 
-    expect(screen.getAllByText('TypeScript')).toHaveLength(2)
+    expect(screen.getByText('TypeScript')).toBeInTheDocument()
+    expect(badges()[0]).toHaveTextContent(/^TypeScript$/)
   })
 
-  it('renders correct text for Python badge', () => {
-    render(<LanguageBadges languages={['Python']} />)
+  it('renders languages in the given order, including duplicates', () => {
+    render(
+      <LanguageBadges languages={['JavaScript', 'TypeScript', 'JavaScript']} />,
+    )
 
-    expect(screen.getAllByText('Python')).toHaveLength(2)
+    expect(badges().map(badge => badge.textContent)).toEqual([
+      'JavaScript',
+      'TypeScript',
+      'JavaScript',
+    ])
   })
 
-  it('applies correct color class for JavaScript', () => {
-    render(<LanguageBadges languages={['JavaScript']} />)
+  it('has a tint for every supported language', () => {
+    const expected: ProgrammingLanguage[] = [
+      'JavaScript',
+      'HTML',
+      'CSS',
+      'Python',
+      'Java',
+      'C++',
+      'C#',
+      'Ruby',
+      'Swift',
+      'TypeScript',
+      'Rust',
+      'Kotlin',
+      'Shell',
+      'Objective-C',
+      'Visual Basic',
+      'Makefile',
+      'Unhandled',
+    ]
 
-    const badge = screen.getByTestId('badge')
-    expect(badge.className).toContain('bg-[#F7DF1E]')
-    expect(badge.className).toContain('hover:bg-[#E7CF0E]')
-    expect(badge.className).toContain('text-black')
+    expect([...ALL_LANGUAGES].sort()).toEqual([...expected].sort())
   })
 
-  it('applies correct color class for TypeScript', () => {
+  it('sets the language hue on each badge', () => {
+    render(<LanguageBadges languages={ALL_LANGUAGES} />)
+
+    badges().forEach((badge, index) => {
+      const language = ALL_LANGUAGES[index]!
+      expect(tintOf(badge).h).toBe(String(LANGUAGE_TINTS[language].h))
+    })
+  })
+
+  it('gives languages on the same spectrum distinct hues', () => {
+    const hues = ALL_LANGUAGES.filter(lang => lang !== 'Unhandled').map(
+      lang => LANGUAGE_TINTS[lang].h,
+    )
+
+    expect(new Set(hues).size).toBe(hues.length)
+  })
+
+  it('renders known languages at full chroma', () => {
     render(<LanguageBadges languages={['TypeScript']} />)
 
-    const badge = screen.getByTestId('badge')
-    expect(badge.className).toContain('bg-[#3178C6]')
-    expect(badge.className).toContain('hover:bg-[#2868B6]')
-    expect(badge.className).toContain('text-white')
+    expect(tintOf(badges()[0]!).c).toBe('1')
   })
 
-  it('applies correct color class for Python', () => {
-    render(<LanguageBadges languages={['Python']} />)
-
-    const badge = screen.getByTestId('badge')
-    expect(badge.className).toContain('bg-[#3572A5]')
-    expect(badge.className).toContain('hover:bg-[#2862A5]')
-    expect(badge.className).toContain('text-white')
-  })
-
-  it('applies correct color class for Java', () => {
-    render(<LanguageBadges languages={['Java']} />)
-
-    const badge = screen.getByTestId('badge')
-    expect(badge.className).toContain('bg-[#b07219]')
-    expect(badge.className).toContain('text-white')
-  })
-
-  it('applies correct color class for CSS', () => {
-    render(<LanguageBadges languages={['CSS']} />)
-
-    const badge = screen.getByTestId('badge')
-    expect(badge.className).toContain('bg-[#563d7c]')
-    expect(badge.className).toContain('text-white')
-  })
-
-  it('applies correct color class for HTML', () => {
-    render(<LanguageBadges languages={['HTML']} />)
-
-    const badge = screen.getByTestId('badge')
-    expect(badge.className).toContain('bg-[#e34c26]')
-    expect(badge.className).toContain('text-white')
-  })
-
-  it('applies correct color class for Shell', () => {
-    render(<LanguageBadges languages={['Shell']} />)
-
-    const badge = screen.getByTestId('badge')
-    expect(badge.className).toContain('bg-[#89e051]')
-    expect(badge.className).toContain('text-black')
-  })
-
-  it('applies correct color class for C++', () => {
-    render(<LanguageBadges languages={['C++']} />)
-
-    const badge = screen.getByTestId('badge')
-    expect(badge.className).toContain('bg-[#f34b7d]')
-    expect(badge.className).toContain('text-white')
-  })
-
-  it('applies correct color class for Swift', () => {
-    render(<LanguageBadges languages={['Swift']} />)
-
-    const badge = screen.getByTestId('badge')
-    expect(badge.className).toContain('bg-[#ffac45]')
-    expect(badge.className).toContain('text-black')
-  })
-
-  it('applies correct color class for Ruby', () => {
-    render(<LanguageBadges languages={['Ruby']} />)
-
-    const badge = screen.getByTestId('badge')
-    expect(badge.className).toContain('bg-[#701516]')
-    expect(badge.className).toContain('text-white')
-  })
-
-  it('applies correct color class for Kotlin', () => {
-    render(<LanguageBadges languages={['Kotlin']} />)
-
-    const badge = screen.getByTestId('badge')
-    expect(badge.className).toContain('bg-[#F18E33]')
-    expect(badge.className).toContain('text-black')
-  })
-
-  it('applies correct color class for Makefile', () => {
-    render(<LanguageBadges languages={['Makefile']} />)
-
-    const badge = screen.getByTestId('badge')
-    expect(badge.className).toContain('bg-[#427819]')
-    expect(badge.className).toContain('text-white')
-  })
-
-  it('applies correct color class for Unhandled language', () => {
+  it('renders unhandled languages as a neutral pill', () => {
     render(<LanguageBadges languages={['Unhandled']} />)
 
-    const badge = screen.getByTestId('badge')
-    // Unhandled should have empty color string, so no bg-[...] color class
-    expect(badge.className).not.toMatch(/bg-\[#\w+\]/)
+    expect(tintOf(badges()[0]!).c).toBe('0')
   })
 
-  it('applies shared badge styles to all badges', () => {
-    render(<LanguageBadges languages={['JavaScript', 'TypeScript']} />)
+  it('hides the signal dot from assistive technology', () => {
+    render(<LanguageBadges languages={['Rust']} />)
 
-    const badges = screen.getAllByTestId('badge')
-    badges.forEach(badge => {
-      expect(badge.className).toContain('hover:ring-background')
-      expect(badge.className).toContain('hover:animate-pulse')
-      expect(badge.className).toContain('hover:cursor-default')
-      expect(badge.className).toContain('hover:ring-1')
-      expect(badge.className).toContain('hover:ring-offset-2')
-    })
-  })
-
-  it('renders multiple languages in correct order', () => {
-    render(
-      <LanguageBadges languages={['JavaScript', 'TypeScript', 'Python']} />,
-    )
-
-    const badges = screen.getAllByTestId('badge')
-    expect(badges[0]).toHaveTextContent('JavaScript')
-    expect(badges[1]).toHaveTextContent('TypeScript')
-    expect(badges[2]).toHaveTextContent('Python')
-  })
-
-  it('renders duplicate languages correctly', () => {
-    render(<LanguageBadges languages={['JavaScript', 'JavaScript']} />)
-
-    const badges = screen.getAllByTestId('badge')
-    expect(badges).toHaveLength(2)
-    expect(badges[0]).toHaveTextContent('JavaScript')
-    expect(badges[1]).toHaveTextContent('JavaScript')
-  })
-
-  it('includes dark mode variants for all languages', () => {
-    render(
-      <LanguageBadges
-        languages={[
-          'JavaScript',
-          'TypeScript',
-          'Python',
-          'Java',
-          'CSS',
-          'HTML',
-          'Shell',
-          'C++',
-          'Swift',
-          'Ruby',
-          'Kotlin',
-          'Makefile',
-        ]}
-      />,
-    )
-
-    const badges = screen.getAllByTestId('badge')
-    badges.forEach(badge => {
-      expect(badge.className).toContain('dark:bg-')
-      expect(badge.className).toContain('dark:text-')
-    })
+    const dot = badges()[0]!.querySelector('[aria-hidden="true"]')
+    expect(dot).not.toBeNull()
+    expect(dot).toBeEmptyDOMElement()
   })
 })
