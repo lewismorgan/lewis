@@ -1,6 +1,5 @@
 ---
 agent: 'agent'
-model: GPT-4.1 (copilot)
 tools: ['search/codebase','search']
 description: 'Debug issues in this Next.js project'
 ---

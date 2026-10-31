@@ -7,7 +7,7 @@ applyTo: '**/{__tests__/**,*.test.ts,*.test.tsx,test/**}'
 
 ## Overview
 
-- Target stack: Next 16.1.1 (App Router) + React 19.2.3, TypeScript 5.9 strict, pnpm 10.26.
+- Target stack: Next.js App Router + React 19, TypeScript strict, pnpm (exact versions in `package.json`).
 - Unit: Vitest + React Testing Library; E2E: Playwright.
 - Co-locate tests with source for fast discoverability; keep E2E in `test/`.
 

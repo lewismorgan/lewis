@@ -31,6 +31,11 @@ git clone https://github.com/lewismorgan/lewis.git
 - `pnpm test:e2e`, `pnpm test:e2e:ui`
 - Details in [TESTING.md](TESTING.md)
 
+## Working with AI
+
+- **Claude Code** (primary): project context in [CLAUDE.md](CLAUDE.md), shared settings in [.claude/settings.json](.claude/settings.json), path-scoped rules in [.claude/rules](.claude/rules), and skills (`/write-tests`, `/fix-tests`) in [.claude/skills](.claude/skills). Personal overrides go in `.claude/settings.local.json` (gitignored). The devcontainer installs Claude Code and keeps its login across rebuilds.
+- **GitHub Copilot**: [.github/copilot-instructions.md](.github/copilot-instructions.md), plus [instructions](.github/instructions) and [prompts](.github/prompts).
+
 ## API routes
 
 - `GET /api/git/repos` - repository summaries for the overview UI. See [src/app/api/git/repos/route.ts](src/app/api/git/repos/route.ts).

@@ -1,14 +1,14 @@
 ---
 description: 'Generate a Vitest file for the current component following repo standards'
 agent: 'agent'
-tools: ['vscode', 'read', 'edit', 'search', 'context7/*']
+tools: ['vscode', 'read', 'edit', 'search']
 ---
 # Generate Vitest test for current component
 
 Mission:
 
 - Write a focused Vitest + React Testing Library test file for the currently open component.
-- Follow this repo’s testing/style rules (see .github/instructions/testing.instructions.md and typescript.instructions.md).
+- Follow this repo’s testing/style rules (see .github/instructions/testing.instructions.md and .github/copilot-instructions.md).
 
 Scope & Preconditions:
 
