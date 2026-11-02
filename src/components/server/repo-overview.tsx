@@ -43,7 +43,7 @@ export const RepositoryOverview = ({
 }) => {
   const repoLoadText = (
     <div
-      className="my-auto flex w-full animate-pulse text-center align-middle font-mono font-light"
+      className="col-span-full my-auto flex w-full animate-pulse justify-center text-center align-middle font-mono font-light"
       data-testid="repos-loading-text"
     >
       Summoning my repositories from the GitHub universe...
@@ -52,7 +52,10 @@ export const RepositoryOverview = ({
 
   // Each card is wrapped in a suspense because each card fetches its own data
   return (
-    <div className="grid grid-cols-1 justify-items-center gap-4 md:grid-cols-2 md:gap-5 md:*:odd:last:col-span-2">
+    <div
+      className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 xl:grid-cols-3"
+      data-testid="repo-grid"
+    >
       <Suspense fallback={repoLoadText}>
         <RepositoryCards count={count} slowMode={slowMode} />
       </Suspense>

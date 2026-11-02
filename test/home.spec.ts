@@ -174,11 +174,11 @@ test.describe('Repository Section', () => {
     // Verify that the repository cards appeared
     const gitCards = page.getByTestId('git-card')
     await page.waitForLoadState('domcontentloaded')
-    // Expect at least 1 card and at most 5 (the display count limit)
+    // Expect at least 1 card and at most 6 (the display count limit)
     await expect(gitCards.first()).toBeVisible()
     const cardCount = await gitCards.count()
     expect(cardCount).toBeGreaterThanOrEqual(1)
-    expect(cardCount).toBeLessThanOrEqual(5)
+    expect(cardCount).toBeLessThanOrEqual(6)
 
     // loading finished now make sure we got lang and the commit info
     await page.waitForLoadState('load')

@@ -10,7 +10,7 @@ import { Separator } from '~/components/ui/separator'
 import { AcademicCap, RocketLaunch } from '~/components/utils/icons'
 import { getMyGit } from '~/server'
 
-const REPOSITORY_DISPLAY_COUNT = 5
+const REPOSITORY_DISPLAY_COUNT = 6
 
 export const metadata: Metadata = {
   title: 'Lewis Morgan - Software Engineer & Space Enthusiast',
@@ -144,7 +144,7 @@ export default async function HomePage({
           <br />
           Repository data provided by the GitHub API.
         </span>
-        <div className="flex flex-col space-y-4">
+        <div className="flex w-full max-w-6xl flex-col space-y-4">
           <SlowModeContainer>
             <RepositoryOverview
               count={REPOSITORY_DISPLAY_COUNT}

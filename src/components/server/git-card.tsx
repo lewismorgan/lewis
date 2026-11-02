@@ -61,7 +61,12 @@ export const Commit = async ({
 }
 
 export const GitCardSkeleton = () => {
-  return <Skeleton className="h-36 w-85 p-3 shadow-md md:w-93.75 lg:w-105" />
+  return (
+    <Skeleton
+      className="h-full min-h-48 w-full p-3 shadow-md"
+      data-testid="git-card-skeleton"
+    />
+  )
 }
 
 export const GitCard = async ({
@@ -71,11 +76,11 @@ export const GitCard = async ({
   html_url,
   slowMode,
 }: Props) => {
-  const langBadges = <LanguageBadges languages={languages.slice(0, 3)} />
+  const langBadges = <LanguageBadges languages={languages.slice(0, 4)} />
 
   return (
     <Card
-      className="max-h-80 w-85 p-3 shadow-md md:w-93.75 lg:w-105"
+      className="flex h-full w-full flex-col p-3 shadow-md"
       data-testid={`git-card`}
     >
       <CardTitle
@@ -85,16 +90,22 @@ export const GitCard = async ({
         <ExternalLink href={html_url}>{name}</ExternalLink>
         <ReadmeDialog repoName={name} slowMode={slowMode} />
       </CardTitle>
-      <CardDescription className="w-full p-2 text-left align-middle leading-relaxed">
+      <CardDescription className="line-clamp-3 w-full p-2 text-left align-middle leading-relaxed">
         {description}
       </CardDescription>
-      <CardContent className="flex w-full flex-col p-0 pt-2">
+      <CardContent className="mt-auto flex w-full flex-col p-0 pt-2">
         {languages.length > 0 ? (
-          <div className="flex w-full flex-row justify-center gap-2 pb-2">
+          <div className="flex w-full flex-row flex-wrap justify-start gap-2 px-2 pb-2">
             {langBadges}
           </div>
         ) : undefined}
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense
+          fallback={
+            <div className="flex w-full flex-col p-2">
+              <Skeleton className="h-5 w-full" />
+            </div>
+          }
+        >
           <div className="flex w-full flex-col p-2">
             <Commit repo={name} slow={slowMode} />
           </div>
