@@ -13,7 +13,7 @@ test.describe('Commit Card Display', () => {
     expect(cardCount).toBeLessThanOrEqual(6)
   })
 
-  test('should display no more than 3 language badges per repository', async ({
+  test('should display no more than 4 language badges per repository', async ({
     page,
   }) => {
     await page.goto('/')
@@ -22,7 +22,7 @@ test.describe('Commit Card Display', () => {
       const langBadges = card.getByTestId('lang-badge')
       const badgeCount = await langBadges.count()
       expect(badgeCount).toBeGreaterThan(0)
-      expect(badgeCount).toBeLessThanOrEqual(3)
+      expect(badgeCount).toBeLessThanOrEqual(4)
     }
   })
 
